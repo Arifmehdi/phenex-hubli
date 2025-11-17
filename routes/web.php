@@ -37,6 +37,10 @@ Route::get('/clear', function () {
    return back();
 })->name('clear_cache');
 
+Route::get('/debug-sentry', function () {
+    throw new Exception('Sentry is working!');
+});
+
 
 // // SSLCOMMERZ Start
 // Route::get('/example1', [SslCommerzPaymentController::class, 'exampleEasyCheckout']);

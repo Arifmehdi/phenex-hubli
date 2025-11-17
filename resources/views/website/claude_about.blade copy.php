@@ -376,103 +376,153 @@
             <div class="d-inline-flex align-items-center gap-3 bg-success bg-opacity-10 px-5 py-3 rounded-pill border border-success border-2">
                 <i class="bi bi-people-fill text-success" style="font-size: 2rem;"></i>
                 <div class="text-start">
-                    <div class="fw-bold text-white">Contact Hubli</div>
-                    <!-- <small class=" text-white">Supply Chain Innovators</small> -->
+                    <div class="fw-bold text-success">Hubli Team</div>
+                    <small class="text-muted">Supply Chain Innovators</small>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-{{-- FOOD WASTE SECTION --}}
-<section class="py-5">
-    <div class="container">
-
+{{-- FOOD WASTE STATISTICS --}}
+<section class="py-5" style="background: linear-gradient(135deg, #fef2f2, #fed7aa);">
+    <div class="container py-5">
         <div class="text-center mb-5">
-            <h2 class="section-title">How Much Food Is Wasted?</h2>
-            <p class="text-muted">Every year in Bangladesh</p>
+            <h2 class="section-title">How much food is wasted every year?</h2>
+            <p class="text-muted">Understanding the scale of the problem in Bangladesh</p>
         </div>
 
-        <div class="row align-items-center g-4">
+        <div class="row g-4 mb-5">
+            {{-- Main Statistics --}}
             <div class="col-lg-6">
-                <h3 class="fw-bold">Food Waste Statistics</h3>
-                <ul class="list-unstyled mt-3">
-                    <li class="mb-2">🍚 <strong>82 kg</strong> food wasted per person</li>
-                    <li class="mb-2">🗑️ <strong>21.10 million tons</strong> wasted annually</li>
-                </ul>
-                <p class="text-muted">Equivalent to the weight of 5 million elephants.</p>
+                <div class="stat-card text-center">
+                    <div class="stat-number text-danger">82 kg</div>
+                    <p class="stat-label mb-4">Average per person annually</p>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="stat-number text-dark" style="font-size: 3.5rem;">21.10M tons</div>
+                    <p class="stat-label mb-4">Total wasted annually</p>
+                    
+                    <div class="alert alert-danger mt-4" role="alert">
+                        <h5 class="alert-heading">🐘 Did you know?</h5>
+                        <p class="mb-0">This is equivalent to the weight of <strong class="fs-4">5 Million Elephants</strong></p>
+                    </div>
+                </div>
             </div>
 
-            <div class="col-lg-6 text-center">
-                <img src="{{ asset('frontend/img/about_us/food_waste_general.webp') }}" 
-                     class="img-fluid rounded shadow animate-scale" alt="Food Waste">
+            {{-- Regional Comparison --}}
+            <div class="col-lg-6">
+                <div class="stat-card">
+                    <h3 class="h4 fw-bold mb-4">Food Waste in South Asia</h3>
+                    <p class="text-muted mb-4">Annual per person comparison (kg)</p>
+                    
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>🇧🇩 Bangladesh</span>
+                            <span class="text-danger fw-bold">82 kg</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-danger" role="progressbar" style="width: 0%;" data-width="100"></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>🇳🇵 Nepal</span>
+                            <span class="text-warning fw-bold">79 kg</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-warning" role="progressbar" style="width: 0%;" data-width="96"></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>🇵🇰 Pakistan</span>
+                            <span class="text-info fw-bold">74 kg</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-info" role="progressbar" style="width: 0%;" data-width="90"></div>
+                        </div>
+                    </div>
+
+                    <div class="progress-item">
+                        <div class="progress-label">
+                            <span>🇮🇳 India</span>
+                            <span class="text-success fw-bold">68 kg</span>
+                        </div>
+                        <div class="progress">
+                            <div class="progress-bar bg-success" role="progressbar" style="width: 0%;" data-width="83"></div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
 
-    </div>
-</section>
+        {{-- Waste Breakdown --}}
+        <div class="stat-card">
+            <h3 class="h3 fw-bold text-center mb-5">Breakdown of Food Wastage by Stage</h3>
+            <div class="row g-4">
+                @php
+                    $stages = [
+                        ['name' => 'Production', 'percent' => 15, 'color' => '#ef4444'],
+                        ['name' => 'Storage', 'percent' => 25, 'color' => '#f97316'],
+                        ['name' => 'Transport', 'percent' => 20, 'color' => '#eab308'],
+                        ['name' => 'Retail', 'percent' => 30, 'color' => '#22c55e'],
+                        ['name' => 'Consumer', 'percent' => 10, 'color' => '#3b82f6'],
+                    ];
+                @endphp
 
-
-{{-- CHARTS SECTION --}}
-<section class="py-5 bg-light">
-    <div class="container">
-
-        <div class="row g-4">
-            <div class="col-md-6">
-                <h4 class="fw-bold mb-3">Annual Per Person Food Waste in South Asia</h4>
-                <img src="{{ asset('frontend/img/about_us/bar_chart_south_asia.webp') }}"
-                     class="img-fluid rounded shadow animate-fade-up">
-            </div>
-
-            <div class="col-md-6">
-                <h4 class="fw-bold mb-3">Breakdown of Annual Food Wastage</h4>
-                <img src="{{ asset('frontend/img/about_us/pie_chart_wastage_stage.webp') }}"
-                     class="img-fluid rounded shadow animate-fade-up">
+                @foreach($stages as $stage)
+                <div class="col-6 col-md-2 text-center">
+                    <div class="circular-stat">
+                        <svg width="140" height="140">
+                            <circle cx="70" cy="70" r="60" fill="none" stroke="#e5e7eb" stroke-width="12"/>
+                            <circle cx="70" cy="70" r="60" fill="none" stroke="{{ $stage['color'] }}" stroke-width="12" 
+                                    stroke-dasharray="0 377" class="stage-circle" data-percent="{{ $stage['percent'] }}"/>
+                        </svg>
+                        <div class="stat-text">{{ $stage['percent'] }}%</div>
+                    </div>
+                    <p class="fw-semibold">{{ $stage['name'] }}</p>
+                </div>
+                @endforeach
             </div>
         </div>
-
     </div>
 </section>
-
 
 {{-- SUPPLY CHAIN ISSUES --}}
-<section class="py-5">
-    <div class="container">
-
-        <h2 class="section-title text-center mb-5">Major Issues in Today’s Supply Chain</h2>
+<section class="py-5 bg-white">
+    <div class="container py-5">
+        <div class="text-center mb-5">
+            <h2 class="section-title">Major Supply Chain Issues</h2>
+            <p class="section-subtitle">Challenges preventing efficient food distribution</p>
+        </div>
 
         <div class="row g-4">
-            {{-- Storage --}}
-            <div class="col-md-6">
-                <h4 class="fw-bold mb-3">Lack of Usable Storage</h4>
-                <img src="{{ asset('frontend/img/about_us/storage_images.webp') }}" 
-                     class="img-fluid rounded shadow">
-            </div>
+            @php
+                $issues = [
+                    ['icon' => 'people-fill', 'title' => 'Farmers go unattended', 'color' => '#ef4444'],
+                    ['icon' => 'box-seam', 'title' => 'Lack of sufficient & usable storage', 'color' => '#f97316'],
+                    ['icon' => 'exclamation-triangle-fill', 'title' => 'Poor management systems', 'color' => '#eab308'],
+                    ['icon' => 'shop', 'title' => 'Unregulated middlemen causing price distortion', 'color' => '#22c55e'],
+                    ['icon' => 'graph-up', 'title' => 'Inflation due to illegal stockpiling', 'color' => '#3b82f6'],
+                    ['icon' => 'truck', 'title' => 'Inefficient transport systems', 'color' => '#8b5cf6'],
+                ];
+            @endphp
 
-            {{-- Management --}}
-            <div class="col-md-6">
-                <h4 class="fw-bold mb-3">Poor Management System</h4>
-                <img src="{{ asset('frontend/img/about_us/management_images_01.webp') }}" 
-                     class="img-fluid rounded shadow">
+            @foreach($issues as $index => $issue)
+            <div class="col-md-6 col-lg-4">
+                <div class="issue-card">
+                    <div class="icon-box" style="--icon-from: {{ $issue['color'] }}; --icon-to: {{ $issue['color'] }};">
+                        <i class="bi bi-{{ $issue['icon'] }} text-white" style="font-size: 1.8rem;"></i>
+                    </div>
+                    <h5 class="fw-bold">{{ $issue['title'] }}</h5>
+                </div>
             </div>
+            @endforeach
         </div>
-
-        <div class="row g-4 mt-4">
-            {{-- Inflation --}}
-            <div class="col-md-6">
-                <h4 class="fw-bold mb-3">Inflation Due to Illegal Stockpiling</h4>
-                <img src="{{ asset('frontend/img/about_us/inflation_images.webp') }}" 
-                     class="img-fluid rounded shadow">
-            </div>
-
-            {{-- Farmers --}}
-            <div class="col-md-6">
-                <h4 class="fw-bold mb-3">Farmers Go Unattended</h4>
-                <img src="{{ asset('frontend/img/about_us/farmers_unattended_images.webp') }}" 
-                     class="img-fluid rounded shadow">
-            </div>
-        </div>
-
     </div>
 </section>
 
@@ -543,60 +593,8 @@
     </div>
 </section>
 
-{{-- DIGITAL PLATFORM --}}
-<section class="py-5">
-    <div class="container text-center">
-
-        <h2 class="section-title mb-4">Digital Platform Execution</h2>
-        <p>Website + Mobile App to track prices, delivery time, booking transport, and tracking in real time.</p>
-
-        <img src="{{ asset('frontend/img/about_us/website_app_image.webp') }}" 
-             class="img-fluid rounded shadow mt-4">
-    </div>
-</section>
-
-
-{{-- REMOVE MIDDLEMEN --}}
-<section class="py-5 bg-light">
-    <div class="container text-center">
-
-        <h2 class="section-title mb-4">Eliminating Middlemen</h2>
-
-        <p>Only one intermediary — Hubli — ensuring transparency and fair pricing.</p>
-
-        <img src="{{ asset('frontend/img/about_us/graph_image.webp') }}" 
-             class="img-fluid rounded shadow mt-4">
-
-    </div>
-</section>
-
-
-{{-- TRANSPORT SECTION --}}
-<section class="py-5">
-    <div class="container">
-
-        <h2 class="section-title text-center mb-5">Modern & Advanced Transport</h2>
-
-        <div class="row g-4">
-            <div class="col-md-6 text-center">
-                <h4 class="fw-bold">Refrigerated Trucks</h4>
-                <img src="{{ asset('frontend/img/about_us/refrigerated_trucks.webp') }}" 
-                     class="img-fluid rounded shadow my-3">
-            </div>
-
-            <div class="col-md-6 text-center">
-                <h4 class="fw-bold">Smart Apps</h4>
-                <img src="{{ asset('frontend/img/about_us/smart_apps.webp') }}" 
-                     class="img-fluid rounded shadow my-3">
-            </div>
-        </div>
-
-    </div>
-</section>
-
-
 {{-- FEATURES SECTION --}}
-<!-- <section class="py-5">
+<section class="py-5">
     <div class="container py-5">
         <div class="row g-4">
             <div class="col-md-4">
@@ -638,7 +636,7 @@
             </a>
         </div>
     </div>
-</section> -->
+</section>
 
 @endsection
 

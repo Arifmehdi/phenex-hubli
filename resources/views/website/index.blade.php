@@ -14,79 +14,530 @@
 <meta name="robots" content="index, follow">
 @endsection
 
+@push('css')
+<style>
+    /* Fix Slider Container */
+    .ltn__slider-area {
+        position: relative;
+        overflow: hidden;
+        width: 100%;
+    }
+    
+    /* Background image with lighter overlay for better text visibility */
+    .ltn__slider-area.ltn__slider-3 {
+        background: linear-gradient(rgba(31, 49, 51, 0.6), rgba(31, 49, 51, 0.6)), 
+                    url('{{ asset('frontend/img/resource/support-bg-prime.jpg') }}') center/cover !important;
+        position: relative;
+    }
+    
+    /* Remove any additional overlay that might be too dark */
+    .ltn__slider-area.ltn__slider-3::before {
+        display: none;
+    }
+    
+    /* Ensure text is white and properly visible */
+    .ltn__slide-item .slide-item-info,
+    .ltn__slide-item .slide-title,
+    .ltn__slide-item .slide-sub-title,
+    .ltn__slide-item .slide-brief,
+    .ltn__slide-item h1,
+    .ltn__slide-item h2,
+    .ltn__slide-item h3,
+    .ltn__slide-item h4,
+    .ltn__slide-item h5,
+    .ltn__slide-item h6,
+    .ltn__slide-item p {
+        color: white !important;
+        text-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+    }
+    
+    .slide-sub-title {
+        color: white !important;
+        font-weight: 600;
+    }
+    
+    .slide-title {
+        color: white !important;
+        font-size: 3.5rem;
+        font-weight: 700;
+        line-height: 1.2;
+        margin-bottom: 20px;
+        text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    
+    .slide-brief {
+        color: white !important;
+        font-size: 1.1rem;
+        margin-bottom: 30px;
+        text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
+    }
+    
+    /* Button styling for better visibility */
+    .btn-transparent.text-white.border-white {
+        border: 2px solid white;
+        color: white !important;
+        background: transparent;
+    }
+    
+    .btn-transparent.text-white.border-white:hover {
+        background: white;
+        color: #1F3133 !important;
+    }
+    
+    .ltn__slide-one-active {
+        width: 100%;
+        position: relative;
+    }
+    
+    /* Fix Slide Items */
+    .ltn__slide-item {
+        position: relative;
+        width: 100%;
+        float: left;
+        display: none;
+    }
+    
+    .ltn__slide-item:first-child {
+        display: block;
+    }
+    
+    .slick-initialized .ltn__slide-item {
+        display: block;
+    }
+    
+    /* Fix Slide Inner Container */
+    .ltn__slide-item-inner {
+        width: 100%;
+        position: relative;
+        min-height: 600px;
+        display: flex;
+        align-items: center;
+    }
+    
+    /* Fix Images */
+    .slide-item-img {
+        width: 100%;
+        text-align: center;
+    }
+    
+    .slide-item-img img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        margin: 0 auto;
+    }
+    
+    /* Fix Content Alignment */
+    .slide-item-info {
+        width: 100%;
+    }
+    
+    /* Slick Slider Default Styles */
+    .slick-slider {
+        position: relative;
+        display: block;
+        box-sizing: border-box;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+        -webkit-touch-callout: none;
+        -khtml-user-select: none;
+        -ms-touch-action: pan-y;
+        touch-action: pan-y;
+        -webkit-tap-highlight-color: transparent;
+    }
+    
+    .slick-list {
+        position: relative;
+        display: block;
+        overflow: hidden;
+        margin: 0;
+        padding: 0;
+    }
+    
+    .slick-list:focus {
+        outline: none;
+    }
+    
+    .slick-list.dragging {
+        cursor: pointer;
+        cursor: hand;
+    }
+    
+    .slick-slider .slick-track,
+    .slick-slider .slick-list {
+        -webkit-transform: translate3d(0, 0, 0);
+        -moz-transform: translate3d(0, 0, 0);
+        -ms-transform: translate3d(0, 0, 0);
+        -o-transform: translate3d(0, 0, 0);
+        transform: translate3d(0, 0, 0);
+    }
+    
+    .slick-track {
+        position: relative;
+        top: 0;
+        left: 0;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .slick-track:before,
+    .slick-track:after {
+        display: table;
+        content: '';
+    }
+    
+    .slick-track:after {
+        clear: both;
+    }
+    
+    .slick-loading .slick-track {
+        visibility: hidden;
+    }
+    
+    .slick-slide {
+        display: none;
+        float: left;
+        height: 100%;
+        min-height: 1px;
+    }
+    
+    [dir='rtl'] .slick-slide {
+        float: right;
+    }
+    
+    .slick-slide img {
+        display: block;
+    }
+    
+    .slick-slide.slick-loading img {
+        display: none;
+    }
+    
+    .slick-slide.dragging img {
+        pointer-events: none;
+    }
+    
+    .slick-initialized .slick-slide {
+        display: block;
+    }
+    
+    .slick-loading .slick-slide {
+        visibility: hidden;
+    }
+    
+    .slick-vertical .slick-slide {
+        display: block;
+        height: auto;
+        border: 1px solid transparent;
+    }
+    
+    .slick-arrow.slick-hidden {
+        display: none;
+    }
+    
+    /* Mobile Responsive Fixes */
+    @media (max-width: 991px) {
+        .ltn__slide-item-inner {
+            min-height: 500px;
+            padding: 60px 0;
+        }
+        
+        .slide-title {
+            font-size: 2.8rem;
+        }
+        
+        .slide-item-img img {
+            max-width: 80%;
+            margin-top: 30px;
+        }
+        
+        .row.align-items-center {
+            text-align: center;
+        }
+        
+        .slide-item-info {
+            margin-bottom: 30px;
+        }
+    }
+    
+    @media (max-width: 767px) {
+        .ltn__slide-item-inner {
+            min-height: 400px;
+            padding: 40px 0;
+        }
+        
+        .slide-title {
+            font-size: 2.2rem;
+            line-height: 1.3;
+        }
+        
+        .slide-sub-title {
+            font-size: 0.9rem;
+        }
+        
+        .slide-brief {
+            font-size: 1rem;
+            margin-bottom: 25px;
+        }
+        
+        .slide-item-img img {
+            max-width: 70%;
+            margin-top: 20px;
+        }
+        
+        .btn-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .btn-wrapper .btn {
+            margin: 5px 0;
+            width: 100%;
+            max-width: 250px;
+        }
+        
+        .row.align-items-center {
+            text-align: center;
+        }
+    }
+    
+    @media (max-width: 575px) {
+        .ltn__slide-item-inner {
+            min-height: 350px;
+            padding: 30px 0;
+        }
+        
+        .slide-title {
+            font-size: 1.8rem;
+        }
+        
+        .slide-brief {
+            font-size: 0.9rem;
+        }
+        
+        .slide-item-img img {
+            max-width: 60%;
+        }
+    }
+</style>
+
+<style>
+    /* Remove default slick navigation completely */
+    .slick-prev:before, 
+    .slick-next:before {
+        content: '' !important;
+        display: none !important;
+    }
+    
+    /* Hide any default text content */
+    .slick-prev, 
+    .slick-next {
+        font-size: 0 !important;
+        text-indent: -9999px !important;
+    }
+    
+    /* Create custom navigation with only icons */
+    .slick-prev, 
+    .slick-next {
+        width: 50px !important;
+        height: 50px !important;
+        background: rgba(255, 255, 255, 0.8) !important;
+        border-radius: 50% !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        z-index: 10 !important;
+        transition: all 0.3s ease !important;
+        border: none !important;
+        cursor: pointer !important;
+    }
+    
+    .slick-prev:hover, 
+    .slick-next:hover {
+        background: rgba(255, 255, 255, 1) !important;
+        transform: scale(1.1) !important;
+    }
+    
+    .slick-prev {
+        left: 20px !important;
+    }
+    
+    .slick-next {
+        right: 20px !important;
+    }
+    
+    /* Custom arrow icons using Font Awesome with proper positioning */
+    .slick-prev::after, 
+    .slick-next::after {
+        content: '' !important;
+        font-family: 'Font Awesome 5 Free' !important;
+        font-weight: 900 !important;
+        font-size: 20px !important;
+        color: #333 !important;
+        display: block !important;
+        line-height: 1 !important;
+    }
+    
+    .slick-prev::after {
+        content: '\f104' !important;
+        margin-left: -2px !important;
+    }
+    
+    .slick-next::after {
+        content: '\f105' !important;
+        margin-right: -2px !important;
+    }
+    
+    /* Ensure slick slider container has proper positioning */
+    .slick-slider {
+        position: relative !important;
+    }
+    
+    /* Fix for any default slick styles that might be interfering */
+    .slick-arrow {
+        border: none !important;
+        background: transparent !important;
+    }
+    
+    /* Mobile responsive arrows */
+    @media (max-width: 767px) {
+        .slick-prev, 
+        .slick-next {
+            width: 40px !important;
+            height: 40px !important;
+        }
+        
+        .slick-prev {
+            left: 10px !important;
+        }
+        
+        .slick-next {
+            right: 10px !important;
+        }
+        
+        .slick-prev::after, 
+        .slick-next::after {
+            font-size: 16px !important;
+        }
+    }
+</style>
+@endpush
+
 @section('content')
 
 <!-- SLIDER AREA START (slider-3) -->
-<div class="ltn__slider-area ltn__slider-3  section-bg-1">
+<div class="ltn__slider-area ltn__slider-3">
     <div class="ltn__slide-one-active slick-slide-arrow-1 slick-slide-dots-1">
-        <!-- ltn__slide-item -->
+        <!-- ltn__slide-item 1 -->
         <div class="ltn__slide-item ltn__slide-item-2 ltn__slide-item-3">
             <div class="ltn__slide-item-inner">
                 <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12 align-self-center">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 align-self-center">
                             <div class="slide-item-info">
-                                <div class="slide-item-info-inner ltn__slide-animation">
+                                <div class="slide-item-info-inner ltn__slide-animation text-white">
                                     <div class="slide-video mb-50 d-none">
-                                        <a class="ltn__video-icon-2 ltn__video-icon-2-border"
-                                            href="#"
-                                            data-rel="lightcase:myCollection">
+                                        <a class="ltn__video-icon-2 ltn__video-icon-2-border" href="#" data-rel="lightcase:myCollection">
                                             <i class="fa fa-play"></i>
                                         </a>
                                     </div>
-                                    <h6 class="slide-sub-title animated"><img src="{{ asset('frontend/img/icons/icon-img/1.png') }}" alt="#">
-                                        100% genuine Products</h6>
-                                    <h1 class="slide-title animated ">Your Trusted Supply <br> Chain Partner </h1>
-                                    <div class="slide-brief animated d-none">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore.</p>
+                                    <h6 class="slide-sub-title animated text-white">
+                                        {{-- <img src="{{ asset('frontend/img/icons/icon-img/1.png') }}" alt="#"> --}}
+                                        The Dawn Of new era
+                                    </h6>
+                                    <h1 class="slide-title animated text-white">Revamping BD Food Supply Chain.</h1>
+                                    <div class="slide-brief animated d-none text-white">
+                                        <p>The Dawn Of new era</p>
                                     </div>
                                     <div class="btn-wrapper animated">
-                                        <a href="shop.html" class="theme-btn-1 btn btn-effect-1 text-uppercase">Explore
-                                            Products</a>
+                                        <a href="#" class="theme-btn-1 btn btn-effect-1 text-uppercase">Explore Products</a>
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                        <div class="col-lg-6 align-self-center">
                             <div class="slide-item-img">
-                                <img src="{{ asset('frontend/img/slider/hero-img-prime.png') }}" alt="#">
+                                <img src="{{ asset('frontend/img/slider/slide_map.webp') }}" alt="Fresh Products" class="img-fluid">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- ltn__slide-item -->
+        <!-- ltn__slide-item 1 -->
         <div class="ltn__slide-item ltn__slide-item-2 ltn__slide-item-3">
-            <div class="ltn__slide-item-inner  text-right text-end">
+            <div class="ltn__slide-item-inner">
                 <div class="container">
-                    <div class="row">
-                        <div class="col-lg-12 align-self-center">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 align-self-center">
                             <div class="slide-item-info">
-                                <div class="slide-item-info-inner ltn__slide-animation">
-                                    <h6 class="slide-sub-title animated"><img src="{{ asset('frontend/img/icons/icon-img/1.png')}}" alt="#">
-                                        100% genuine Products</h6>
-                                    <h1 class="slide-title animated ">Quality Assured.  <br> Time Saved.</h1>
-                                    <div class="slide-brief animated">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod
-                                            tempor incididunt ut labore.</p>
+                                <div class="slide-item-info-inner ltn__slide-animation text-white">
+                                    <div class="slide-video mb-50 d-none">
+                                        <a class="ltn__video-icon-2 ltn__video-icon-2-border" href="#" data-rel="lightcase:myCollection">
+                                            <i class="fa fa-play"></i>
+                                        </a>
+                                    </div>
+                                    <h6 class="slide-sub-title animated text-white">
+                                        {{-- <img src="{{ asset('frontend/img/icons/icon-img/1.png') }}" alt="#"> --}}
+                                        100% genuine Products
+                                    </h6>
+                                    <h1 class="slide-title animated text-white">We Move Freshness.</h1>
+                                    <div class="slide-brief animated d-none text-white">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
                                     </div>
                                     <div class="btn-wrapper animated">
-                                        <a href="shop.html" class="theme-btn-1 btn btn-effect-1 text-uppercase">Explore
-                                            Products</a>
-                                        <a href="about.html"
-                                            class="btn btn-transparent btn-effect-3 text-uppercase">LEARN MORE</a>
+                                        <a href="#" class="theme-btn-1 btn btn-effect-1 text-uppercase">Explore Products</a>
                                     </div>
                                 </div>
                             </div>
-                            <div class="slide-item-img slide-img-left">
-                                <img src="{{ asset('frontend/img/slider/hero-img-prime_01.png')}}" alt="#">
+                        </div>
+                        <div class="col-lg-6 align-self-center">
+                            <div class="slide-item-img">
+                                <img src="{{ asset('frontend/img/slider/hero-img-prime.png') }}" alt="Fresh Products" class="img-fluid">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!--  -->
+        
+        <!-- ltn__slide-item 2 -->
+        <div class="ltn__slide-item ltn__slide-item-2 ltn__slide-item-3">
+            <div class="ltn__slide-item-inner">
+                <div class="container">
+                    <div class="row align-items-center">
+                        <div class="col-lg-6 align-self-center">
+                            <div class="slide-item-info">
+                                <div class="slide-item-info-inner ltn__slide-animation text-white">
+                                    <h6 class="slide-sub-title animated text-white">
+                                        {{-- <img src="{{ asset('frontend/img/icons/icon-img/1.png')}}" alt="#"> --}}
+                                        100% genuine Products
+                                    </h6>
+                                    <h1 class="slide-title animated text-white">Quality Assured. <br> Time Saved.</h1>
+                                    <div class="slide-brief animated text-white">
+                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
+                                    </div>
+                                    <div class="btn-wrapper animated">
+                                        <a href="#" class="theme-btn-1 btn btn-effect-1 text-uppercase">Explore Products</a>
+                                        <a href="#" class="btn btn-transparent btn-effect-3 text-uppercase text-white border-white">LEARN MORE</a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-6 align-self-center">
+                            <div class="slide-item-img">
+                                <img src="{{ asset('frontend/img/slider/hero-img-prime_01.png')}}" alt="Quality Products" class="img-fluid">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <!-- SLIDER AREA END -->
@@ -94,44 +545,51 @@
 
 
 <!-- About Us - Agriculture Product Transport -->
-<section class="about-style-two" style="padding: 100px 0; background: #fff;">
-  <div class="auto-container" style="max-width: 1200px; margin: 0 auto;">
-    <div class="row clearfix" style="display: flex; align-items: center; flex-wrap: wrap; gap: 40px;">
+<section class="about-style-two" style="padding: 80px 0; background: #fff;">
+  <div class="container">
+    <div class="row align-items-center">
       
       <!-- Left Content -->
-      <div class="col-lg-6 col-md-12 col-sm-12 content-column" style="flex: 1;">
-        <div class="content-box" style="padding-right: 30px;">
-          <p style="color: #D10D2B; font-weight: 600; letter-spacing: 1px; margin-bottom: 10px; text-transform: uppercase;">
+      <div class="col-lg-6 col-md-12 col-sm-12 order-2 order-lg-1">
+        <div class="content-box pe-lg-4">
+          <p class="section-subtitle" style="color: #D10D2B; font-weight: 600; letter-spacing: 1px; margin-bottom: 15px; text-transform: uppercase; font-size: 14px;">
             Who We Are
           </p>
-          <h2 style="font-size: 34px; font-weight: 700; color: #1D3564; line-height: 1.3; margin-bottom: 25px;">
+          <h2 class="section-title" style="font-size: 32px; font-weight: 700; color: #1D3564; line-height: 1.3; margin-bottom: 25px;">
             Reliable Agriculture Product Transport & Supply Chain Partner
           </h2>
-          <p style="color: #555; font-size: 16px; line-height: 1.8; margin-bottom: 35px;">
+          <p class="section-description" style="color: #555; font-size: 16px; line-height: 1.7; margin-bottom: 35px;">
             We specialize in transporting fresh agricultural produce safely and efficiently across regions. 
             Our goal is to bridge the gap between farmers and markets, ensuring timely delivery, product quality, 
             and maximum freshness. With a trusted network and years of logistics experience, we handle 
             everything from field to destination with precision and care.
           </p>
-          <a href="#" style="display: inline-block; background: #66A931; color: #fff; padding: 12px 28px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: 0.3s;">
+          <a href="#" class="btn-primary" style="display: inline-block; background: #66A931; color: #fff; padding: 12px 28px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; border: none;">
             Learn More
             <i class="flaticon-send" style="margin-left: 8px;"></i>
           </a>
         </div>
       </div>
 
-
-            <!-- Right Image Section -->
-      <div class="col-lg-6 col-md-12 col-sm-12 image-column" style="flex: 1; position: relative;">
-        <div class="image-box" style="position: relative;">
-          <figure class="image-1" style="margin: 0;">
-            <img src="{{ asset('frontend/img/resource/about-2.jpg') }}" alt="" style="width: 100%; border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
+      <!-- Right Image Section -->
+      <div class="col-lg-6 col-md-12 col-sm-12 order-1 order-lg-2 mb-4 mb-lg-0">
+        <div class="image-box position-relative" style="max-width: 540px; margin: 0 auto;">
+          <figure class="image-1 mb-0" style="margin: 0;">
+            <img src="{{ asset('frontend/img/resource/about-2.jpg') }}" alt="Agriculture Transport" 
+                 class="img-fluid w-100" 
+                 style="border-radius: 12px; box-shadow: 0 8px 20px rgba(0,0,0,0.1);">
           </figure>
-          <figure class="image-2" style="position: absolute; top: -40px; left: -40px; width: 180px; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">
-            <img src="{{ asset('frontend/img/resource/about-3.jpg') }}" alt="" style="width: 100%;">
+          <figure class="image-2 position-absolute d-none d-md-block" 
+                  style="top: -20px; left: -20px; width: 160px; z-index: 2;">
+            <img src="{{ asset('frontend/img/resource/about-3.jpg') }}" alt="Farm Products" 
+                 class="img-fluid w-100" 
+                 style="border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">
           </figure>
-          <figure class="image-3" style="position: absolute; bottom: -40px; right: -40px; width: 180px; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">
-            <img src="{{ asset('frontend/img/resource/about-4.jpg') }}" alt="" style="width: 100%;">
+          <figure class="image-3 position-absolute d-none d-md-block" 
+                  style="bottom: -20px; right: -20px; width: 160px; z-index: 2;">
+            <img src="{{ asset('frontend/img/resource/about-4.jpg') }}" alt="Delivery Service" 
+                 class="img-fluid w-100" 
+                 style="border-radius: 12px; overflow: hidden; box-shadow: 0 8px 20px rgba(0,0,0,0.15);">
           </figure>
         </div>
       </div>
@@ -230,21 +688,21 @@
             <div class="col-lg-4 col-md-6">
                 <div class="ltn__banner-item">
                     <div class="ltn__banner-img">
-                        <a href="shop.html"><img src="{{ asset('frontend/img/banner/1.jpg') }}" alt="Banner Image"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/banner/1.jpg') }}" alt="Banner Image"></a>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">
                 <div class="ltn__banner-item">
                     <div class="ltn__banner-img">
-                        <a href="shop.html"><img src="{{ asset('frontend/img/banner/2.jpg') }}" alt="Banner Image"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/banner/2.jpg') }}" alt="Banner Image"></a>
                     </div>
                 </div>
             </div>
             <div class="col-lg-4 col-md-6">
                 <div class="ltn__banner-item">
                     <div class="ltn__banner-img">
-                        <a href="shop.html"><img src="{{ asset('frontend/img/banner/1.jpg') }}" alt="Banner Image"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/banner/1.jpg') }}" alt="Banner Image"></a>
                     </div>
                 </div>
             </div>
@@ -260,7 +718,7 @@
             <div class="col-lg-6 col-md-6">
                 <div class="ltn__banner-item">
                     <div class="ltn__banner-img">
-                        <a href="shop.html"><img src="{{ asset('frontend/img/banner/13.png') }}" alt="Banner Image"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/banner/13.png') }}" alt="Banner Image"></a>
                     </div>
                 </div>
             </div>
@@ -269,14 +727,14 @@
                     <div class="col-lg-12">
                         <div class="ltn__banner-item">
                             <div class="ltn__banner-img">
-                                <a href="shop.html"><img src="{{ asset('frontend/img/banner/14.png') }}" alt="Banner Image"></a>
+                                <a href="#"><img src="{{ asset('frontend/img/banner/14.png') }}" alt="Banner Image"></a>
                             </div>
                         </div>
                     </div>
                     <div class="col-lg-12">
                         <div class="ltn__banner-item">
                             <div class="ltn__banner-img">
-                                <a href="shop.html"><img src="{{ asset('frontend/img/banner/15.png') }}" alt="Banner Image"></a>
+                                <a href="#"><img src="{{ asset('frontend/img/banner/15.png') }}" alt="Banner Image"></a>
                             </div>
                         </div>
                     </div>
@@ -312,7 +770,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/11.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/p1.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -351,7 +809,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -361,7 +819,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/p2.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -399,7 +857,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Poltry Farm
+                                            <h2 class="product-title"><a href="#">Poltry Farm
                                                     Meat</a></h2>
                                             <div class="product-price">
                                                 <span>$78.00</span>
@@ -408,11 +866,111 @@
                                         </div>
                                     </div>
                                 </div>
+
+                                                                <!-- ltn__product-item -->
+                                <div class="col-lg-12">
+                                    <div class="ltn__product-item ltn__product-item-3 text-center">
+                                        <div class="product-img">
+                                            <a href="#"><img src="{{ asset('frontend/img/product/14.png') }}" alt="#"></a>
+                                            <div class="product-badge">
+                                                <ul>
+                                                    <li class="sale-badge">New</li>
+                                                </ul>
+                                            </div>
+                                            <div class="product-hover-action">
+                                                <ul>
+                                                    <li>
+                                                        <a href="#" title="Quick View" data-bs-toggle="modal"
+                                                            data-bs-target="#quick_view_modal">
+                                                            <i class="far fa-eye"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" title="Add to Cart" data-bs-toggle="modal"
+                                                            data-bs-target="#add_to_cart_modal">
+                                                            <i class="fas fa-shopping-cart"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" title="Wishlist" data-bs-toggle="modal"
+                                                            data-bs-target="#liton_wishlist_modal">
+                                                            <i class="far fa-heart"></i></a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="product-info">
+                                            <div class="product-ratting">
+                                                <ul>
+                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                                    <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
+                                                    <li><a href="#"><i class="far fa-star"></i></a></li>
+                                                </ul>
+                                            </div>
+                                            <h2 class="product-title"><a href="#">Poltry Farm
+                                                    Meat</a></h2>
+                                            <div class="product-price">
+                                                <span>$78.00</span>
+                                                <del>$85.00</del>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="ltn__product-item ltn__product-item-3 text-center">
+                                        <div class="product-img">
+                                            <a href="#"><img src="{{ asset('frontend/img/product/10.png') }}" alt="#"></a>
+                                            <div class="product-badge">
+                                                <ul>
+                                                    <li class="sale-badge">New</li>
+                                                </ul>
+                                            </div>
+                                            <div class="product-hover-action">
+                                                <ul>
+                                                    <li>
+                                                        <a href="#" title="Quick View" data-bs-toggle="modal"
+                                                            data-bs-target="#quick_view_modal">
+                                                            <i class="far fa-eye"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" title="Add to Cart" data-bs-toggle="modal"
+                                                            data-bs-target="#add_to_cart_modal">
+                                                            <i class="fas fa-shopping-cart"></i>
+                                                        </a>
+                                                    </li>
+                                                    <li>
+                                                        <a href="#" title="Wishlist" data-bs-toggle="modal"
+                                                            data-bs-target="#liton_wishlist_modal">
+                                                            <i class="far fa-heart"></i></a>
+                                                    </li>
+                                                </ul>
+                                            </div>
+                                        </div>
+                                        <div class="product-info">
+                                            <div class="product-ratting">
+                                                <ul>
+                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                                    <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
+                                                    <li><a href="#"><i class="far fa-star"></i></a></li>
+                                                </ul>
+                                            </div>
+                                            <h2 class="product-title"><a href="#">Orange Fresh
+                                                    Juice</a></h2>
+                                            <div class="product-price">
+                                                <span>$75.00</span>
+                                                <del>$92.00</del>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                                 <!-- ltn__product-item -->
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/12.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/p3.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -451,7 +1009,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -461,7 +1019,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/8.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/p4.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -499,7 +1057,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Sliced
+                                            <h2 class="product-title"><a href="#">Orange Sliced
                                                     Mix</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -512,7 +1070,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/13.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/p5.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -550,7 +1108,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Fresh
+                                            <h2 class="product-title"><a href="#">Orange Fresh
                                                     Juice</a></h2>
                                             <div class="product-price">
                                                 <span>$75.00</span>
@@ -560,7 +1118,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/9.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/9.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -599,7 +1157,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -608,11 +1166,12 @@
                                         </div>
                                     </div>
                                 </div>
+
                                 <!-- ltn__product-item -->
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/14.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -650,106 +1209,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Poltry Farm
-                                                    Meat</a></h2>
-                                            <div class="product-price">
-                                                <span>$78.00</span>
-                                                <del>$85.00</del>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="ltn__product-item ltn__product-item-3 text-center">
-                                        <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/10.png') }}" alt="#"></a>
-                                            <div class="product-badge">
-                                                <ul>
-                                                    <li class="sale-badge">New</li>
-                                                </ul>
-                                            </div>
-                                            <div class="product-hover-action">
-                                                <ul>
-                                                    <li>
-                                                        <a href="#" title="Quick View" data-bs-toggle="modal"
-                                                            data-bs-target="#quick_view_modal">
-                                                            <i class="far fa-eye"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#" title="Add to Cart" data-bs-toggle="modal"
-                                                            data-bs-target="#add_to_cart_modal">
-                                                            <i class="fas fa-shopping-cart"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#" title="Wishlist" data-bs-toggle="modal"
-                                                            data-bs-target="#liton_wishlist_modal">
-                                                            <i class="far fa-heart"></i></a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="product-info">
-                                            <div class="product-ratting">
-                                                <ul>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                                    <li><a href="#"><i class="far fa-star"></i></a></li>
-                                                </ul>
-                                            </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Fresh
-                                                    Juice</a></h2>
-                                            <div class="product-price">
-                                                <span>$75.00</span>
-                                                <del>$92.00</del>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- ltn__product-item -->
-                                <div class="col-lg-12">
-                                    <div class="ltn__product-item ltn__product-item-3 text-center">
-                                        <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
-                                            <div class="product-badge">
-                                                <ul>
-                                                    <li class="sale-badge">New</li>
-                                                </ul>
-                                            </div>
-                                            <div class="product-hover-action">
-                                                <ul>
-                                                    <li>
-                                                        <a href="#" title="Quick View" data-bs-toggle="modal"
-                                                            data-bs-target="#quick_view_modal">
-                                                            <i class="far fa-eye"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#" title="Add to Cart" data-bs-toggle="modal"
-                                                            data-bs-target="#add_to_cart_modal">
-                                                            <i class="fas fa-shopping-cart"></i>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#" title="Wishlist" data-bs-toggle="modal"
-                                                            data-bs-target="#liton_wishlist_modal">
-                                                            <i class="far fa-heart"></i></a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                        </div>
-                                        <div class="product-info">
-                                            <div class="product-ratting">
-                                                <ul>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                                    <li><a href="#"><i class="far fa-star"></i></a></li>
-                                                </ul>
-                                            </div>
-                                            <h2 class="product-title"><a href="product-details.html">Fresh Butter
+                                            <h2 class="product-title"><a href="#">Fresh Butter
                                                     Cake</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -759,7 +1219,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/6.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/6.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -798,7 +1258,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -811,7 +1271,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -849,7 +1309,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Sliced
+                                            <h2 class="product-title"><a href="#">Orange Sliced
                                                     Mix</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -859,7 +1319,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/11.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/11.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -898,7 +1358,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -918,7 +1378,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/16.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/16.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -957,7 +1417,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -967,7 +1427,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/10.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/10.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -1005,7 +1465,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Poltry Farm
+                                            <h2 class="product-title"><a href="#">Poltry Farm
                                                     Meat</a></h2>
                                             <div class="product-price">
                                                 <span>$78.00</span>
@@ -1018,7 +1478,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -1057,7 +1517,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -1067,7 +1527,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/9.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/9.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -1105,7 +1565,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Sliced
+                                            <h2 class="product-title"><a href="#">Orange Sliced
                                                     Mix</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -1118,7 +1578,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/14.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/14.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -1156,7 +1616,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Fresh
+                                            <h2 class="product-title"><a href="#">Orange Fresh
                                                     Juice</a></h2>
                                             <div class="product-price">
                                                 <span>$75.00</span>
@@ -1166,7 +1626,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/8.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/8.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -1205,7 +1665,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -1218,7 +1678,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/13.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/13.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -1256,7 +1716,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Poltry Farm
+                                            <h2 class="product-title"><a href="#">Poltry Farm
                                                     Meat</a></h2>
                                             <div class="product-price">
                                                 <span>$78.00</span>
@@ -1266,7 +1726,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/10.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/10.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -1304,7 +1764,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Fresh
+                                            <h2 class="product-title"><a href="#">Orange Fresh
                                                     Juice</a></h2>
                                             <div class="product-price">
                                                 <span>$75.00</span>
@@ -1317,7 +1777,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -1355,7 +1815,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Fresh Butter
+                                            <h2 class="product-title"><a href="#">Fresh Butter
                                                     Cake</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -1365,7 +1825,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/6.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/6.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -1404,7 +1864,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -1417,7 +1877,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -1455,7 +1915,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Sliced
+                                            <h2 class="product-title"><a href="#">Orange Sliced
                                                     Mix</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -1465,7 +1925,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/11.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/11.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -1504,7 +1964,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -1524,7 +1984,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/6.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/6.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -1563,7 +2023,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -1573,7 +2033,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/12.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/12.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -1611,7 +2071,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Poltry Farm
+                                            <h2 class="product-title"><a href="#">Poltry Farm
                                                     Meat</a></h2>
                                             <div class="product-price">
                                                 <span>$78.00</span>
@@ -1624,7 +2084,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/8.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/8.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -1663,7 +2123,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -1673,7 +2133,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -1711,7 +2171,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Sliced
+                                            <h2 class="product-title"><a href="#">Orange Sliced
                                                     Mix</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -1724,7 +2184,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/9.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/9.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -1762,7 +2222,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Fresh
+                                            <h2 class="product-title"><a href="#">Orange Fresh
                                                     Juice</a></h2>
                                             <div class="product-price">
                                                 <span>$75.00</span>
@@ -1772,7 +2232,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/11.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/11.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -1811,7 +2271,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -1824,7 +2284,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/14.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/14.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -1862,7 +2322,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Poltry Farm
+                                            <h2 class="product-title"><a href="#">Poltry Farm
                                                     Meat</a></h2>
                                             <div class="product-price">
                                                 <span>$78.00</span>
@@ -1872,7 +2332,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/10.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/10.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -1910,7 +2370,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Fresh
+                                            <h2 class="product-title"><a href="#">Orange Fresh
                                                     Juice</a></h2>
                                             <div class="product-price">
                                                 <span>$75.00</span>
@@ -1923,7 +2383,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -1961,7 +2421,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Fresh Butter
+                                            <h2 class="product-title"><a href="#">Fresh Butter
                                                     Cake</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -1971,7 +2431,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/6.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/6.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -2010,7 +2470,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -2023,7 +2483,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -2061,7 +2521,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Sliced
+                                            <h2 class="product-title"><a href="#">Orange Sliced
                                                     Mix</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -2071,7 +2531,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/11.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/11.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -2110,7 +2570,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -2130,7 +2590,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/3.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/3.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -2169,7 +2629,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -2179,7 +2639,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/5.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/5.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -2217,7 +2677,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Poltry Farm
+                                            <h2 class="product-title"><a href="#">Poltry Farm
                                                     Meat</a></h2>
                                             <div class="product-price">
                                                 <span>$78.00</span>
@@ -2230,7 +2690,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/2.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/2.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -2269,7 +2729,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -2279,7 +2739,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/16.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/16.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -2317,7 +2777,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Sliced
+                                            <h2 class="product-title"><a href="#">Orange Sliced
                                                     Mix</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -2330,7 +2790,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/6.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/6.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -2368,7 +2828,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Fresh
+                                            <h2 class="product-title"><a href="#">Orange Fresh
                                                     Juice</a></h2>
                                             <div class="product-price">
                                                 <span>$75.00</span>
@@ -2378,7 +2838,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/14.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/14.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -2417,7 +2877,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -2430,7 +2890,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/14.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/14.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -2468,7 +2928,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Poltry Farm
+                                            <h2 class="product-title"><a href="#">Poltry Farm
                                                     Meat</a></h2>
                                             <div class="product-price">
                                                 <span>$78.00</span>
@@ -2478,7 +2938,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/10.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/10.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -2516,7 +2976,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Fresh
+                                            <h2 class="product-title"><a href="#">Orange Fresh
                                                     Juice</a></h2>
                                             <div class="product-price">
                                                 <span>$75.00</span>
@@ -2529,7 +2989,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -2567,7 +3027,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Fresh Butter
+                                            <h2 class="product-title"><a href="#">Fresh Butter
                                                     Cake</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -2577,7 +3037,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/6.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/6.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -2616,7 +3076,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -2629,7 +3089,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -2667,7 +3127,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Sliced
+                                            <h2 class="product-title"><a href="#">Orange Sliced
                                                     Mix</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -2677,7 +3137,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/11.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/11.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -2716,7 +3176,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -2736,7 +3196,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -2775,7 +3235,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -2785,7 +3245,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/13.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/13.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -2823,7 +3283,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Poltry Farm
+                                            <h2 class="product-title"><a href="#">Poltry Farm
                                                     Meat</a></h2>
                                             <div class="product-price">
                                                 <span>$78.00</span>
@@ -2836,7 +3296,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/5.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/5.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -2875,7 +3335,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -2885,7 +3345,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -2923,7 +3383,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Sliced
+                                            <h2 class="product-title"><a href="#">Orange Sliced
                                                     Mix</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -2936,7 +3396,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/9.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/9.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -2974,7 +3434,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Fresh
+                                            <h2 class="product-title"><a href="#">Orange Fresh
                                                     Juice</a></h2>
                                             <div class="product-price">
                                                 <span>$75.00</span>
@@ -2984,7 +3444,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/14.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/14.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -3023,7 +3483,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -3036,7 +3496,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/12.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/12.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -3074,7 +3534,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Poltry Farm
+                                            <h2 class="product-title"><a href="#">Poltry Farm
                                                     Meat</a></h2>
                                             <div class="product-price">
                                                 <span>$78.00</span>
@@ -3084,7 +3544,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/10.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/10.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -3122,7 +3582,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Fresh
+                                            <h2 class="product-title"><a href="#">Orange Fresh
                                                     Juice</a></h2>
                                             <div class="product-price">
                                                 <span>$75.00</span>
@@ -3135,7 +3595,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/15.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -3173,7 +3633,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Fresh Butter
+                                            <h2 class="product-title"><a href="#">Fresh Butter
                                                     Cake</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -3183,7 +3643,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/6.png"') }} alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/6.png"') }} alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -3222,7 +3682,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -3235,7 +3695,7 @@
                                 <div class="col-lg-12">
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">New</li>
@@ -3273,7 +3733,7 @@
                                                     <li><a href="#"><i class="far fa-star"></i></a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Orange Sliced
+                                            <h2 class="product-title"><a href="#">Orange Sliced
                                                     Mix</a></h2>
                                             <div class="product-price">
                                                 <span>$150.00</span>
@@ -3283,7 +3743,7 @@
                                     </div>
                                     <div class="ltn__product-item ltn__product-item-3 text-center">
                                         <div class="product-img">
-                                            <a href="product-details.html"><img src="{{ asset('frontend/img/product/11.png') }}" alt="#"></a>
+                                            <a href="#"><img src="{{ asset('frontend/img/product/11.png') }}" alt="#"></a>
                                             <div class="product-badge">
                                                 <ul>
                                                     <li class="sale-badge">-19%</li>
@@ -3322,7 +3782,7 @@
                                                     <li class="review-total"> <a href="#"> (24)</a></li>
                                                 </ul>
                                             </div>
-                                            <h2 class="product-title"><a href="product-details.html">Carrots Group
+                                            <h2 class="product-title"><a href="#">Carrots Group
                                                     Scal</a></h2>
                                             <div class="product-price">
                                                 <span>$32.00</span>
@@ -3357,7 +3817,7 @@
                     </div>
                     <div class="ltn__countdown ltn__countdown-3 bg-white--" data-countdown="2024/12/28"></div>
                     <div class="btn-wrapper animated">
-                        <a href="shop.html" class="theme-btn-1 btn btn-effect-1 text-uppercase">Shop now</a>
+                        <a href="#" class="theme-btn-1 btn btn-effect-1 text-uppercase">Shop now</a>
                     </div>
                 </div>
             </div>
@@ -3381,7 +3841,7 @@
             <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="ltn__product-item ltn__product-item-3 text-left">
                     <div class="product-img">
-                        <a href="product-details.html"><img src="{{ asset('frontend/img/product/1.png') }}" alt="#"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/product/1.png') }}" alt="#"></a>
                         <div class="product-badge">
                             <ul>
                                 <li class="sale-badge">New</li>
@@ -3419,7 +3879,7 @@
                                 <li><a href="#"><i class="far fa-star"></i></a></li>
                             </ul>
                         </div>
-                        <h2 class="product-title"><a href="product-details.html">Carrots Group Scal</a></h2>
+                        <h2 class="product-title"><a href="#">Carrots Group Scal</a></h2>
                         <div class="product-price">
                             <span>$32.00</span>
                             <del>$46.00</del>
@@ -3431,7 +3891,7 @@
             <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="ltn__product-item ltn__product-item-3 text-left">
                     <div class="product-img">
-                        <a href="product-details.html"><img src="{{ asset('frontend/img/product/2.png') }}" alt="#"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/product/2.png') }}" alt="#"></a>
                         <div class="product-hover-action">
                             <ul>
                                 <li>
@@ -3464,7 +3924,7 @@
                                 <li><a href="#"><i class="far fa-star"></i></a></li>
                             </ul>
                         </div>
-                        <h2 class="product-title"><a href="product-details.html">Red Hot Tomato</a></h2>
+                        <h2 class="product-title"><a href="#">Red Hot Tomato</a></h2>
                         <div class="product-price">
                             <span>$25.00</span>
                             <del>$35.00</del>
@@ -3476,7 +3936,7 @@
             <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="ltn__product-item ltn__product-item-3 text-center">
                     <div class="product-img">
-                        <a href="product-details.html"><img src="{{ asset('frontend/img/product/3.png') }}" alt="#"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/product/3.png') }}" alt="#"></a>
                         <div class="product-badge">
                             <ul>
                                 <li class="sale-badge">New</li>
@@ -3514,7 +3974,7 @@
                                 <li><a href="#"><i class="far fa-star"></i></a></li>
                             </ul>
                         </div>
-                        <h2 class="product-title"><a href="product-details.html">Orange Fresh Juice</a></h2>
+                        <h2 class="product-title"><a href="#">Orange Fresh Juice</a></h2>
                         <div class="product-price">
                             <span>$75.00</span>
                             <del>$92.00</del>
@@ -3526,7 +3986,7 @@
             <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="ltn__product-item ltn__product-item-3 text-center">
                     <div class="product-img">
-                        <a href="product-details.html"><img src="{{ asset('frontend/img/product/4.png') }}" alt="#"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/product/4.png') }}" alt="#"></a>
                         <div class="product-badge">
                             <ul>
                                 <li class="sale-badge">New</li>
@@ -3564,7 +4024,7 @@
                                 <li><a href="#"><i class="far fa-star"></i></a></li>
                             </ul>
                         </div>
-                        <h2 class="product-title"><a href="product-details.html">Poltry Farm Meat</a></h2>
+                        <h2 class="product-title"><a href="#">Poltry Farm Meat</a></h2>
                         <div class="product-price">
                             <span>$78.00</span>
                             <del>$85.00</del>
@@ -3576,7 +4036,7 @@
             <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="ltn__product-item ltn__product-item-3 text-center">
                     <div class="product-img">
-                        <a href="product-details.html"><img src="{{ asset('frontend/img/product/5.png') }}" alt="#"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/product/5.png') }}" alt="#"></a>
                         <div class="product-badge">
                             <ul>
                                 <li class="sale-badge">New</li>
@@ -3614,7 +4074,7 @@
                                 <li><a href="#"><i class="far fa-star"></i></a></li>
                             </ul>
                         </div>
-                        <h2 class="product-title"><a href="product-details.html">Fresh Butter Cake</a></h2>
+                        <h2 class="product-title"><a href="#">Fresh Butter Cake</a></h2>
                         <div class="product-price">
                             <span>$150.00</span>
                             <del>$180.00</del>
@@ -3626,7 +4086,7 @@
             <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="ltn__product-item ltn__product-item-3 text-center">
                     <div class="product-img">
-                        <a href="product-details.html"><img src="{{ asset('frontend/img/product/6.png') }}" alt="#"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/product/6.png') }}" alt="#"></a>
                         <div class="product-badge">
                             <ul>
                                 <li class="sale-badge">New</li>
@@ -3664,7 +4124,7 @@
                                 <li><a href="#"><i class="far fa-star"></i></a></li>
                             </ul>
                         </div>
-                        <h2 class="product-title"><a href="product-details.html">Orange Sliced Mix</a></h2>
+                        <h2 class="product-title"><a href="#">Orange Sliced Mix</a></h2>
                         <div class="product-price">
                             <span>$150.00</span>
                             <del>$180.00</del>
@@ -3676,7 +4136,7 @@
             <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="ltn__product-item ltn__product-item-3 text-center">
                     <div class="product-img">
-                        <a href="product-details.html"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/product/7.png') }}" alt="#"></a>
                         <div class="product-badge">
                             <ul>
                                 <li class="sale-badge">New</li>
@@ -3714,7 +4174,7 @@
                                 <li><a href="#"><i class="far fa-star"></i></a></li>
                             </ul>
                         </div>
-                        <h2 class="product-title"><a href="product-details.html">Orange Fresh Juice</a></h2>
+                        <h2 class="product-title"><a href="#">Orange Fresh Juice</a></h2>
                         <div class="product-price">
                             <span>$75.00</span>
                             <del>$92.00</del>
@@ -3726,7 +4186,7 @@
             <div class="col-lg-3 col-md-4 col-sm-6 col-6">
                 <div class="ltn__product-item ltn__product-item-3 text-center">
                     <div class="product-img">
-                        <a href="product-details.html"><img src="{{ asset('frontend/img/product/8.png') }}" alt="#"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/product/8.png') }}" alt="#"></a>
                         <div class="product-badge">
                             <ul>
                                 <li class="sale-badge">New</li>
@@ -3764,7 +4224,7 @@
                                 <li><a href="#"><i class="far fa-star"></i></a></li>
                             </ul>
                         </div>
-                        <h2 class="product-title"><a href="product-details.html">Poltry Farm Meat</a></h2>
+                        <h2 class="product-title"><a href="#">Poltry Farm Meat</a></h2>
                         <div class="product-price">
                             <span>$78.00</span>
                             <del>$85.00</del>
@@ -3901,7 +4361,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="section-title-area ltn__section-title-2 text-center">
-                    <h1 class="section-title white-color---">Leatest Blog</h1>
+                    <h1 class="section-title white-color---">Latest Blog</h1>
                 </div>
             </div>
         </div>
@@ -3910,7 +4370,7 @@
             <div class="col-lg-12">
                 <div class="ltn__blog-item ltn__blog-item-3">
                     <div class="ltn__blog-img">
-                        <a href="blog-details.html"><img src="{{ asset('frontend/img/blog/1.jpg') }}" alt="#"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/blog/1.jpg') }}" alt="#"></a>
                     </div>
                     <div class="ltn__blog-brief">
                         <div class="ltn__blog-meta">
@@ -3923,7 +4383,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <h3 class="ltn__blog-title"><a href="blog-details.html">Common Engine Oil Problems and
+                        <h3 class="ltn__blog-title"><a href="#">Common Engine Oil Problems and
                                 Solutions</a></h3>
                         <div class="ltn__blog-meta-btn">
                             <div class="ltn__blog-meta">
@@ -3932,7 +4392,7 @@
                                 </ul>
                             </div>
                             <div class="ltn__blog-btn">
-                                <a href="blog-details.html">Read more</a>
+                                <a href="#">Read more</a>
                             </div>
                         </div>
                     </div>
@@ -3942,7 +4402,7 @@
             <div class="col-lg-12">
                 <div class="ltn__blog-item ltn__blog-item-3">
                     <div class="ltn__blog-img">
-                        <a href="blog-details.html"><img src="{{ asset('frontend/img/blog/2.jpg') }}" alt="#"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/blog/2.jpg') }}" alt="#"></a>
                     </div>
                     <div class="ltn__blog-brief">
                         <div class="ltn__blog-meta">
@@ -3955,7 +4415,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <h3 class="ltn__blog-title"><a href="blog-details.html">How and when to replace brake rotors</a>
+                        <h3 class="ltn__blog-title"><a href="#">How and when to replace brake rotors</a>
                         </h3>
                         <div class="ltn__blog-meta-btn">
                             <div class="ltn__blog-meta">
@@ -3964,7 +4424,7 @@
                                 </ul>
                             </div>
                             <div class="ltn__blog-btn">
-                                <a href="blog-details.html">Read more</a>
+                                <a href="#">Read more</a>
                             </div>
                         </div>
                     </div>
@@ -3974,7 +4434,7 @@
             <div class="col-lg-12">
                 <div class="ltn__blog-item ltn__blog-item-3">
                     <div class="ltn__blog-img">
-                        <a href="blog-details.html"><img src="{{ asset('frontend/img/blog/3.jpg') }}" alt="#"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/blog/3.jpg') }}" alt="#"></a>
                     </div>
                     <div class="ltn__blog-brief">
                         <div class="ltn__blog-meta">
@@ -3987,7 +4447,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <h3 class="ltn__blog-title"><a href="blog-details.html">Elenance, Servicing & Repairs</a></h3>
+                        <h3 class="ltn__blog-title"><a href="#">Elenance, Servicing & Repairs</a></h3>
                         <div class="ltn__blog-meta-btn">
                             <div class="ltn__blog-meta">
                                 <ul>
@@ -3995,7 +4455,7 @@
                                 </ul>
                             </div>
                             <div class="ltn__blog-btn">
-                                <a href="blog-details.html">Read more</a>
+                                <a href="#">Read more</a>
                             </div>
                         </div>
                     </div>
@@ -4005,7 +4465,7 @@
             <div class="col-lg-12">
                 <div class="ltn__blog-item ltn__blog-item-3">
                     <div class="ltn__blog-img">
-                        <a href="blog-details.html"><img src="{{ asset('frontend/img/blog/4.jpg') }}" alt="#"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/blog/4.jpg') }}" alt="#"></a>
                     </div>
                     <div class="ltn__blog-brief">
                         <div class="ltn__blog-meta">
@@ -4018,7 +4478,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <h3 class="ltn__blog-title"><a href="blog-details.html">Healthiest Vegetables on Earth</a></h3>
+                        <h3 class="ltn__blog-title"><a href="#">Healthiest Vegetables on Earth</a></h3>
                         <div class="ltn__blog-meta-btn">
                             <div class="ltn__blog-meta">
                                 <ul>
@@ -4026,7 +4486,7 @@
                                 </ul>
                             </div>
                             <div class="ltn__blog-btn">
-                                <a href="blog-details.html">Read more</a>
+                                <a href="#">Read more</a>
                             </div>
                         </div>
                     </div>
@@ -4036,7 +4496,7 @@
             <div class="col-lg-12">
                 <div class="ltn__blog-item ltn__blog-item-3">
                     <div class="ltn__blog-img">
-                        <a href="blog-details.html"><img src="{{ asset('frontend/img/blog/5.jpg') }}" alt="#"></a>
+                        <a href="#"><img src="{{ asset('frontend/img/blog/5.jpg') }}" alt="#"></a>
                     </div>
                     <div class="ltn__blog-brief">
                         <div class="ltn__blog-meta">
@@ -4049,7 +4509,7 @@
                                 </li>
                             </ul>
                         </div>
-                        <h3 class="ltn__blog-title"><a href="blog-details.html">How te Your Tires Last Longer</a></h3>
+                        <h3 class="ltn__blog-title"><a href="#">How te Your Tires Last Longer</a></h3>
                         <div class="ltn__blog-meta-btn">
                             <div class="ltn__blog-meta">
                                 <ul>
@@ -4057,7 +4517,7 @@
                                 </ul>
                             </div>
                             <div class="ltn__blog-btn">
-                                <a href="blog-details.html">Read more</a>
+                                <a href="#">Read more</a>
                             </div>
                         </div>
                     </div>
@@ -4075,6 +4535,57 @@
 
 
 @push('js')
+<script>
+    $(document).ready(function(){
+        console.log('Initializing slider...');
+        
+        // Destroy any existing slick instances first
+        if ($('.ltn__slide-one-active').hasClass('slick-initialized')) {
+            $('.ltn__slide-one-active').slick('unslick');
+        }
+        
+        // Initialize the slider with proper settings
+        $('.ltn__slide-one-active').slick({
+            autoplay: true,
+            autoplaySpeed: 3000, // 3 seconds
+            dots: true,
+            arrows: true,
+            infinite: true,
+            speed: 600,
+            fade: false,
+            cssEase: 'ease-out',
+            pauseOnHover: true,
+            pauseOnFocus: false,
+            adaptiveHeight: false,
+            waitForAnimate: true,
+            lazyLoad: 'ondemand',
+            responsive: [
+                {
+                    breakpoint: 992,
+                    settings: {
+                        arrows: false,
+                        dots: true
+                    }
+                },
+                {
+                    breakpoint: 768,
+                    settings: {
+                        arrows: false,
+                        dots: true
+                    }
+                }
+            ]
+        });
+        
+        console.log('Slider initialized successfully');
+        
+        // Debug: Check if autoplay is working
+        $('.ltn__slide-one-active').on('afterChange', function(event, slick, currentSlide){
+            console.log('Slide changed to: ' + currentSlide);
+        });
+    });
+</script>
+
 <!-- <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Select all Owl Carousel instances on the page

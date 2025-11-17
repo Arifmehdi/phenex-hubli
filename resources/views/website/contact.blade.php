@@ -46,8 +46,7 @@
                             <img src="{{ asset('frontend/img/icons/10.png') }}" alt="Icon Image">
                         </div>
                         <h3>Email Address</h3>
-                        <p>info@webmail.com <br>
-                            jobs@webexample.com</p>
+                        <p>info@hubli.com </p>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -56,7 +55,7 @@
                             <img src="{{ asset('frontend/img/icons/11.png') }}" alt="Icon Image">
                         </div>
                         <h3>Phone Number</h3>
-                        <p>+0123-456789 <br> +987-6543210</p>
+                        <p>+880 1700-000000</p>
                     </div>
                 </div>
                 <div class="col-lg-4">
@@ -65,8 +64,7 @@
                             <img src="{{ asset('frontend/img/icons/12.png') }}" alt="Icon Image">
                         </div>
                         <h3>Office Address</h3>
-                        <p>18/A, New Born Town Hall <br>
-                            New York, US</p>
+                        <p>Banani, Dhaka 1213, Bangladesh</p>
                     </div>
                 </div>
             </div>
@@ -81,7 +79,7 @@
                 <div class="col-lg-12">
                     <div class="ltn__form-box contact-form-box box-shadow white-bg">
                         <h4 class="title-2">Get A Quote</h4>
-                        <form id="contact-form" action="https://tunatheme.com/tf/html/broccoli-preview/broccoli/mail.php" method="post">
+                        <form id="contact-form" action="#" method="post">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="input-item input-item-name ltn__custom-icon">
@@ -129,7 +127,7 @@
     <!-- GOOGLE MAP AREA START -->
     <div class="google-map mb-120">
        
-        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d9334.271551495209!2d-73.97198251485975!3d40.668170674982946!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c25b0456b5a2e7%3A0x68bdf865dda0b669!2sBrooklyn%20Botanic%20Garden%20Shop!5e0!3m2!1sen!2sbd!4v1590597267201!5m2!1sen!2sbd" width="100%" height="100%" frameborder="0" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+        <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14602.79920425715!2d90.39505561023496!3d23.793702090776875!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c70e61c0dcf3%3A0xfc162eac4282aa4a!2sDhaka%201213!5e0!3m2!1sen!2sbd!4v1763294719745!5m2!1sen!2sbd" width="100%" height="100%" frameborder="0" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
 
     </div>
     <!-- GOOGLE MAP AREA END -->

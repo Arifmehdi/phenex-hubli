@@ -55,7 +55,8 @@
         <!-- ltn__header-top-area end -->
 
         <!-- ltn__header-middle-area start -->
-        <div class="ltn__header-middle-area ltn__header-sticky ltn__sticky-bg-black ltn__logo-right-menu-option plr--9---">
+        <!-- <div class="ltn__header-middle-area ltn__header-sticky ltn__sticky-bg-black ltn__logo-right-menu-option plr--9---"> -->
+        <div class="ltn__header-middle-area  ltn__sticky-bg-black ltn__logo-right-menu-option plr--9---">
             <div class="container">
                 <div class="row">
                     <div class="col">

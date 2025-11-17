@@ -108,6 +108,18 @@
       0 => 'RealRashid\\SweetAlert\\SweetAlertServiceProvider',
     ),
   ),
+  'sentry/sentry-laravel' => 
+  array (
+    'aliases' => 
+    array (
+      'Sentry' => 'Sentry\\Laravel\\Facade',
+    ),
+    'providers' => 
+    array (
+      0 => 'Sentry\\Laravel\\ServiceProvider',
+      1 => 'Sentry\\Laravel\\Tracing\\ServiceProvider',
+    ),
+  ),
   'spatie/laravel-ignition' => 
   array (
     'aliases' => 

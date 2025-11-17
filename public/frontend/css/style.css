@@ -6186,12 +6186,12 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   z-index: 2; }
 
 .ltn__slide-item-3 .slide-item-img {
-  width: 45%;
+  width: 55%;
   position: absolute;
   right: 150px;
   top: auto;
   bottom: 100px;
-  height: 70%; }
+  height: 90%; }
   .ltn__slide-item-3 .slide-item-img img {
     text-align: right;
     margin-left: auto;
