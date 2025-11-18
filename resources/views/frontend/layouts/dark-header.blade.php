@@ -106,10 +106,19 @@
                                 <li>
                                     <a href="#"><i class="icon-user"></i></a>
                                     <ul>
-                                        <li><a href="login.html">Sign in</a></li>
-                                        <li><a href="register.html">Register</a></li>
-                                        <li><a href="account.html">My Account</a></li>
-                                        <li><a href="wishlist.html">Wishlist</a></li>
+                                        @if(Auth::check())
+                                         @php $user = auth()->user(); @endphp
+                                                @if ($user->hasRole('admin'))
+                                                    <li><a href="{{ route('admin.dashboard') }}">Admin Dashboard</a></li>
+                                                @endif
+                                                <li><a href="{{ route('admin.dashboard') }}">Member Dashboard</a></li>
+                                                <li><a href="#">My Account</a></li>
+                                                <li><a href="#">Wishlist</a></li>
+                                                <li><a href="{{ route('logout') }}">Sign out</a></li>
+                                        @else 
+                                        <li><a href="{{ route('login') }}">Sign in</a></li>
+                                        @endif 
+
                                     </ul>
                                 </li>
                             </ul>
