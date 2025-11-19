@@ -43,8 +43,8 @@ class WebsiteParameterController extends Controller
         $wp->og_description = $request->og_description;
 
 
-        $wp->about_en  = $request->about_us_en;
-        $wp->about_bn = $request->about_us_bn;
+        $wp->about_title  = $request->about_title;
+        $wp->about_subtitle = $request->about_subtitle;
         $wp->about_img = $request->about_us_image;
 
         $wp->editedby_id = Auth::id();

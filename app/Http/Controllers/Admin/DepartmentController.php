@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\BisesoggoCategory;
+use App\Models\Department;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -20,7 +20,7 @@ class DepartmentController extends Controller
     public function index()
     {
         menuSubmenu('departments','alldepartments');
-        $data['departments'] = BisesoggoCategory::paginate(50);
+        $data['departments'] = Department::paginate(50);
         return view('admin.departments.index',$data);
     }
 
@@ -49,7 +49,7 @@ class DepartmentController extends Controller
            ]);
 
 
-           $department = new BisesoggoCategory();
+           $department = new Department();
            $department->name_en = $request->name_en;
            $department->name_bn = $request->name_bn ?? null;
            $department->excerpt_en = $request->excerpt_en;
@@ -82,7 +82,7 @@ class DepartmentController extends Controller
     public function edit($id)
     {
         menuSubmenu('departments','alldepartments');
-        $data['department'] = BisesoggoCategory::find($id);
+        $data['department'] = Department::find($id);
         return view('admin.departments.edit',$data);
     }
 
@@ -101,7 +101,7 @@ class DepartmentController extends Controller
         ]);
 
 
-        $department = BisesoggoCategory::find($id);
+        $department = Department::find($id);
         $department->name_en = $request->name_en;
         $department->name_bn = $request->name_bn ?? null;
         $department->excerpt_en = $request->excerpt_en;
@@ -135,7 +135,7 @@ class DepartmentController extends Controller
      */
     public function destroy($id)
     {
-        $department = BisesoggoCategory::find($id);
+        $department = Department::find($id);
         if ($department->image) {
             $old_file = 'department_images/' . $department->image;
             if (Storage::disk('public')->exists($old_file)) {

@@ -1,11 +1,11 @@
 @extends('admin.master')
-@section('title',"Admin Dashboard | Create Departments")
+@section('title',"Admin Dashboard | Create How Works")
 
 @section('body')
     <section class="pt-5">
         <div class="card">
             <div class="card-header bg-info">
-                <div class="card-title">Create Department</div>
+                <div class="card-title">Create How Works</div>
             </div>
             <div class="card-body w3-light-gray">
                 <form action="{{ route('departments.store') }}" method="POST" enctype="multipart/form-data">
@@ -13,32 +13,17 @@
                     <div class="row py-2">
                         <div class="col-12 col-md-9 m-auto card p-5">
                             <div class="form-group">
-                                <label for="exampleInputPassword1">Department Name (English)</label>
-                                <input type="text" class="form-control @error('name_en') is_invalid @enderror" id="" placeholder="Department Name (English)" name="name_en" value="{{ old('name_en') }}">
+                                <label for="exampleInputPassword1">How Works Title</label>
+                                <input type="text" class="form-control @error('name_en') is_invalid @enderror" id="" placeholder="Department Name" name="name_en" value="{{ old('name_en') }}">
                                 @error('name_en')
                                 <p class="text-danger">{{ $message }}</p>
                                 @enderror
-                            </div>
+                            </div>                       
 
                             <div class="form-group">
-                                <label for="exampleInputPassword1">ডিপার্টমেন্ট নাম (বাংলা)</label>
-                                <input type="text" class="form-control @error('name_bn') is_invalid @enderror" id="" placeholder="ডিপার্টমেন্ট নাম (বাংলা)" name="name_bn" value="{{ old('name_bn') }}">
-                                @error('name_bn')
-                                <p class="text-danger">{{ $message }}</p>
-                                @enderror
+                                <label for="">Description</label>
+                                <textarea name="excerpt_en" id="" cols="30" rows="5" class="form-control" placeholder="Description">{{old('excerpt_en')}}</textarea>
                             </div>
-
-                            
-
-                            <div class="form-group">
-                                <label for="">Description (English)</label>
-                                <textarea name="excerpt_en" id="" cols="30" rows="5" class="form-control" placeholder="Description (English)">{{old('excerpt_en')}}</textarea>
-                            </div>
-                            <div class="form-group">
-                                <label for="">Description (বাংলা)</label>
-                                <textarea name="excerpt_bn" id="" cols="30" rows="5" class="form-control" placeholder="Description (বাংলা)">{{old('excerpt_bn')}}</textarea>
-                            </div>
-
 
                             <div class="form-group">
                                 <label for="featured_image">Image</label>

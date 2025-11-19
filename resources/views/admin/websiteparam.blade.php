@@ -224,16 +224,16 @@
                                     <!-- About Us English -->
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label for="about_us_en" class="control-label">About Us (English)</label>
-                                            <textarea name="about_us_en" class="form-control" rows="10" id="about_us_en" placeholder="Write About Us in English">{{ old('about_us_en') ?: $websiteParameter->about_en ?? '' }}</textarea>
+                                            <label for="about_title" class="control-label">Who We Are Title</label>
+                                            <input type="text" name="about_title" class="form-control"  id="about_title" placeholder="About Title" value="{{ old('about_title') ?: $websiteParameter->about_title ?? '' }}">
                                         </div>
                                     </div>
-
+                                    
                                     <!-- About Us Bangla -->
                                     <div class="col-sm-6">
                                         <div class="form-group">
-                                            <label for="about_us_bn" class="control-label">About Us (Bangla)</label>
-                                            <textarea name="about_us_bn" class="form-control" rows="10" id="about_us_bn" placeholder="Write About Us in Bangla">{{ old('about_us_bn') ?: $websiteParameter->about_bn ?? '' }}</textarea>
+                                            <label for="about_subtitle" class="control-label">Who We Are Sub-Title</label>
+                                            <textarea name="about_subtitle" class="form-control" rows="10" id="about_subtitle" placeholder="Write About Us in Bangla">{{ old('about_subtitle') ?: $websiteParameter->about_subtitle ?? '' }}</textarea>
                                         </div>
                                     </div>
 

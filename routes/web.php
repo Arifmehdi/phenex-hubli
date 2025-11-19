@@ -22,6 +22,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Frontend\FrontendController;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\File;
 use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\ContactController;
 
@@ -30,6 +31,20 @@ use App\Http\Controllers\ContactController;
 Route::get('image', function () {
     Artisan::call('storage:link');
     return back();
+});
+
+Route::get('/run-storage-link', function () {
+    try {
+        // Remove the existing storage link
+        File::deleteDirectory(public_path('storage'));
+
+        // Run the artisan command
+        Artisan::call('storage:link');
+
+        return "<pre>Storage link created successfully.\n" . Artisan::output() . "</pre>";
+    } catch (\Exception $e) {
+        return "<pre>Error: " . $e->getMessage() . "</pre>";
+    }
 });
 
 Route::get('/clear', function () {
@@ -96,7 +111,7 @@ Route::get('page/{slug?}',[FrontendController::class, 'page'])->name('page');
 Route::get('/website/compliance',[FrontendController::class, 'websiteCompliance'])->name('websiteCompliance');
 Route::get('hospital-details/{id}',[FrontendController::class,'HospitalDetails'])->name('hospital-details');
 
-// north bengal website 
+// HUBLI  website 
 Route::get('/',[FrontendController::class, 'index'])->name('home');
 Route::get('/md-message',[FrontendController::class,'mdMessage'])->name('mdMessage');
 Route::get('/testimonial',[FrontendController::class,'testimonial'])->name('testimonial');
@@ -152,6 +167,8 @@ Route::get('product-category/{slug?}', [FrontendController::class, 'productCateg
 Route::get('product/details/{slug}',[FrontendController::class, 'productDetails'])->name('productDetails');
 
 
+Route::get('cart',[FrontendController::class, 'cart'])->name('cart');
+Route::get('checkouts',[FrontendController::class, 'checkouts'])->name('frontend.checkout');
 Route::post('add-to-cart',[FrontendController::class, 'addToCart'])->name('addToCart');
 
 Route::post('add-to-cart/two',[FrontendController::class, 'addToCart2'])->name('addToCart2');
@@ -463,8 +480,8 @@ Route::middleware(['userRole:admin','auth'])->prefix('admin')->group(function(){
 
 
 
-    Route::resource('categories',CategoryController::class);
-    Route::post('category/active',[CategoryController::class,'categoryActive'])->name('category.active');
+    // Route::resource('categories',CategoryController::class);
+    // Route::post('category/active',[CategoryController::class,'categoryActive'])->name('category.active');
 
  
     //BlogPost
@@ -482,8 +499,9 @@ Route::middleware(['userRole:admin','auth'])->prefix('admin')->group(function(){
     Route::get('hospital/allvisits/{id}',[ServiceController::class,'hospitalAllVisits'])->name('hospital.allvisits');
     Route::get('hospital/alldoctors/{id}',[ServiceController::class,'hospitalAllDoctors'])->name('hospital.alldoctors');
 
-    // Doctor
-    Route::resource('categories',CategoriesController::class);
+    // blog category
+    Route::resource('categories',CategoryController::class);
+    Route::post('category/active',[CategoryController::class,'categoryActive'])->name('category.active');
     
     // Testimonials
     Route::resource('testimonials', AdminTestimonialController::class);

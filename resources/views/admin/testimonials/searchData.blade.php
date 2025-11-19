@@ -5,9 +5,9 @@
             <th scope="col" width="60">Action</th>
             <th scope="col">Image</th>
             <th scope="col">Name</th>
+            <th scope="col">Designation</th>
             <th scope="col">Company</th>
-            <th scope="col">Testimomial Message (English)</th>
-            <th scope="col">Testimomial Message (Bangla)</th>
+            <th scope="col">Testimomial Message</th>
             <th scope="col">Rating</th>
         </tr>
     </thead>
@@ -38,10 +38,11 @@
                         N/A
                     @endif
                 </td>
+
                 <td>{{ Str::limit($testimonial->name, 50) }}</td>
+                <td>{{ $testimonial->designation }}</td>
                 <td>{{ Str::limit($testimonial->company, 30) }}</td>
                 <td>{!! Str::limit(strip_tags($testimonial->text_en), 30) !!}</td>
-                <td>{!! Str::limit(strip_tags($testimonial->text_bn), 30) !!}</td>
                 <td>{{ $testimonial->rating }}</td>
             </tr>
         @empty

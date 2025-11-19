@@ -1,71 +1,37 @@
-<table class="table table-bordered text-center">
+<table id="example1" class="table table-sm table-bordered table-striped">
     <thead>
-        <tr>
-            <th>SL</th>
-            <th>Action</th>
-            <th> Name (English)</th>
-            <th> Name (Bangla)</th>
-            {{--<th>Email</th>
-            <th>Mobile</th>
-            <th>Chambar Location</th>
-            <th>Doctor Fee</th>
-            <th>Gender</th>--}}
-            <th>Image</th>
-            <th>Active</th>
-        </tr>
+    <tr>
+        <th width="20">SL</th>
+        <th width="100">Action</th>
+        <th>Name</th>
+        <th>Active</th>
+    </tr>
     </thead>
     <tbody>
-        <?php $i = (($doctors->currentPage() - 1) * $doctors->perPage() + 1); ?>
-        @forelse ($doctors as $doctor)
-            <tr style="height: {{ $doctors->count() < 3 ? '80px' : '' }};">
-                <td>{{ $i++ }}</td>
+        <?php $i = (($categories->currentPage() - 1) * $categories->perPage() + 1); ?>
+    @foreach($categories as $category)
+        <tr>
+            <td>{{$i++}}</td>
+            <td>
+                <a href="{{route('categories.show',$category->id)}}" class="btn btn-xs btn-outline-info mr-1 float-left"><i class="fa fa-eye"></i></a>
+                <a href="{{route('categories.edit',$category->id)}}" class="btn btn-xs btn-outline-primary mr-1 float-left"><i class="fa fa-edit"></i></a>
 
-                <td>
-                    <div class="dropdown show">
-                        <a class="btn btn-primary btn-xs dropdown-toggle" href="#" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            Action
-                        </a>
+                <form action="{{route('categories.destroy',$category->id)}}" method="post" onclick="return confirm('Are you sure you want to delete this item?');">
+                    @csrf
+                    @method('DELETE')
 
-                        <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                    <button type="submit" class="btn btn-xs btn-outline-danger mr-1 float-left" style="cursor: pointer;"><i class="fa fa-trash"></i></button>
 
-                            <a class="dropdown-item" href="{{route('categories.edit',$doctor)}}"><i class="fas fa-edit"></i>edit</a>
-                            {{--<a class="dropdown-item" href="{{route('doctor.chambers',$doctor)}}"><i class="fas fa-user-md"></i> Doctor Chambers</a>
-                            <a class="dropdown-item" href="{{ route('admin.user',['id' =>$doctor->user_id]) }}"><i class="fas fa-users"></i> User Info</a>--}}
-                            <form action="{{route('categories.destroy', $doctor) }}" method="post">
-                                @csrf
-                                @method('delete')
-                                <button class="dropdown-item ml-3" onclick="return confirm('Are you sure? you want to delete this gallery Item?')" style="all:unset; cursor: pointer;"><i class="fas fa-trash"></i> Delete</button>
-                            </form>
-                        </div>
-                    </div>
+                </form>
+            </td>
+            <td>{{$category->name}}</td>
+            <td>
+                <input type="checkbox" name="toogle" data-url="{{route('category.active')}}" value="{{$category->id}}" data-toggle="toggle" data-size="sm" {{$category->active==1 ? 'checked' : '' }} data-on="On"  data-off="Off" data-onstyle="success" data-offstyle="danger">
+            </td>
 
-                </td>
-                <td><a href="{{route('categories.index',['id' => $doctor->id ?? ''])}}">{{ Str::ucfirst($doctor->name_en) }}</a></td>
-                <td><a href="{{route('categories.index',['id' => $doctor->id ?? ''])}}">{{ Str::ucfirst($doctor->name_bn) }}</a></td>
-                {{--<td>{{ $doctor->email }}</td>
-                <td>{{ $doctor->mobile }}</td>
-                <td>{{ $doctor->chambar_location }}</td>
-                <td>{{ $doctor->doctor_fee }}</td>
-                <td>{{ ucfirst($doctor->gender) }}</td>--}}
-
-
-                <td>
-                    <img src="{{ route('imagecache', [ 'template'=>'sbixs','filename' => $doctor->fi() ]) }}" alt="">
-                </td>
-
-
-                <td>
-                    <input type="checkbox" name="toogle" data-url="{{route('doctor.active')}}" value="{{$doctor->id}}" data-toggle="toggle" data-size="sm" {{$doctor->active==1 ? 'checked' : '' }} data-on="On"  data-off="Off" data-onstyle="success" data-offstyle="danger">
-                </td>
-
-            </tr>
-
-        @empty
-            <tr>
-                <td colspan="9" class="text-danger h5 text-center">No Doctor Found</td>
-            </tr>
-        @endforelse
+        </tr>
+    @endforeach
     </tbody>
 </table>
 
-{{ $doctors->links() }}
+{{ $categories->render() }}

@@ -1,11 +1,11 @@
 @extends('admin.master')
-@section('title',"Admin Dashboard | All Departments")
+@section('title',"Admin Dashboard | All How Works")
 
 @section('body')
     <section class="pt-5">
         <div class="card">
             <div class="card-header">
-                <h3 class="card-title">All Departments</h3>
+                <h3 class="card-title">All How Works</h3>
                 <div class="card-tools">
                     <div class="input-group input-group-sm">
                     <input type="search" name="q"  class="global-search form-control float-right" data-url="{{ route('admin.global-search-ajax',['type'=>'department']) }}"  placeholder="Search name, id...">

@@ -3,8 +3,7 @@
         <tr>
             <th>SL</th>
             <th>Action</th>
-            <th>Department Name (English)</th>
-            <th>Department Name (Bangla)</th>
+            <th>Department Name</th>
             <th>Image</th>
             <th>Featured</th>
             <th>Active</th>
@@ -27,7 +26,6 @@
 
                 </td>
                 <td>{{ $category->name_en }}</td>
-                <td>{{ $category->name_bn }}</td>
                 <td>
                     <img src="{{ route('imagecache', [ 'template'=>'sbixs','filename' => $category->fi() ]) }}" alt="">
                 </td>

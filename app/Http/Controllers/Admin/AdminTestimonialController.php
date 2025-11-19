@@ -35,9 +35,9 @@ class AdminTestimonialController extends Controller
         menuSubmenu('testimonials', 'testimonialsAll');
         $request->validate([
             'name' => 'required|string|max:255',
+            'designation' => 'nullable|string|max:255',
             'company' => 'nullable|string|max:255',
             'text_en' => 'required|string',
-            'text_bn' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
@@ -49,6 +49,7 @@ class AdminTestimonialController extends Controller
 
         Testimonial::create([
             'name' => $request->name,
+            'designation' => $request->designation,
             'company' => $request->company,
             'text_en' => $request->text_en,
             'text_bn' => $request->text_bn,
@@ -84,9 +85,9 @@ class AdminTestimonialController extends Controller
         menuSubmenu('testimonials', 'testimonialsAll');
         $request->validate([
             'name' => 'required|string|max:255',
+            'designation' => 'nullable|string|max:255',
             'company' => 'nullable|string|max:255',
             'text_en' => 'required|string',
-            'text_bn' => 'required|string',
             'rating' => 'required|integer|min:1|max:5',
             'image' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
@@ -102,9 +103,9 @@ class AdminTestimonialController extends Controller
 
         $testimonial->update([
             'name' => $request->name,
+            'designation' => $request->designation,
             'company' => $request->company,
             'text_en' => $request->text_en,
-            'text_bn' => $request->text_bn,
             'rating' => $request->rating,
             'image' => $imagePath,
         ]);

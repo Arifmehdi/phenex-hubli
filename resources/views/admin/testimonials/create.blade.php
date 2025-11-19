@@ -23,6 +23,15 @@
                             @enderror
                         </div>
                         <div class="form-group">
+                            <label for="designation">Designation</label>
+                            <input type="text" name="designation" id="designation" class="form-control @error('designation') is-invalid @enderror" value="{{ old('designation') }}" required>
+                            @error('designation')
+                                <span class="invalid-feedback" role="alert">
+                                    <strong>{{ $message }}</strong>
+                                </span>
+                            @enderror
+                        </div>
+                        <div class="form-group">
                             <label for="company">Company</label>
                             <input type="text" name="company" id="company" class="form-control @error('company') is-invalid @enderror" value="{{ old('company') }}">
                             @error('company')
@@ -32,17 +41,8 @@
                             @enderror
                         </div>
                         <div class="form-group">
-                            <label for="text">Testimonial Text (English)</label>
+                            <label for="text">Testimonial Message </label>
                             <textarea name="text_en" id="text_en" class="form-control @error('text') is-invalid @enderror" rows="5" required>{{ old('text') }}</textarea>
-                            @error('text')
-                                <span class="invalid-feedback" role="alert">
-                                    <strong>{{ $message }}</strong>
-                                </span>
-                            @enderror
-                        </div>
-                        <div class="form-group">
-                            <label for="text">Testimonial Text (Bangla)</label>
-                            <textarea name="text_bn" id="text_bn" class="form-control @error('text') is-invalid @enderror" rows="5" required>{{ old('text') }}</textarea>
                             @error('text')
                                 <span class="invalid-feedback" role="alert">
                                     <strong>{{ $message }}</strong>

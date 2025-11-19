@@ -56,10 +56,8 @@
     <link href='https://cdn.jsdelivr.net/npm/boxicons@2.0.5/css/boxicons.min.css' rel='stylesheet'>
 
     <link rel="stylesheet" href="{{asset('/')}}admin/plugins/summernote/summernote-bs4.min.css">
-    <script nonce="49295efc-1990-40af-9ed8-0d65b65b8644">(function(w,d){!function(eK,eL,eM,eN){eK.zarazData=eK.zarazData||{};eK.zarazData.executed=[];eK.zaraz={deferred:[],listeners:[]};eK.zaraz.q=[];eK.zaraz._f=function(eO){return function(){var eP=Array.prototype.slice.call(arguments);eK.zaraz.q.push({m:eO,a:eP})}};for(const eQ of["track","set","debug"])eK.zaraz[eQ]=eK.zaraz._f(eQ);eK.zaraz.init=()=>{var eR=eL.getElementsByTagName(eN)[0],eS=eL.createElement(eN),eT=eL.getElementsByTagName("title")[0];eT&&(eK.zarazData.t=eL.getElementsByTagName("title")[0].text);eK.zarazData.x=Math.random();eK.zarazData.w=eK.screen.width;eK.zarazData.h=eK.screen.height;eK.zarazData.j=eK.innerHeight;eK.zarazData.e=eK.innerWidth;eK.zarazData.l=eK.location.href;eK.zarazData.r=eL.referrer;eK.zarazData.k=eK.screen.colorDepth;eK.zarazData.n=eL.characterSet;eK.zarazData.o=(new Date).getTimezoneOffset();if(eK.dataLayer)for(const eX of Object.entries(Object.entries(dataLayer).reduce(((eY,eZ)=>({...eY[1],...eZ[1]})))))zaraz.set(eX[0],eX[1],{scope:"page"});eK.zarazData.q=[];for(;eK.zaraz.q.length;){const e_=eK.zaraz.q.shift();eK.zarazData.q.push(e_)}eS.defer=!0;for(const fa of[localStorage,sessionStorage])Object.keys(fa||{}).filter((fc=>fc.startsWith("_zaraz_"))).forEach((fb=>{try{eK.zarazData["z_"+fb.slice(7)]=JSON.parse(fa.getItem(fb))}catch{eK.zarazData["z_"+fb.slice(7)]=fa.getItem(fb)}}));eS.referrerPolicy="origin";eS.src="../../cdn-cgi/zaraz/sd0d9.js?z="+btoa(encodeURIComponent(JSON.stringify(eK.zarazData)));eR.parentNode.insertBefore(eS,eR)};["complete","interactive"].includes(eL.readyState)?zaraz.init():eK.addEventListener("DOMContentLoaded",zaraz.init)}(w,d,0,"script");})(window,document);</script></head>
-
-
-
+    {{--<script nonce="49295efc-1990-40af-9ed8-0d65b65b8644">(function(w,d){!function(eK,eL,eM,eN){eK.zarazData=eK.zarazData||{};eK.zarazData.executed=[];eK.zaraz={deferred:[],listeners:[]};eK.zaraz.q=[];eK.zaraz._f=function(eO){return function(){var eP=Array.prototype.slice.call(arguments);eK.zaraz.q.push({m:eO,a:eP})}};for(const eQ of["track","set","debug"])eK.zaraz[eQ]=eK.zaraz._f(eQ);eK.zaraz.init=()=>{var eR=eL.getElementsByTagName(eN)[0],eS=eL.createElement(eN),eT=eL.getElementsByTagName("title")[0];eT&&(eK.zarazData.t=eL.getElementsByTagName("title")[0].text);eK.zarazData.x=Math.random();eK.zarazData.w=eK.screen.width;eK.zarazData.h=eK.screen.height;eK.zarazData.j=eK.innerHeight;eK.zarazData.e=eK.innerWidth;eK.zarazData.l=eK.location.href;eK.zarazData.r=eL.referrer;eK.zarazData.k=eK.screen.colorDepth;eK.zarazData.n=eL.characterSet;eK.zarazData.o=(new Date).getTimezoneOffset();if(eK.dataLayer)for(const eX of Object.entries(Object.entries(dataLayer).reduce(((eY,eZ)=>({...eY[1],...eZ[1]})))))zaraz.set(eX[0],eX[1],{scope:"page"});eK.zarazData.q=[];for(;eK.zaraz.q.length;){const e_=eK.zaraz.q.shift();eK.zarazData.q.push(e_)}eS.defer=!0;for(const fa of[localStorage,sessionStorage])Object.keys(fa||{}).filter((fc=>fc.startsWith("_zaraz_"))).forEach((fb=>{try{eK.zarazData["z_"+fb.slice(7)]=JSON.parse(fa.getItem(fb))}catch{eK.zarazData["z_"+fb.slice(7)]=fa.getItem(fb)}}));eS.referrerPolicy="origin";eS.src="../../cdn-cgi/zaraz/sd0d9.js?z="+btoa(encodeURIComponent(JSON.stringify(eK.zarazData)));eR.parentNode.insertBefore(eS,eR)};["complete","interactive"].includes(eL.readyState)?zaraz.init():eK.addEventListener("DOMContentLoaded",zaraz.init)}(w,d,0,"script");})(window,document);</script> --}}    
+    </head>
 
 <body class="hold-transition sidebar-mini layout-fixed">
 <div class="wrapper">
@@ -300,7 +298,7 @@
                         <a href="#" class="nav-link {{ session('lsbm') == 'departments'? ' active ' : ''}}">
                             <i class="nav-icon fas fa-passport"></i>
                             <p>
-                                Departments
+                                How Works
                                 <i class="fas fa-angle-left right"></i>
                             </p>
                         </a>
@@ -308,13 +306,13 @@
                             <li class="nav-item">
                                 <a href="{{route('departments.index')}}" class="nav-link {{ session('lsbsm') == 'alldepartments' ? ' active ' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>All Departments</p>
+                                    <p>All How Works</p>
                                 </a>
                             </li>
                             <li class="nav-item">
                                 <a href="{{route('departments.create')}}" class="nav-link {{ session('lsbsm') == 'createdepartments' ? ' active ' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
-                                    <p>Create Departments</p>
+                                    <p>Create How Works</p>
                                 </a>
                             </li>
 
@@ -368,7 +366,7 @@
                         </ul>
                     </li>
 
-                    {{--<li class="nav-item {{ session('lsbm') == 'posts'? ' menu-open ' : ''}}">
+                    <li class="nav-item {{ session('lsbm') == 'posts'? ' menu-open ' : ''}}">
                         <a href="#" class="nav-link {{ session('lsbm') == 'posts'? ' active ' : ''}}">
                             <i class="nav-icon far fa-share-square"></i>
                             <p>
@@ -406,7 +404,7 @@
                             </li>
 
                         </ul>
-                    </li>--}}
+                    </li>
 
 
                    {{-- <li class="nav-item {{ session('lsbm') == 'ambulances'? ' menu-open ' : ''}}">
@@ -547,6 +545,24 @@
                             <a href="{{ route('admin.orderList') }}" class="nav-link {{ session('lsbsm') == 'orderList' ? 'active' : '' }}">
                                 <i class="far fa-dot-circle nav-icon"></i>
                                 <p>Order List</p>
+                            </a>
+                            </li>
+                        </ul>
+                    </li>
+                    {{-- Contact Messages --}}
+                    <li class="nav-item {{ session('lsbm') == 'contacts' ? 'menu-open' : '' }}">
+                        <a href="#" class="nav-link {{ session('lsbm') == 'contacts' ? 'active' : '' }}">
+                            <i class="nav-icon fas fa-shopping-bag"></i>
+                            <p>
+                            Contact
+                            <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview">
+                            <li class="nav-item">
+                            <a href="{{ route('admin.contacts.index') }}" class="nav-link {{ session('lsbsm') == 'contactListAll' ? 'active' : '' }}">
+                                <i class="far fa-dot-circle nav-icon"></i>
+                                <p>Contact Message</p>
                             </a>
                             </li>
                         </ul>

@@ -434,6 +434,7 @@
 <div class="ltn__slider-area ltn__slider-3">
     <div class="ltn__slide-one-active slick-slide-arrow-1 slick-slide-dots-1">
         <!-- ltn__slide-item 1 -->
+        @forelse($sliders as $slider)
         <div class="ltn__slide-item ltn__slide-item-2 ltn__slide-item-3">
             <div class="ltn__slide-item-inner">
                 <div class="container">
@@ -448,96 +449,32 @@
                                     </div>
                                     <h6 class="slide-sub-title animated text-white">
                                         {{-- <img src="{{ asset('frontend/img/icons/icon-img/1.png') }}" alt="#"> --}}
-                                        The Dawn Of new era
+                                        {{$slider->description}}
                                     </h6>
-                                    <h1 class="slide-title animated text-white">Revamping BD Food Supply Chain.</h1>
+                                    <h1 class="slide-title animated text-white">{{$slider->title}}</h1>
                                     <div class="slide-brief animated d-none text-white">
                                         <p>The Dawn Of new era</p>
                                     </div>
+                                    @if( $slider->link != null)
                                     <div class="btn-wrapper animated">
-                                        <a href="#" class="theme-btn-1 btn btn-effect-1 text-uppercase">Explore Products</a>
+                                        <a href="{{ $slider->link }}" class="theme-btn-1 btn btn-effect-1 text-uppercase">Explore Products</a>
                                     </div>
+                                    @endif
                                 </div>
                             </div>
                         </div>
                         <div class="col-lg-6 align-self-center">
                             <div class="slide-item-img">
-                                <img src="{{ asset('frontend/img/slider/slide_map.webp') }}" alt="Fresh Products" class="img-fluid">
+                                <img src="{{ route('imagecache', ['template'=>'original','filename' => $slider->fi()]) }}" alt="Fresh Products" class="img-fluid">
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- ltn__slide-item 1 -->
-        <div class="ltn__slide-item ltn__slide-item-2 ltn__slide-item-3">
-            <div class="ltn__slide-item-inner">
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col-lg-6 align-self-center">
-                            <div class="slide-item-info">
-                                <div class="slide-item-info-inner ltn__slide-animation text-white">
-                                    <div class="slide-video mb-50 d-none">
-                                        <a class="ltn__video-icon-2 ltn__video-icon-2-border" href="#" data-rel="lightcase:myCollection">
-                                            <i class="fa fa-play"></i>
-                                        </a>
-                                    </div>
-                                    <h6 class="slide-sub-title animated text-white">
-                                        {{-- <img src="{{ asset('frontend/img/icons/icon-img/1.png') }}" alt="#"> --}}
-                                        100% genuine Products
-                                    </h6>
-                                    <h1 class="slide-title animated text-white">We Move Freshness.</h1>
-                                    <div class="slide-brief animated d-none text-white">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
-                                    </div>
-                                    <div class="btn-wrapper animated">
-                                        <a href="#" class="theme-btn-1 btn btn-effect-1 text-uppercase">Explore Products</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 align-self-center">
-                            <div class="slide-item-img">
-                                <img src="{{ asset('frontend/img/slider/hero-img-prime.png') }}" alt="Fresh Products" class="img-fluid">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
-        <!-- ltn__slide-item 2 -->
-        <div class="ltn__slide-item ltn__slide-item-2 ltn__slide-item-3">
-            <div class="ltn__slide-item-inner">
-                <div class="container">
-                    <div class="row align-items-center">
-                        <div class="col-lg-6 align-self-center">
-                            <div class="slide-item-info">
-                                <div class="slide-item-info-inner ltn__slide-animation text-white">
-                                    <h6 class="slide-sub-title animated text-white">
-                                        {{-- <img src="{{ asset('frontend/img/icons/icon-img/1.png')}}" alt="#"> --}}
-                                        100% genuine Products
-                                    </h6>
-                                    <h1 class="slide-title animated text-white">Quality Assured. <br> Time Saved.</h1>
-                                    <div class="slide-brief animated text-white">
-                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore.</p>
-                                    </div>
-                                    <div class="btn-wrapper animated">
-                                        <a href="#" class="theme-btn-1 btn btn-effect-1 text-uppercase">Explore Products</a>
-                                        <a href="#" class="btn btn-transparent btn-effect-3 text-uppercase text-white border-white">LEARN MORE</a>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-lg-6 align-self-center">
-                            <div class="slide-item-img">
-                                <img src="{{ asset('frontend/img/slider/hero-img-prime_01.png')}}" alt="Quality Products" class="img-fluid">
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
+        @empty 
+        <p>Here have no slider</p>
+        @endforelse
     </div>
 </div>
 <!-- SLIDER AREA END -->
@@ -556,14 +493,9 @@
             Who We Are
           </p>
           <h2 class="section-title" style="font-size: 32px; font-weight: 700; color: #1D3564; line-height: 1.3; margin-bottom: 25px;">
-            Reliable Agriculture Product Transport & Supply Chain Partner
+           {{ $ws->about_title }}
           </h2>
-          <p class="section-description" style="color: #555; font-size: 16px; line-height: 1.7; margin-bottom: 35px;">
-            We specialize in transporting fresh agricultural produce safely and efficiently across regions. 
-            Our goal is to bridge the gap between farmers and markets, ensuring timely delivery, product quality, 
-            and maximum freshness. With a trusted network and years of logistics experience, we handle 
-            everything from field to destination with precision and care.
-          </p>
+          <p class="section-description" style="color: #555; font-size: 16px; line-height: 1.7; margin-bottom: 35px;"> {{ $ws->about_subtitle }}</p>
           <a href="#" class="btn-primary" style="display: inline-block; background: #66A931; color: #fff; padding: 12px 28px; border-radius: 8px; font-weight: 600; text-decoration: none; transition: all 0.3s ease; border: none;">
             Learn More
             <i class="flaticon-send" style="margin-left: 8px;"></i>
@@ -609,24 +541,28 @@
         </div>
 
         <div class="row justify-content-center">
-            <!-- Step 1 -->
-            <div class="col-lg-3 col-md-6 col-sm-12 text-center mb-5">
-                <div class="work-card" style="background: #fff; border-radius: 16px; padding: 30px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: 0.3s;">
-                    <div class="position-relative mb-4">
-                        <div class="circle-image" style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; margin: 0 auto; border: 4px solid #171F67;">
-                            <img src="{{ asset('frontend/img/how-it-works/how-it-work-img-1-prime.jpg') }}" alt="Request a Quote" style="width: 100%; height: 100%; object-fit: cover;">
+            @forelse($departments as $key => $department)
+                <!-- Step 1 -->
+                <div class="col-lg-3 col-md-6 col-sm-12 text-center mb-5">
+                    <div class="work-card" style="background: #fff; border-radius: 16px; padding: 30px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: 0.3s;">
+                        <div class="position-relative mb-4">
+                            <div class="circle-image" style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; margin: 0 auto; border: 4px solid #171F67;">
+                                <img src="{{ route('imagecache', [ 'template'=>'cpmd','filename' => $department->fi() ]) }}" alt="Request a Quote" style="width: 100%; height: 100%; object-fit: cover;">
+                            </div>
+                            <div class="small-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #66A931; color: #fff; font-weight: 600; display: flex; align-items: center; justify-content: center; position: absolute; left: 50%; bottom: -20px; transform: translateX(-50%); font-size: 15px;">
+                                {{ str_pad(++$key, 2, '0', STR_PAD_LEFT) }}
+                            </div>
                         </div>
-                        <div class="small-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #66A931; color: #fff; font-weight: 600; display: flex; align-items: center; justify-content: center; position: absolute; left: 50%; bottom: -20px; transform: translateX(-50%); font-size: 15px;">
-                            01
-                        </div>
+                        <h4 style="font-size: 20px; font-weight: 600; margin-top: 25px; color: #1D3564;">{{ $department->name_en }}</h4>
+                        <p style="color: #555;">{{ $department->excerpt_en }}</p>
                     </div>
-                    <h4 style="font-size: 20px; font-weight: 600; margin-top: 25px; color: #1D3564;">Request a Quote</h4>
-                    <p style="color: #555;">Submit your shipment details online or contact our team.</p>
                 </div>
-            </div>
+            @empty 
+                <p>Here have no work step</p>
+            @endforelse 
 
             <!-- Step 2 -->
-            <div class="col-lg-3 col-md-6 col-sm-12 text-center mb-5">
+            {{--<div class="col-lg-3 col-md-6 col-sm-12 text-center mb-5">
                 <div class="work-card" style="background: #fff; border-radius: 16px; padding: 30px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: 0.3s;">
                     <div class="position-relative mb-4">
                         <div class="circle-image" style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; margin: 0 auto; border: 4px solid #171F67;">
@@ -639,10 +575,10 @@
                     <h4 style="font-size: 20px; font-weight: 600; margin-top: 25px; color: #1D3564;">Plan & Schedule</h4>
                     <p style="color: #555;">Submit your shipment details online or contact our team.</p>
                 </div>
-            </div>
+            </div>--}}
 
             <!-- Step 3 -->
-            <div class="col-lg-3 col-md-6 col-sm-12 text-center mb-5">
+            {{--<div class="col-lg-3 col-md-6 col-sm-12 text-center mb-5">
                 <div class="work-card" style="background: #fff; border-radius: 16px; padding: 30px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: 0.3s;">
                     <div class="position-relative mb-4">
                         <div class="circle-image" style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; margin: 0 auto; border: 4px solid #171F67;">
@@ -655,10 +591,10 @@
                     <h4 style="font-size: 20px; font-weight: 600; margin-top: 25px; color: #1D3564;">Pickup & Transport</h4>
                     <p style="color: #555;">Submit your shipment details online or contact our team.</p>
                 </div>
-            </div>
+            </div>--}}
 
             <!-- Step 4 -->
-            <div class="col-lg-3 col-md-6 col-sm-12 text-center mb-5">
+            {{--<div class="col-lg-3 col-md-6 col-sm-12 text-center mb-5">
                 <div class="work-card" style="background: #fff; border-radius: 16px; padding: 30px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: 0.3s;">
                     <div class="position-relative mb-4">
                         <div class="circle-image" style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; margin: 0 auto; border: 4px solid #171F67;">
@@ -671,7 +607,7 @@
                     <h4 style="font-size: 20px; font-weight: 600; margin-top: 25px; color: #1D3564;">Delivery & Confirmation</h4>
                     <p style="color: #555;">Submit your shipment details online or contact our team.</p>
                 </div>
-            </div>
+            </div>--}}
         </div>
     </div>
 </section>
@@ -4269,23 +4205,28 @@
             </div>
         </div>
         <div class="row ltn__testimonial-slider-3-active slick-arrow-1 slick-arrow-1-inner">
+            @forelse($testimonials as $testimonial)
             <div class="col-lg-12">
                 <div class="ltn__testimonial-item ltn__testimonial-item-4">
                     <div class="ltn__testimoni-img">
-                        <img src="{{ asset('frontend/img/testimonial/6.jpg') }}" alt="#">
+                        <img src="{{ Storage::disk('public')->url($testimonial->image) }}"
+                            alt="testimonial {{ $testimonial->id }} image">
+
                     </div>
                     <div class="ltn__testimoni-info">
-                        <p>Lorem ipsum dolor sit amet, consectetur adipi sicing elit, sed do eiusmod tempor incididunt
-                            ut labore et dolore magna aliqua. </p>
-                        <h4>Rosalina D. William</h4>
-                        <h6>Founder</h6>
+                        <p>{{ Str::limit(strip_tags($testimonial->text_en), 180) }}</p>
+                        <h4>{{ $testimonial->name }}</h4>
+                        <h6>{{ $testimonial->designation }}</h6>
                     </div>
                     <div class="ltn__testimoni-bg-icon">
                         <i class="far fa-comments"></i>
                     </div>
                 </div>
             </div>
-            <div class="col-lg-12">
+            @empty 
+            <p>Here no testimonial </p>
+            @endforelse
+            {{--<div class="col-lg-12">
                 <div class="ltn__testimonial-item ltn__testimonial-item-4">
                     <div class="ltn__testimoni-img">
                         <img src="{{ asset('frontend/img/testimonial/7.jpg') }}" alt="#">
@@ -4348,7 +4289,7 @@
                         <i class="far fa-comments"></i>
                     </div>
                 </div>
-            </div>
+            </div>--}}
             <!--  -->
         </div>
     </div>
@@ -4367,39 +4308,41 @@
         </div>
         <div class="row  ltn__blog-slider-one-active slick-arrow-1 ltn__blog-item-3-normal">
             <!-- Blog Item -->
+             @foreach($newses as $news)
             <div class="col-lg-12">
                 <div class="ltn__blog-item ltn__blog-item-3">
                     <div class="ltn__blog-img">
-                        <a href="#"><img src="{{ asset('frontend/img/blog/1.jpg') }}" alt="#"></a>
+                        <a href="{{ route('singleNews', ['id' => $news->id]) }}"><img src="{{ route('imagecache', ['template'=>'cpmd','filename' => $news->fi()]) }}" alt="{{ $news->title }}"></a>
                     </div>
                     <div class="ltn__blog-brief">
                         <div class="ltn__blog-meta">
                             <ul>
-                                <li class="ltn__blog-author">
+                                {{--<li class="ltn__blog-author">
                                     <a href="#"><i class="far fa-user"></i>by: Admin</a>
-                                </li>
+                                </li>--}}
                                 <li class="ltn__blog-tags">
-                                    <a href="#"><i class="fas fa-tags"></i>Services</a>
+                                    <a href="#"><i class="fas fa-tags"></i>{{ $news->category->name }}</a>
                                 </li>
                             </ul>
                         </div>
-                        <h3 class="ltn__blog-title"><a href="#">Common Engine Oil Problems and
-                                Solutions</a></h3>
+                        <h3 class="ltn__blog-title"><a href="{{ route('singleNews', ['id' => $news->id]) }}">{{ $news->title }}</a></h3>
                         <div class="ltn__blog-meta-btn">
                             <div class="ltn__blog-meta">
                                 <ul>
-                                    <li class="ltn__blog-date"><i class="far fa-calendar-alt"></i>June 24, 2020</li>
+                                    <li class="ltn__blog-date"><i class="far fa-calendar-alt"></i>{{ $news->created_at->format('M d, Y') }}</li>
                                 </ul>
                             </div>
                             <div class="ltn__blog-btn">
-                                <a href="#">Read more</a>
+                                <a href="{{ route('singleNews', ['id' => $news->id]) }}">Read more</a>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+            @endforeach 
+
             <!-- Blog Item -->
-            <div class="col-lg-12">
+            {{--<div class="col-lg-12">
                 <div class="ltn__blog-item ltn__blog-item-3">
                     <div class="ltn__blog-img">
                         <a href="#"><img src="{{ asset('frontend/img/blog/2.jpg') }}" alt="#"></a>
@@ -4429,9 +4372,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>--}}
             <!-- Blog Item -->
-            <div class="col-lg-12">
+            {{--<div class="col-lg-12">
                 <div class="ltn__blog-item ltn__blog-item-3">
                     <div class="ltn__blog-img">
                         <a href="#"><img src="{{ asset('frontend/img/blog/3.jpg') }}" alt="#"></a>
@@ -4460,9 +4403,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>--}}
             <!-- Blog Item -->
-            <div class="col-lg-12">
+            {{--<div class="col-lg-12">
                 <div class="ltn__blog-item ltn__blog-item-3">
                     <div class="ltn__blog-img">
                         <a href="#"><img src="{{ asset('frontend/img/blog/4.jpg') }}" alt="#"></a>
@@ -4491,9 +4434,9 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>--}}
             <!-- Blog Item -->
-            <div class="col-lg-12">
+            {{--<div class="col-lg-12">
                 <div class="ltn__blog-item ltn__blog-item-3">
                     <div class="ltn__blog-img">
                         <a href="#"><img src="{{ asset('frontend/img/blog/5.jpg') }}" alt="#"></a>
@@ -4522,7 +4465,7 @@
                         </div>
                     </div>
                 </div>
-            </div>
+            </div>--}}
             <!--  -->
         </div>
     </div>

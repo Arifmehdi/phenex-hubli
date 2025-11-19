@@ -20,7 +20,7 @@ use App\Models\WebsiteParameter;
 use App\Models\Upazila;
 use Illuminate\Http\Request;
 use Alert;
-use App\Models\BisesoggoCategory;
+use App\Models\Department;
 use App\Models\BlogCategory;
 use App\Models\BlogPost;
 use App\Models\Doctor;
@@ -52,29 +52,20 @@ class FrontendController extends Controller
             ->where('parent_id', null)
             ->select('id', 'name_en', 'name_bn', 'slug', 'image') // select needed fields
             ->get();
-        // $path = public_path('frontend/assets/img/gallery');
-        // $files = \File::files($path);
-        // $data['images'] = []; // initialize the array
 
-        // foreach ($files as $file) {
-        //     $data['images'][] = $file->getFilename(); // append to $data['images'], not $images
-        // }
-
-        $data['videos'] = Gallery::where('file_type', 'video')
-            ->where('active', 1)
-            ->orderBy('priority', 'asc')
-            ->latest()
-            ->take(5)
-            ->get();
-
-        $data['departments'] = BisesoggoCategory::whereActive(true)
-            ->limit(4)
+        $data['departments'] = Department::whereActive(true)
             ->select('image','name_en','name_bn','excerpt_en', 'excerpt_bn')
             ->get();
+        
+        $data['testimonials'] = Testimonial::whereActive(true)
+            ->latest()
+            ->limit(5)
+            ->select('id','name','designation','image','text_en','designation')
+            ->get();
 
-        $data['newses'] = BlogPost::whereActive(true)->limit(3)->get();
+        $data['newses'] = BlogPost::whereActive(true)->limit(5)->get();
         $data['sliders'] = FrontSlider::whereActive(true)
-            ->select('featured_image','title')
+            ->select('featured_image','title','description','link')
             ->get();
 
         return view('website.index', $data);  
@@ -104,7 +95,7 @@ class FrontendController extends Controller
     }
 
 
-    //     public function product()
+    // public function product()
     // {
     //     return view('frontend.product');
     // }
@@ -352,26 +343,28 @@ class FrontendController extends Controller
     public function news()
     {
         $data['news'] = BlogPost::whereActive(true)->whereStatus('published')->latest()->paginate(12);
-        $data['cats'] = BlogCategory::whereActive(true)->orderBy('name')->get();
         return view('website.blog', $data);
     }
 
 
     public function singleNews($id)
     {
-
         $news = BlogPost::where('id', $id)->firstOrFail();
         if (!$news) {
             abort(404);
         }
         $news->increment('view_count');
 
-        $data['relatedPosts'] = BlogPost::where('category_id', $news->category_id)->get();
+        $data['relatedPosts'] = BlogPost::where('category_id', $news->category_id)
+                                ->where('id', '!=', $news->id) // exclude current post
+                                ->where('active', true)        // only active posts
+                                ->where('status', 'published') // only published posts
+                                ->orderBy('created_at', 'desc') // latest first
+                                ->take(5)                       // limit to 5 posts
+                                ->get();
+
         $data['news'] = $news;
-
-        $data['popular_posts'] = BlogPost::orderBy('view_count', 'DESC')->whereActive(true)->whereStatus('published')->take(6)->get();
-
-        return view('frontend.home.singleNews', $data);
+        return view('website.blog_details', $data);
     }
 
 
@@ -794,7 +787,15 @@ public function shasthoseba(Request $request)
         return view('frontend.home.productDetails', compact('product','relatedProducts'));
     }
 
+    public function cart()
+    {
+        return view('website.cart');
+    }
 
+    public function checkouts()
+    {
+        return view('website.checkout');
+    }
  
 
 
