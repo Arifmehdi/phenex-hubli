@@ -29,6 +29,7 @@ class Product extends Model
         'unit',
         'tags',
         'active',
+        'feature',
         'editor',
         'addedby_id',
         'editedby_id',

@@ -292,7 +292,6 @@ class ProductController extends Controller
         // Validate incoming request data
         $request->validate([
             'name_en'        => 'required|string',
-            'name_bn'        => 'required|string',
             // 'sku'            => 'required',
             'price'          => 'required|numeric',
             'slug'           => 'required|string',
@@ -326,6 +325,7 @@ class ProductController extends Controller
         $product->description_bn = $request->description_bn ?? null;
 
         // Checkbox fields: convert to boolean 1/0
+        $product->feature = $request->feature ? 1 : 0;
         $product->editor = $request->editor ? 1 : 0;
         $product->active = $request->active ? 1 : 0;
 
@@ -436,7 +436,6 @@ class ProductController extends Controller
         // Validate incoming request data
         $request->validate([
             'name_en' => 'required|string',
-            'name_bn' => 'required|string',
             'price' => 'required|numeric',
             // 'sku'   => 'required',
             'slug' => 'required|string',
@@ -459,6 +458,7 @@ class ProductController extends Controller
         $product->excerpt_bn = $request->excerpt_bn ?? null;
         $product->description_en = $request->description_en;
         $product->description_bn = $request->description_bn ?? null;
+        $product->feature = $request->feature ? 1 : 0;
         $product->editor = $request->editor ? 1 : 0;
         $product->active = $request->active ? 1 : 0;
 

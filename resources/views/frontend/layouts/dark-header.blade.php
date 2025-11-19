@@ -62,7 +62,7 @@
                     <div class="col">
                         <div class="site-logo-wrap">
                             <div class="site-logo">
-                                <a href="{{ route('home') }}"><img src="{{ asset('frontend/img/logo-2.png') }}" alt="Logo"></a>
+                                <a href="{{ route('home') }}"><img src="{{ route('imagecache', ['template'=>'original','filename' => $ws->logo_alt()]) }}" alt="{{ $ws->website_title ?? '' }}"></a>
                             </div>
                         </div>
                     </div>
@@ -218,7 +218,7 @@
         <div class="ltn__utilize-menu-inner ltn__scrollbar">
             <div class="ltn__utilize-menu-head">
                 <div class="site-logo">
-                    <a href="{{ route('home') }}"><img src="{{ asset('frontend/img/logo-2.png') }}" alt="Logo"></a>
+                    <a href="{{ route('home') }}"><img src="{{ route('imagecache', ['template'=>'original','filename' => $ws->logo_alt()]) }}" alt="{{ $ws->website_title ?? '' }}"></a>
                 </div>
                 <button class="ltn__utilize-close">×</button>
             </div>

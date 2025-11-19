@@ -698,7 +698,7 @@
                                data-bs-toggle="tab" 
                                href="#category_tab_{{ $category->id }}"
                                data-category-id="{{ $category->id }}">
-                                {{ $category->name_en }}
+                                {{ $category->name }}
                             </a>
                         @endforeach
                     </div>
@@ -756,87 +756,68 @@
 </div>
 <!-- COUNTDOWN AREA END -->
 
-<!-- PRODUCT AREA START (product-item-3) -->
-<div class="ltn__product-area ltn__product-gutter pt-115 pb-70">
+<!-- PRODUCT TAB AREA START (product-item-3) -->
+<div class="ltn__product-tab-area ltn__product-gutter pt-85 pb-70">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
                 <div class="section-title-area ltn__section-title-2 text-center">
-                    <h1 class="section-title">Featured Products</h1>
+                    <h1 class="section-title">Our Products</h1>
                 </div>
-            </div>
-        </div>
-        <div class="row ltn__tab-product-slider-one-active--- slick-arrow-1">
+                
+                <!-- Dynamic Category Tabs -->
+                @if($categories->count() > 0)
+                <div class="ltn__tab-menu ltn__tab-menu-2 ltn__tab-menu-top-right-- text-uppercase text-center">
+                    <div class="nav">
+                        @foreach($categories as $index => $category)
+                            <a class="{{ $index === 0 ? 'active show' : '' }}" 
+                               data-bs-toggle="tab" 
+                               href="#category_tab_{{ $category->id }}"
+                               data-category-id="{{ $category->id }}">
+                                {{ $category->name_en ?? $category->name_bn ?? $category->name }}
+                            </a>
+                        @endforeach
+                    </div>
+                </div>
 
-            <!-- ltn__product-item -->
-            @forelse($feature_products as $feature)
-            <div class="col-lg-3 col-md-4 col-sm-6 col-6">
-                <div class="ltn__product-item ltn__product-item-3 text-left">
-                    <div class="product-img">
-                        <a href="{{ route('productDetails', $feature->slug) }}">
-                            <img src="{{ route('imagecache', ['template' => 'pnism', 'filename' => $feature->fi()]) }}" alt="{{ $feature->name_en }}">
-                        </a>
-                        <!-- <div class="product-badge">
-                            <ul>
-                                <li class="sale-badge">New</li>
-                            </ul>
-                        </div> -->
-                        <div class="product-hover-action">
-                            <ul>
-                                <li>
-                                    <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $feature->id }}"  >
-                                        <i class="far fa-eye"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" title="Add to Cart" data-bs-toggle="modal"
-                                        data-bs-target="#add_to_cart_modal">
-                                        <i class="fas fa-shopping-cart"></i>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" title="Wishlist" data-bs-toggle="modal"
-                                        data-bs-target="#liton_wishlist_modal">
-                                        <i class="far fa-heart"></i></a>
-                                </li>
-                            </ul>
+                <!-- Dynamic Tab Content -->
+                <div class="tab-content">
+                    @foreach($categories as $index => $category)
+                        <div class="tab-pane fade {{ $index === 0 ? 'active show' : '' }}" 
+                             id="category_tab_{{ $category->id }}">
+                            <div class="ltn__product-tab-content-inner">
+                                <div class="row ltn__tab-product-slider-one-active slick-arrow-1" 
+                                     id="products-container-{{ $category->id }}">
+                                    <!-- Products will be loaded here -->
+                                    @if($category->products->count() > 0)
+                                        @include('frontend.partials.products-grid', ['products' => $category->products])
+                                    @else
+                                        <div class="col-12 text-center">
+                                            <p>No products found in this category.</p>
+                                        </div>
+                                    @endif
+                                </div>
+                                
+                                <!-- Loading Spinner -->
+                                <div id="loading-{{ $category->id }}" class="text-center" style="display: none;">
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-ratting">
-                            <ul>
-                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                <li><a href="#"><i class="far fa-star"></i></a></li>
-                            </ul>
-                        </div>
-                        <h2 class="product-title"><a href="{{ route('productDetails', $feature->slug) }}">{{ $feature->name_en }}</a></h2>
-                        <small class="d-block text-uppercase mb-1">
-                            @foreach ($feature->categories as $key => $cat)
-                                <span class="font-weight-bold" style="color: #0e1573ff">
-                                    {{ $cat->name_en }}
-                                </span>@if(!$loop->last), @endif
-                            @endforeach
-                        </small>
-                        <div class="product-price">
-                            <span>{{ number_format($feature->final_price, 2) }} ৳</span> 
-                            @if($feature->discount > 0.00)
-                                <del>{{ number_format($feature->discount_price, 2) }} ৳</del>
-                            @endif
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
+                @else
+                <div class="text-center">
+                    <p>No categories found.</p>
+                </div>
+                @endif
             </div>
-            @empty 
-            <p>There have no feature product</p>
-            @endforelse
-            <!--  -->
         </div>
     </div>
 </div>
-<!-- PRODUCT AREA END -->
+<!-- PRODUCT TAB AREA END -->
 
 <!-- VIDEO AREA START -->
 <div class="ltn__video-popup-area ltn__video-popup-margin">
@@ -890,7 +871,6 @@
             @empty 
             <p>Here no testimonial </p>
             @endforelse
-
             <!--  -->
         </div>
     </div>

@@ -61,20 +61,6 @@
                                     @enderror
                                 </div>
 
-                                {{-- Product Name (Bangla) --}}
-                                <div class="form-group">
-                                    <label for="name_bn">Product Name (Bangla)
-                                        <span class="text-danger">*</span>
-                                    </label>
-                                    <input type="text" name="name_bn" 
-                                           value="{{ old('name_bn', $product->name_bn) }}" 
-                                           class="form-control" placeholder="Product Name (Bangla)" 
-                                           required>
-                                    @error('name_bn')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-
                                 {{-- Slug --}}
                                 <div class="form-group">
                                     <label for="slug">Slug <span class="text-danger">*</span></label>
@@ -153,6 +139,12 @@
                                 <div class="form-group">
                                     <label class="mr-3">
                                         <input type="checkbox" name="active" {{ $product->active ? 'checked' : '' }}> Active
+                                    </label>
+                                </div>
+                                {{-- Feature Checkbox --}}
+                                <div class="form-group">
+                                    <label class="mr-3">
+                                        <input type="checkbox" name="feature" {{ $product->feature ? 'checked' : '' }}> Featured
                                     </label>
                                 </div>
 

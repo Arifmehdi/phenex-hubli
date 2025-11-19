@@ -27,6 +27,7 @@ use App\Models\Doctor;
 use App\Models\FrontSlider;
 use App\Models\Hospital;
 use App\Models\User;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -47,14 +48,32 @@ class FrontendController extends Controller
 
     public function index()
     {
-        $data['categories'] = ProductCategory::where('active', 1)
-            ->whereHas('products') // only categories that have at least one product
-            ->where('parent_id', null)
-            ->select('id', 'name_en', 'name_bn', 'slug', 'image') // select needed fields
-            ->get();
+        // $data['categories'] = ProductCategory::where('active', 1)
+        //     ->whereHas('products') // only categories that have at least one product
+        //     ->where('parent_id', null)
+        //     ->select('id', 'name_en', 'name_bn', 'slug', 'image') // select needed fields
+        //     ->get();
+        // $data['products'] = Product::whereActive(true)->get();
+        
+                // Get all active categories with their products
+    $data['categories'] = ProductCategory::where('active', true)
+        ->with(['products' => function($query) {
+            $query->where('active', true)
+                  ->select('products.id', 'products.name_en',  'products.slug', 'products.featured_image', 'products.price', 'products.discount_price') // Select only needed fields
+                  ->take(8); // Limit products per category
+        }])
+        ->whereHas('products', function($query) { // Only categories that have products
+            $query->where('active', true);
+        })
+        ->select('id', 'name_en', 'name_bn', 'slug') // Select category fields
+        ->get();
+
+        // dd($data['categories']);
+
+        $data['feature_products'] = Product::whereActive(true)->where('feature',true)->get();
 
         $data['departments'] = Department::whereActive(true)
-            ->select('image','name_en','name_bn','excerpt_en', 'excerpt_bn')
+            ->select('image','name_en','name_bn','excerpt_en')
             ->get();
         
         $data['testimonials'] = Testimonial::whereActive(true)
@@ -71,6 +90,21 @@ class FrontendController extends Controller
         return view('website.index', $data);  
     }
 
+    // For lazy loading products via AJAX
+    public function getProductsByCategory($categoryId)
+    {
+        $products = Product::whereHas('categories', function($query) use ($categoryId) {
+                $query->where('product_categories.id', $categoryId);
+            })
+            ->where('active', true)
+            ->get();
+
+        return response()->json([
+            'products' => $products,
+            'html' => view('frontend.partials.products-grid', compact('products'))->render()
+        ]);
+    }
+
 
     public function mdMessage()
     {
@@ -80,51 +114,59 @@ class FrontendController extends Controller
     
     public function shop(Request $request)
     {
+        $query = Product::whereActive(true);
 
+        // Sorting
+        if ($request->get('sort') == 1) {
+            $query->latest();
+        } elseif ($request->get('sort') == 2) {
+            $query->oldest();
+        } elseif ($request->get('sort') == 3) {
+            $query->orderBy('final_price', 'desc');
+        } elseif ($request->get('sort') == 4) {
+            $query->orderBy('final_price', 'asc');
+        } else {
+            $query->latest();
+        }
 
-    $query = Product::whereActive(true);
+        $products = $query->paginate(12)->appends($request->all());
 
-    // Sorting
-    if ($request->get('sort') == 1) {
-        $query->latest();
-    } elseif ($request->get('sort') == 2) {
-        $query->oldest();
-    } elseif ($request->get('sort') == 3) {
-        $query->orderBy('final_price', 'desc');
-    } elseif ($request->get('sort') == 4) {
-        $query->orderBy('final_price', 'asc');
-    } else {
-        $query->latest();
-    }
+        $categories = ProductCategory::whereActive(true)->latest()->get();
+        $total_products = Product::whereActive(true)->count();
+        $subcategories = ProductCategory::whereNull('parent_id')
+            ->where('active', 1)
+            ->orderBy('name_en')
+            ->get();
 
-    $products = $query->paginate(12)->appends($request->all());
+        // Get all root categories for sidebar
+        $allRootCategories = ProductCategory::whereNull('parent_id')
+            ->where('active', 1)
+            ->orderBy('name_en')
+            ->get();
 
-    $categories = ProductCategory::whereActive(true)->latest()->get();
-    $total_products = Product::whereActive(true)->count();
-    $subcategories = ProductCategory::whereNull('parent_id')
-        ->where('active', 1)
-        ->orderBy('name_en')
-        ->get();
-
-    // Get all root categories for sidebar
-    $allRootCategories = ProductCategory::whereNull('parent_id')
-        ->where('active', 1)
-        ->orderBy('name_en')
-        ->get();
-
-    return view("website.shop", compact(
-        'products', 
-        'categories', 
-        'total_products', 
-        'subcategories',
-        'allRootCategories' // Add this
-    ));
-
-
-
-
+        return view("website.shop", compact(
+            'products', 
+            'categories', 
+            'total_products', 
+            'subcategories',
+            'allRootCategories' // Add this
+        ));
         return view('website.shop' );  
     }
+
+    public function quickView(Request $request)
+    {
+        $product = Product::with('categories')->findOrFail($request->id);
+
+        return response()->json([
+            'name'        => $product->name_en,
+            'price'       => number_format($product->final_price, 2),
+            'old_price'   => $product->discount > 0 ? number_format($product->price, 2) : null,
+            'description' => Str::limit($product->description_en, 150),
+            'image'       => route('imagecache', ['template' => 'pnism', 'filename' => $product->fi()])
+        ]);
+    }
+
 
     public function about()
     {
@@ -488,167 +530,46 @@ class FrontendController extends Controller
     }
 
 
-public function shasthoseba(Request $request)
-{
-    $query = Product::whereActive(true);
+    public function shasthoseba(Request $request)
+    {
+        $query = Product::whereActive(true);
 
-    // Sorting
-    if ($request->get('sort') == 1) {
-        $query->latest();
-    } elseif ($request->get('sort') == 2) {
-        $query->oldest();
-    } elseif ($request->get('sort') == 3) {
-        $query->orderBy('final_price', 'desc');
-    } elseif ($request->get('sort') == 4) {
-        $query->orderBy('final_price', 'asc');
-    } else {
-        $query->latest();
+        // Sorting
+        if ($request->get('sort') == 1) {
+            $query->latest();
+        } elseif ($request->get('sort') == 2) {
+            $query->oldest();
+        } elseif ($request->get('sort') == 3) {
+            $query->orderBy('final_price', 'desc');
+        } elseif ($request->get('sort') == 4) {
+            $query->orderBy('final_price', 'asc');
+        } else {
+            $query->latest();
+        }
+
+        $products = $query->paginate(12)->appends($request->all());
+
+        $categories = ProductCategory::whereActive(true)->latest()->get();
+        $total_products = Product::whereActive(true)->count();
+        $subcategories = ProductCategory::whereNull('parent_id')
+            ->where('active', 1)
+            ->orderBy('name_en')
+            ->get();
+
+        // Get all root categories for sidebar
+        $allRootCategories = ProductCategory::whereNull('parent_id')
+            ->where('active', 1)
+            ->orderBy('name_en')
+            ->get();
+
+        return view("frontend.home.shasthoseba", compact(
+            'products', 
+            'categories', 
+            'total_products', 
+            'subcategories',
+            'allRootCategories' // Add this
+        ));
     }
-
-    $products = $query->paginate(12)->appends($request->all());
-
-    $categories = ProductCategory::whereActive(true)->latest()->get();
-    $total_products = Product::whereActive(true)->count();
-    $subcategories = ProductCategory::whereNull('parent_id')
-        ->where('active', 1)
-        ->orderBy('name_en')
-        ->get();
-
-    // Get all root categories for sidebar
-    $allRootCategories = ProductCategory::whereNull('parent_id')
-        ->where('active', 1)
-        ->orderBy('name_en')
-        ->get();
-
-    return view("frontend.home.shasthoseba", compact(
-        'products', 
-        'categories', 
-        'total_products', 
-        'subcategories',
-        'allRootCategories' // Add this
-    ));
-}
-
-
-    // product categories 02 
-    // public function productCategory(Request $request, $slug)
-    // {
-    //     $category = ProductCategory::where('slug', $slug)
-    //         ->whereActive(true)
-    //         ->firstOrFail();
-
-    //     $query = Product::whereHas('categories', function ($q) use ($slug) {
-    //         $q->where('slug', $slug);
-    //     })->whereActive(true);
-
-    //     // Sorting
-    //     if ($request->get('sort') == 1) {
-    //         $query->latest();
-    //     } elseif ($request->get('sort') == 2) {
-    //         $query->oldest();
-    //     } elseif ($request->get('sort') == 3) {
-    //         $query->orderBy('final_price', 'desc');
-    //     } elseif ($request->get('sort') == 4) {
-    //         $query->orderBy('final_price', 'asc');
-    //     } else {
-    //         $query->latest();
-    //     }
-
-    //     $products = $query->paginate(12)->appends($request->all());
-
-    //     $categories = ProductCategory::whereActive(true)->latest()->get();
-
-    //     return view("frontend.home.shasthoseba", compact('products', 'categories', 'category'));
-    // }
-
-
-
-    // product categories 03 - 29102025
-    // public function productCategory(Request $request, $slug = null)
-    // {
-    //     $category = null;
-    //     $categories = collect();
-    //     $subcategories = collect();
-
-    //     // Base query for active products
-    //     $query = Product::where('active', 1);
-
-    //     if ($slug && $slug !== 'all') {
-    //         // Find the selected category
-    //         $category = ProductCategory::where('slug', $slug)
-    //             ->where('active', 1)
-    //             ->first();
-
-    //         if ($category) {
-    //             // Case 1: parent category → show its subcategories
-    //             if (is_null($category->parent_id)) {
-    //                 $subcategories = ProductCategory::where('parent_id', $category->id)
-    //                     ->where('active', 1)
-    //                     ->orderBy('name_en')
-    //                     ->get();
-    //             } else {
-    //                 // Case 2: subcategory → show siblings
-    //                 $subcategories = ProductCategory::where('parent_id', $category->parent_id)
-    //                     ->where('active', 1)
-    //                     ->orderBy('name_en')
-    //                     ->get();
-    //             }
-
-    //             // IDs for filtering
-    //             $subcategoryIds = $subcategories->pluck('id')->toArray();
-
-    //             // Filter products by category and its subcategories
-    //             $query->whereHas('categories', function ($q) use ($category, $subcategoryIds) {
-    //                 $q->where('product_categories.id', $category->id)
-    //                 ->orWhereIn('product_categories.id', $subcategoryIds);
-    //             });
-    //         }
-    //     } else {
-    //         // For "All", show all root-level categories
-    //         $categories = ProductCategory::whereNull('parent_id')
-    //             ->where('active', 1)
-    //             ->orderBy('name_en')
-    //             ->get();
-    //     }
-
-    //     // Get all root categories for sidebar (always needed)
-    //     $allRootCategories = ProductCategory::whereNull('parent_id')
-    //         ->where('active', 1)
-    //         ->orderBy('name_en')
-    //         ->get();
-
-    //     // Sorting
-    //     switch ($request->get('sort')) {
-    //         case 2:
-    //             $query->oldest();
-    //             break;
-    //         case 3:
-    //             $query->orderBy('final_price', 'desc');
-    //             break;
-    //         case 4:
-    //             $query->orderBy('final_price', 'asc');
-    //             break;
-    //         default:
-    //             $query->latest();
-    //             break;
-    //     }
-
-    //     // Pagination
-    //     $products = $query->paginate(12)->appends($request->all());
-
-    //     // Count total
-    //     $total_products = $query->count();
-
-    //     return view('frontend.home.shasthoseba', compact(
-    //         'products',
-    //         'category',
-    //         'categories',
-    //         'subcategories',
-    //         'total_products',
-    //         'allRootCategories',
-    //         'slug' // Add this to pass slug to view
-    //     ));
-    // }
 
 
     public function productCategory(Request $request, $slug = null)
@@ -725,7 +646,7 @@ public function shasthoseba(Request $request)
         $products = $query->paginate(12)->appends($request->all());
         $total_products = $query->count();
 
-        return view('frontend.home.shasthoseba', compact(
+        return view('website.shop_category', compact(
             'products',
             'category',
             'categories',
@@ -735,82 +656,6 @@ public function shasthoseba(Request $request)
             'slug'
         ));
     }
-
-
-    // product categories 01 
-
-    // public function productCategory(Request $request, $slug = null)
-    // {
-    //     $category = null;
-    //     $subcategories = collect();
-
-    //     // Default query for all active products
-    //     $query = Product::where('active', 1);
-
-    //     if ($slug && $slug !== 'all') {
-    //         $category = ProductCategory::where('slug', $slug)
-    //             ->where('active', 1)
-    //             ->first();
-
-    //         if ($category) {
-    //             // Get subcategories
-    //             $subcategories = ProductCategory::where('parent_id', $category->id)
-    //                 ->where('active', 1)
-    //                 ->orderBy('name_en')
-    //                 ->get();
-
-    //             $subcategoryIds = $subcategories->pluck('id')->toArray();
-
-    //             // Filter products by category or subcategories
-    //             $query->whereHas('categories', function ($q) use ($category, $subcategoryIds) {
-    //                 $q->where('product_categories.id', $category->id)
-    //                 ->orWhereIn('product_categories.id', $subcategoryIds);
-    //             });
-    //         }
-    //     } else {
-    //         // For "All", show all root-level categories
-    //         $subcategories = ProductCategory::whereNull('parent_id')
-    //             ->where('active', 1)
-    //             ->orderBy('name_en')
-    //             ->get();
-    //     }
-
-    //     // Apply sorting
-    //     switch ($request->get('sort')) {
-    //         case 2:
-    //             $query->oldest();
-    //             break;
-    //         case 3:
-    //             $query->orderBy('final_price', 'desc');
-    //             break;
-    //         case 4:
-    //             $query->orderBy('final_price', 'asc');
-    //             break;
-    //         default:
-    //             $query->latest();
-    //             break;
-    //     }
-
-    //     // Pagination
-    //     $products = $query->paginate(12)->appends($request->all());
-
-    //     // Total product count for sidebar
-    //     if ($category) {
-    //         $total_products = $query->count(); // Count products in this category
-    //     } else {
-    //         $total_products = Product::where('active', 1)->count(); // All products
-    //     }
-    //     return view('frontend.home.shasthoseba', compact(
-    //         'products',
-    //         'category',
-    //         'subcategories',
-    //         'total_products'
-    //     ));
-    // }
-
-
-
-
 
     public function productDetails(Request $request, $slug)
     {

@@ -50,18 +50,9 @@
                             <div class="card-body">
                                 {{-- Product Name (English)--}}
                                 <div class="form-group">
-                                    <label for="name_en">Product Name (English)<span class="text-danger">*</span></label>
+                                    <label for="name_en">Product Name<span class="text-danger">*</span></label>
                                     <input type="text" name="name_en" value="{{ old('name_en') }}" class="form-control" placeholder="Product Name (English)" onkeyup="makeSlug(this.value)" required>
                                     @error('name_en')
-                                        <span class="text-danger">{{ $message }}</span>
-                                    @enderror
-                                </div>
-
-                                {{-- Product Name (Bangla)--}}
-                                <div class="form-group">
-                                    <label for="name_bn">Product Name (Bnagla)<span class="text-danger">*</span></label>
-                                    <input type="text" name="name_bn" value="{{ old('name_bn') }}" class="form-control" placeholder="Product Name (Bangla)" required>
-                                    @error('name_bn')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>
@@ -131,6 +122,14 @@
                                     <label class="mr-3">
                                         <input type="checkbox" name="active" {{ old('active', 1) ? 'checked' : '' }}>
                                         Active
+                                    </label>
+                                </div>
+
+                                {{-- Feature Checkbox --}}
+                                <div class="form-group">
+                                    <label class="mr-3">
+                                        <input type="checkbox" name="feature" {{ old('feature', 1) ? 'checked' : '' }}>
+                                        Featured
                                     </label>
                                 </div>
 

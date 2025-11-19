@@ -29,14 +29,35 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-            // if (session()->has('locale')) {
-            //     app()->setLocale(session('locale'));
-            // }
+        // if (session()->has('locale')) {
+        //     app()->setLocale(session('locale'));
+        // }
 
+        if (!function_exists('calculateDiscountPercentage')) {
+            function calculateDiscountPercentage($originalPrice, $discountPrice) {
+                if ($originalPrice <= 0) return 0;
+                return round((($originalPrice - $discountPrice) / $originalPrice) * 100);
+            }
+        }
+
+        // Share basic data with all views
         View::composer('*', function ($view) {
             View::share('headerMenus', Menu::whereActive(true)->where('type','header_menu')->orderBy('drag_id')->latest()->get());
             View::share('footerMenus', Menu::whereActive(true)->where('type','footer_menu')->orderBy('drag_id')->latest()->get());
-            View::share('ws',WebsiteParameter::first());
+            View::share('ws', WebsiteParameter::first());
+        });
+
+        // Share product categories only with specific views
+        View::composer(['frontend.products', 'frontend.home', 'frontend.shop'], function ($view) {
+            $productCategories = ProductCategory::where('active', true)
+                ->withCount(['products' => function($query) {
+                    $query->where('active', true);
+                }])
+                ->having('products_count', '>', 0)
+                ->orderBy('name')
+                ->get();
+            
+            $view->with('productCategories', $productCategories);
         });
 
         Paginator::useBootstrap();

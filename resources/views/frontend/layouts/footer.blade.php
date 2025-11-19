@@ -9,7 +9,7 @@
                     <div class="footer-widget footer-about-widget">
                         <div class="footer-logo">
                             <div class="site-logo">
-                                <img src="{{ asset('frontend/img/logo.png') }}" alt="Logo">
+                                <img src="{{ route('imagecache', ['template'=>'original','filename' => $ws->logo_alt()]) }}" alt="{{ $ws->website_title ?? '' }}">
                             </div>
                         </div>
                         <p>Hubli connects farmers, distributors, and businesses through a smart supply chain network across Bangladesh.</p>
@@ -144,10 +144,30 @@
 
 </footer>
 <!-- FOOTER AREA END -->
+<!-- QUICK VIEW MODAL -->
+<!-- <div class="modal fade" id="quickViewModal" tabindex="-1">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
 
+            <div class="modal-header">
+                <h5 class="modal-title">Product Preview</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body">
+
+                <div id="quickViewContent" class="text-center py-5">
+                    <p>Loading...</p>
+                </div>
+                
+            </div>
+            
+        </div>
+    </div>
+</div> -->
     <!-- MODAL AREA START (Quick View Modal) -->
     <div class="ltn__modal-area ltn__quick-view-modal-area">
-        <div class="modal fade" id="quick_view_modal" tabindex="-1">
+        <div class="modal fade" id="quickViewModal" tabindex="-1">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -158,88 +178,8 @@
                     </div>
                     <div class="modal-body">
                          <div class="ltn__quick-view-modal-inner">
-                             <div class="modal-product-item">
-                                <div class="row">
-                                    <div class="col-lg-6 col-12">
-                                        <div class="modal-product-img">
-                                            <img src="img/product/4.png" alt="#">
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 col-12">
-                                        <div class="modal-product-info">
-                                            <div class="product-ratting">
-                                                <ul>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                                    <li><a href="#"><i class="far fa-star"></i></a></li>
-                                                    <li class="review-total"> <a href="#"> ( 95 Reviews )</a></li>
-                                                </ul>
-                                            </div>
-                                            <h3>Vegetables Juices</h3>
-                                            <div class="product-price">
-                                                <span>$149.00</span>
-                                                <del>$165.00</del>
-                                            </div>
-                                            <div class="modal-product-meta ltn__product-details-menu-1">
-                                                <ul>
-                                                    <li>
-                                                        <strong>Categories:</strong> 
-                                                        <span>
-                                                            <a href="#">Parts</a>
-                                                            <a href="#">Car</a>
-                                                            <a href="#">Seat</a>
-                                                            <a href="#">Cover</a>
-                                                        </span>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="ltn__product-details-menu-2">
-                                                <ul>
-                                                    <li>
-                                                        <div class="cart-plus-minus">
-                                                            <input type="text" value="02" name="qtybutton" class="cart-plus-minus-box">
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#" class="theme-btn-1 btn btn-effect-1" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
-                                                            <i class="fas fa-shopping-cart"></i>
-                                                            <span>ADD TO CART</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <div class="ltn__product-details-menu-3">
-                                                <ul>
-                                                    <li>
-                                                        <a href="#" class="" title="Wishlist" data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal">
-                                                            <i class="far fa-heart"></i>
-                                                            <span>Add to Wishlist</span>
-                                                        </a>
-                                                    </li>
-                                                    <li>
-                                                        <a href="#" class="" title="Compare" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
-                                                            <i class="fas fa-exchange-alt"></i>
-                                                            <span>Compare</span>
-                                                        </a>
-                                                    </li>
-                                                </ul>
-                                            </div>
-                                            <hr>
-                                            <div class="ltn__social-media">
-                                                <ul>
-                                                    <li>Share:</li>
-                                                    <li><a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
-                                                    <li><a href="#" title="Twitter"><i class="fab fa-twitter"></i></a></li>
-                                                    <li><a href="#" title="Linkedin"><i class="fab fa-linkedin"></i></a></li>
-                                                    <li><a href="#" title="Instagram"><i class="fab fa-instagram"></i></a></li>
-                                                    
-                                                </ul>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
+                             <div class="modal-product-item" id="quickViewContent">
+                                <p>Loading...</p>
                              </div>
                          </div>
                     </div>
@@ -349,3 +289,124 @@
         </div>
     </div>
     <!-- preloader area end -->
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+<script>
+$(document).on("click", ".quick-view-btn", function (e) {
+    e.preventDefault();
+    
+    let productId = $(this).data("id");
+    $("#quickViewContent").html("<p>Loading...</p>");
+    $("#quickViewModal").modal("show");
+
+    $.ajax({
+        url: "{{ route('quick.view') }}",
+        type: "GET",
+        data: { id: productId },
+        success: function (response) {
+
+            $("#quickViewContent").html(`
+                <div class="row" >
+                    <div class="col-lg-6 col-12">
+                        <div class="modal-product-img">
+                            <img src="${response.image}" alt="#">
+                        </div>
+                    </div>
+                    <div class="col-lg-6 col-12">
+                        <div class="modal-product-info">
+                            <div class="product-ratting">
+                                <ul>
+                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                    <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
+                                    <li><a href="#"><i class="far fa-star"></i></a></li>
+                                    <li class="review-total"> <a href="#"> ( 95 Reviews )</a></li>
+                                </ul>
+                            </div>
+                            <h3>${response.name}</h3>
+                            <div class="product-price">
+                                <span>${response.price} ৳</span>
+                                ${response.old_price ? `<del>${response.old_price} ৳</del>` : ""}
+                            </div>
+                            <div class="modal-product-meta ltn__product-details-menu-1">
+                                <ul>
+                                    <li>
+                                        <strong>Categories:</strong> 
+                                        <span>
+                                            <a href="#">Parts</a>
+                                            <a href="#">Car</a>
+                                            <a href="#">Seat</a>
+                                            <a href="#">Cover</a>
+                                        </span>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="ltn__product-details-menu-2">
+                                <ul>
+                                    <li>
+                                        <div class="cart-plus-minus">
+                                            <div class="dec qtybutton">-</div>
+                                            <input type="text" value="1" name="qtybutton" class="cart-plus-minus-box">
+                                            <div class="inc qtybutton">+</div>
+                                        </div>
+
+                                    </li>
+                                    <li>
+                                        <a href="#" class="theme-btn-1 btn btn-effect-1" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                            <i class="fas fa-shopping-cart"></i>
+                                            <span>ADD TO CART</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="ltn__product-details-menu-3">
+                                <ul>
+                                    <li>
+                                        <a href="#" class="" title="Wishlist" data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal">
+                                            <i class="far fa-heart"></i>
+                                            <span>Add to Wishlist</span>
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="#" class="" title="Compare" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                            <i class="fas fa-exchange-alt"></i>
+                                            <span>Compare</span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <hr>
+                            <div class="ltn__social-media">
+                                <ul>
+                                    <li>Share:</li>
+                                    <li><a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
+                                    <li><a href="#" title="Twitter"><i class="fab fa-twitter"></i></a></li>
+                                    <li><a href="#" title="Linkedin"><i class="fab fa-linkedin"></i></a></li>
+                                    <li><a href="#" title="Instagram"><i class="fab fa-instagram"></i></a></li>
+                                    
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `);
+
+        }
+    });
+
+    $(document).on("click", ".qtybutton", function () {
+        let $button = $(this);
+        let oldValue = parseInt($button.parent().find("input").val());
+
+        if ($button.hasClass("inc")) {
+            var newVal = oldValue + 1;
+        } else {
+            var newVal = oldValue > 1 ? oldValue - 1 : 1;
+        }
+
+        $button.parent().find("input").val(newVal);
+    });
+
+});
+</script>
