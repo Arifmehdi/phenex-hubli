@@ -237,7 +237,7 @@
                 <div class="header-column flex-grow-1 flex-shrink-1">
                     <div class="header-row">
                         <div class="header-logo d-flex align-items-center flex-nowrap">
-                            <a href="{{ route('nb.home') }}" class="d-flex align-items-center text-decoration-none">
+                            <a href="{{ route('home') }}" class="d-flex align-items-center text-decoration-none">
                                 <img alt="{{ $ws->website_title ?? '' }}"
                                     src="{{ route('imagecache', ['template'=>'original','filename' => $ws->logo_alt()]) }}"
                                     class="logo-img">
@@ -254,7 +254,7 @@
                             <div class="header-nav-main header-nav-main-square header-nav-main-effect-1 header-nav-main-sub-effect-1">
                                 <nav class="collapse navbar-collapse">
                                     <ul class="nav nav-pills d-flex align-items-center flex-nowrap mb-0" id="mainNav">
-                                        <li><a class="nav-link {{ request()->routeIs('nb.home') ? 'active' : ''}}" href="{{ route('nb.home')}}">{{ __('Home') }}</a></li>
+                                        <li><a class="nav-link {{ request()->routeIs('home') ? 'active' : ''}}" href="{{ route('home')}}">{{ __('Home') }}</a></li>
                                         <li><a class="nav-link {{ request()->routeIs('shop.shasthoseba') ? 'active' : ''}}" href="{{ route('shop.shasthoseba') }}">{{ __('Products') }}</a></li>
                                         <!-- About US -->
                                         <li class="dropdown">

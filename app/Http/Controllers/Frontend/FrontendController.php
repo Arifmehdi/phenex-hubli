@@ -78,8 +78,51 @@ class FrontendController extends Controller
         return view('website.mdMessage', compact('wp'));  
     }
     
-    public function shop()
+    public function shop(Request $request)
     {
+
+
+    $query = Product::whereActive(true);
+
+    // Sorting
+    if ($request->get('sort') == 1) {
+        $query->latest();
+    } elseif ($request->get('sort') == 2) {
+        $query->oldest();
+    } elseif ($request->get('sort') == 3) {
+        $query->orderBy('final_price', 'desc');
+    } elseif ($request->get('sort') == 4) {
+        $query->orderBy('final_price', 'asc');
+    } else {
+        $query->latest();
+    }
+
+    $products = $query->paginate(12)->appends($request->all());
+
+    $categories = ProductCategory::whereActive(true)->latest()->get();
+    $total_products = Product::whereActive(true)->count();
+    $subcategories = ProductCategory::whereNull('parent_id')
+        ->where('active', 1)
+        ->orderBy('name_en')
+        ->get();
+
+    // Get all root categories for sidebar
+    $allRootCategories = ProductCategory::whereNull('parent_id')
+        ->where('active', 1)
+        ->orderBy('name_en')
+        ->get();
+
+    return view("website.shop", compact(
+        'products', 
+        'categories', 
+        'total_products', 
+        'subcategories',
+        'allRootCategories' // Add this
+    ));
+
+
+
+
         return view('website.shop' );  
     }
 
@@ -784,6 +827,7 @@ public function shasthoseba(Request $request)
                             ->take(12)
                             ->get();
 
+        return view('website.shop_details', compact('product','relatedProducts'));
         return view('frontend.home.productDetails', compact('product','relatedProducts'));
     }
 

@@ -210,7 +210,7 @@
                         <div class="widget ltn__menu-widget">
                             <h4 class="ltn__widget-title ltn__widget-title-border">Product categories</h4>
                             <ul>
-                                <li><a href="{{ route('productCategory') }}">All ({{ $total_products }}) <span><i class="fas fa-long-arrow-alt-right"></i></span></a></li>
+                                <li><a href="{{ route('shop') }}">All ({{ $total_products }}) <span><i class="fas fa-long-arrow-alt-right"></i></span></a></li>
                                 @foreach ($subcategories as $subcategory)
                                     <li>
                                         <a href="{{ route('productCategory', $subcategory->slug) }}">{{ $subcategory->name_en }} ({{ $subcategory->products()->count() }}) 
