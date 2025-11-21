@@ -142,10 +142,9 @@
                         <div class="mini-cart-icon">
                             <a href="#ltn__utilize-cart-menu" class="ltn__utilize-toggle">
                                 <i class="icon-shopping-cart"></i>
-                                <sup>2</sup>
+                                <sup id="cart-count">{{ $cartCount ?? 0 }}</sup>
                             </a>
                         </div>
-                        <!-- mini-cart -->
                         <!-- Mobile Menu Button -->
                         <div class="mobile-menu-toggle d-xl-none">
                             <a href="#ltn__utilize-mobile-menu" class="ltn__utilize-toggle">
@@ -167,68 +166,47 @@
         </div>
         <!-- ltn__header-middle-area end -->
     </header>
-    <!-- Utilize Cart Menu Start -->
-    <div id="ltn__utilize-cart-menu" class="ltn__utilize ltn__utilize-cart-menu">
-        <div class="ltn__utilize-menu-inner ltn__scrollbar">
-            <div class="ltn__utilize-menu-head">
-                <span class="ltn__utilize-menu-title">Cart</span>
-                <button class="ltn__utilize-close">×</button>
-            </div>
-            <div class="mini-cart-product-area ltn__scrollbar">
-                <div class="mini-cart-item clearfix">
-                    <div class="mini-cart-img">
-                        <a href="#"><img src="img/product/1.png" alt="Image"></a>
-                        <span class="mini-cart-item-delete"><i class="icon-cancel"></i></span>
-                    </div>
-                    <div class="mini-cart-info">
-                        <h6><a href="#">Red Hot Tomato</a></h6>
-                        <span class="mini-cart-quantity">1 x $65.00</span>
-                    </div>
-                </div>
-                <div class="mini-cart-item clearfix">
-                    <div class="mini-cart-img">
-                        <a href="#"><img src="img/product/2.png" alt="Image"></a>
-                        <span class="mini-cart-item-delete"><i class="icon-cancel"></i></span>
-                    </div>
-                    <div class="mini-cart-info">
-                        <h6><a href="#">Vegetables Juices</a></h6>
-                        <span class="mini-cart-quantity">1 x $85.00</span>
-                    </div>
-                </div>
-                <div class="mini-cart-item clearfix">
-                    <div class="mini-cart-img">
-                        <a href="#"><img src="img/product/3.png" alt="Image"></a>
-                        <span class="mini-cart-item-delete"><i class="icon-cancel"></i></span>
-                    </div>
-                    <div class="mini-cart-info">
-                        <h6><a href="#">Orange Sliced Mix</a></h6>
-                        <span class="mini-cart-quantity">1 x $92.00</span>
-                    </div>
-                </div>
-                <div class="mini-cart-item clearfix">
-                    <div class="mini-cart-img">
-                        <a href="#"><img src="img/product/4.png" alt="Image"></a>
-                        <span class="mini-cart-item-delete"><i class="icon-cancel"></i></span>
-                    </div>
-                    <div class="mini-cart-info">
-                        <h6><a href="#">Orange Fresh Juice</a></h6>
-                        <span class="mini-cart-quantity">1 x $68.00</span>
-                    </div>
-                </div>
-            </div>
-            <div class="mini-cart-footer">
-                <div class="mini-cart-sub-total">
-                    <h5>Subtotal: <span>$310.00</span></h5>
-                </div>
-                <div class="btn-wrapper">
-                    <a href="{{route('cart')}}" class="theme-btn-1 btn btn-effect-1">View Cart</a>
-                    <a href="{{route('cart')}}" class="theme-btn-2 btn btn-effect-2">Checkout</a>
-                </div>
-                <p>Free Shipping on All Orders Over $100!</p>
-            </div>
+<!-- Mini-cart content -->
+<div id="ltn__utilize-cart-menu" class="ltn__utilize ltn__utilize-cart-menu">
+    <div class="ltn__utilize-menu-inner ltn__scrollbar">
+        <div class="ltn__utilize-menu-head">
+            <span class="ltn__utilize-menu-title">Cart</span>
+            <button class="ltn__utilize-close">×</button>
+        </div>
 
+        <div class="mini-cart-product-area ltn__scrollbar">
+            @forelse($cartItems as $item)
+            <div class="mini-cart-item clearfix">
+                <div class="mini-cart-img">
+                    <a href="{{ route('productDetails', $item->product->slug) }}">
+                        <img src="{{ route('imagecache', ['template' => 'pnism', 'filename' => $item->product->fi()]) }}" alt="{{ $item->product->name_en }}">
+                    </a>
+                    <span class="mini-cart-item-delete ">
+                        <i class="icon-cancel cart-product-remove"  data-id="{{ $item->id }}"></i>
+                    </span>
+                </div>
+                <div class="mini-cart-info">
+                    <h6><a href="{{ route('productDetails', $item->product->slug) }}">{{ $item->product->name_en }}</a></h6>
+                    <span class="mini-cart-quantity">{{ $item->quantity }} x {{ number_format($item->product->final_price, 2) }} ৳</span>
+                </div>
+            </div>
+            @empty
+            <p class="text-center">Your cart is empty!</p>
+            @endforelse
+        </div>
+
+        <div class="mini-cart-footer">
+            <div class="mini-cart-sub-total">
+                <h5>Subtotal: <span>{{ number_format($cartItems->sum(fn($i) => $i->quantity * $i->product->final_price), 2) }} ৳</span></h5>
+            </div>
+            <div class="btn-wrapper">
+                <a href="{{ route('new.checkout') }}" class="theme-btn-1 btn btn-effect-1">View Cart</a>
+                {{--<a href="{{ route('new.checkout') }}" class="theme-btn-2 btn btn-effect-2">Checkout</a>--}}
+            </div>
+            <!-- <p>Free Shipping on All Orders Over $100!</p> -->
         </div>
     </div>
+</div>
     <!-- Utilize Cart Menu End -->
 
     <!-- Utilize Mobile Menu Start -->
@@ -310,7 +288,6 @@ $(document).ready(function() {
     $(document).on('click', '.cart-product-remove', function(e) {
         e.preventDefault();
         var cartId = $(this).data('id');
-        alert(cartId)
 
         if (!cartId) return;
 
@@ -441,5 +418,67 @@ $(document).ready(function() {
     });
 });
     </script>
-
+    <script>
+    $(document).ready(function() {
+        $(document).on('click', '.updateCartItem', function (e) {
+            e.preventDefault();
+    
+            let $btn = $(this);
+            let cartId = $btn.data('cart');
+            let url = $btn.data('url');
+            let $wrapper = $btn.closest('.cart-action-wrapper');
+            let qty = parseInt($wrapper.find('.cartQtyDisplay').text()) || 0;
+    
+            // Qty update
+            if ($btn.hasClass('plus')) {
+                qty++;
+            } else if ($btn.hasClass('minus')) {
+                qty--;
+                if (qty < 1) {
+                    // If quantity is less than 1, remove the item
+                    $('.cart-item[data-cart="' + cartId + '"] .deleteCartItem').click();
+                    return;
+                }
+            }
+    
+            $btn.prop('disabled', true); // prevent double click
+    
+            $.ajax({
+                url: url,
+                method: 'POST',
+                data: {
+                    cart: cartId,
+                    new_qty: qty,
+                    _token: '{{ csrf_token() }}'
+                },
+                success: function (res) {
+                    if (res.status) {
+                        refreshCartTotals();
+                    }
+                },
+                error: function () {
+                    alert('Something went wrong! Please try again.');
+                },
+                complete: function () {
+                    $btn.prop('disabled', false);
+                }
+            });
+        });
+    
+        $(document).on("click", ".deleteCartItem", function () {
+            let btn = $(this);
+            $.post(btn.data("url"), {_token: '{{ csrf_token() }}'}, function (res) {
+                if (res.status) {
+                    refreshCartTotals();
+                }
+            }).fail(() => {
+                Swal.fire("Error", "Cart item could not be removed.", "error");
+            });
+        });
+    
+        function refreshCartTotals() {
+            location.reload();
+        }
+    });
+    </script>
     @endpush

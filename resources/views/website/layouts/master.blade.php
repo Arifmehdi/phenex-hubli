@@ -20,6 +20,11 @@
     <link rel="stylesheet" href="{{ asset('frontend/css/style.css') }}">
     <!-- Responsive css -->
     <link rel="stylesheet" href="{{ asset('frontend/css/responsive.css') }}">
+
+        <!-- Analytics -->
+    @if(!empty($ws->google_analytics_code)){!! $ws->google_analytics_code !!}@endif
+    @if(!empty($ws->google_search_console)){!! $ws->google_search_console !!}@endif
+    @if(!empty($ws->facebook_pixel_code)){!! $ws->facebook_pixel_code !!}@endif
     @stack('css')
 </head>
 
@@ -32,7 +37,12 @@
 
 <!-- Body main wrapper start -->
 <div class="body-wrapper">
-
+@php 
+$count_info = \App\Models\Cart::when(Auth::check(), fn($q) => $q->where('user_id', Auth::id()))
+    ->when(!Auth::check(), fn($q) => $q->where('session_id', session('session_id')));
+$count_data = $count_info->count();
+$totalCartPrice = \App\Models\Cart::totalCartPrice();
+@endphp
     <!-- HEADER AREA START (header-5) -->
     @include('website.layouts.header')
     <!-- HEADER AREA END -->
@@ -60,7 +70,15 @@
     <script src="{{ asset('frontend/js/plugins.js') }}"></script>
     <!-- Main JS -->
     <script src="{{ asset('frontend/js/main.js') }}"></script>
-    
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+@stack('js')
+
+<script>
+
+<!-- ✅ Floating WhatsApp Icon -->
+<a class="floating-message-icon" href="https://wa.me/8801334927985?text=Hello%20there!" target="_blank">
+    <img src="{{ asset('frontend/assets/img/icons/whatsapp.svg') }}" alt="WhatsApp">
+</a>
     @stack('js')
 </body>
 </html>

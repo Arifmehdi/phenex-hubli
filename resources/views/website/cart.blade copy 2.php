@@ -1,11 +1,8 @@
 @extends('website.layouts.master')
-@section('title', 'Checkout')
+
+@section('title', 'Cart - '. env('APP_NAME') )
 
 @section('content')
-
-<!-- BREADCRUMB AREA START -->
-<x-breadcrumb title="Checkout" pageName="Checkout" bgImage="frontend/img/bg/9.jpg" />
-<!-- BREADCRUMB AREA END -->
 @php
     $me = Auth::user();
     if($me){
@@ -16,56 +13,15 @@
     }
     $cartTotal = $cart_total ?? $cartItems->sum(fn($item) => $item->price * $item->quantity);
 @endphp
-<div class="container ">
+<div class="container py-5">
     <div class="row">
         <div class="col-12">
             <h1 class="mb-4"><strong>Checkout</strong></h1>
         </div>
     </div>
 
-                        <div class="ltn__checkout-single-content ltn__returning-customer-wrap">
-                        <h5>Returning customer? <a class="ltn__secondary-color" href="#ltn__returning-customer-login"
-                                data-bs-toggle="collapse">Click here to login</a></h5>
-                        <div id="ltn__returning-customer-login" class="collapse ltn__checkout-single-content-info">
-                            <div class="ltn_coupon-code-form ltn__form-box">
-                                <p>Please login your accont.</p>
-                                <form action="#">
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="input-item input-item-name ltn__custom-icon">
-                                                <input type="text" name="ltn__name" placeholder="Enter your name">
-                                            </div>
-                                        </div>
-                                        <div class="col-md-6">
-                                            <div class="input-item input-item-email ltn__custom-icon">
-                                                <input type="email" name="ltn__email" placeholder="Enter email address">
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <button class="btn theme-btn-1 btn-effect-1 text-uppercase">Login</button>
-                                    <label class="input-info-save mb-0"><input type="checkbox" name="agree"> Remember
-                                        me</label>
-                                    <p class="mt-30"><a href="register.html">Lost your password?</a></p>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="ltn__checkout-single-content ltn__coupon-code-wrap">
-                        <h5>Have a coupon? <a class="ltn__secondary-color" href="#ltn__coupon-code"
-                                data-bs-toggle="collapse">Click here to enter your code</a></h5>
-                        <div id="ltn__coupon-code" class="collapse ltn__checkout-single-content-info">
-                            <div class="ltn__coupon-code-form">
-                                <p>If you have a coupon code, please apply it below.</p>
-                                <form action="#">
-                                    <input type="text" name="coupon-code" placeholder="Coupon code">
-                                    <button class="btn theme-btn-2 btn-effect-2 text-uppercase">Apply Coupon</button>
-                                </form>
-                            </div>
-                        </div>
-                    </div>
-
     @if($cartItems->isEmpty())
-        <p class="text-center text-muted py-5 fs-5">Your cart is empty</p>
+        <p class="text-center text-muted py-5 fs-5">Your cart is empty ðŸ›’</p>
     @else 
     <div class="row">
         <div class="col-12">
@@ -82,7 +38,7 @@
                         <div class="alert alert-danger">{{ session('error') }}</div>
                     @endif
                     <div class="row">
-                        <header class="py-2 px-3" style="background: #699403;">
+                        <header class="py-2 px-3" style="background: #2D529F;">
                             <h2 class="text-white h5 d-flex align-items-center gap-2 mb-0">
                                 <i class="fas fa-shipping-fast"></i> Shipping Address
                             </h2>
@@ -122,6 +78,32 @@
                                                 <textarea class="form-control" id="billing-address" name="billing_address" rows="3" placeholder="e.g. Home, Office, Momâ€™s House" value="{{ $dl ? $dl->address_title : old('address_title') }}">{{ $dl ? $dl->address_title : old('address_title') }}</textarea>
                                             </div>
 
+                                            <div class="mb-3" style="display:none">
+                                                <label for="district" class="form-label">District</label>
+                                                <select class="form-select" id="district" name="district" required style="font-size: 13px" disabled>
+                                                    <option selected disabled>Select a district</option>
+                                                    @foreach($districts as $district)
+                                                        <option value="{{ $district->id }}" @if($district->name == 'Dhaka') selected @endif>{{ $district->name }}</option>
+                                                    @endforeach
+                                                </select>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="thana" class="form-label">Thana</label>
+                                                <select class="form-select" id="thana" name="thana" required style="font-size: 13px">
+                                                    <option selected disabled>Select a thana</option>
+                                                </select>
+                                            </div>
+            
+        
+                                            <!-- Shipping Options -->
+                                            <div id="shipping-options-container" style="display: none;">
+                                                <div class="col-12 mt-3">
+                                                    <h6 class="fw-semibold">Select Shipping Method:</h6>
+                                                    <div id="shipping-options">
+                                                        <!-- Shipping options will be loaded here dynamically -->
+                                                    </div>
+                                                </div>
+                                            </div>
                                             
                                         </form>
                                     </div>
@@ -283,7 +265,7 @@
                     </div> -->
 
                     <!-- Proceed Button -->
-                    <button class="btn w-100 mt-3 text-white" id="proceed-to-pay-button" style="background: #699403;" disabled>
+                    <button class="btn w-100 mt-3 text-white" id="proceed-to-pay-button" style="background:#2D529F;" disabled>
                         Proceed to Pay
                     </button>
                 </div>
@@ -309,8 +291,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const addressSelectionForm = document.getElementById('address-selection-form');
 
     // Elements for dynamic address selection and shipping options
+    const districtSelect = document.getElementById('district');
+    const thanaSelect = document.getElementById('thana');
     const zipInput = document.getElementById('zip');
     const shippingOptionsContainer = document.getElementById('shipping-options-container');
+    const selectedAddressElement = document.getElementById('selected-address');
 
     const codRoute = "{{ route('codOrderStore') }}";
     const onlineRoute = "{{ url('order/store') }}";
@@ -365,6 +350,81 @@ document.addEventListener('DOMContentLoaded', () => {
                 addressSelectionForm.style.display = 'none';
             }
         });
+    }
+
+    // âœ… District change â†’ load thanas and shipping methods
+    if (districtSelect && thanaSelect) {
+        function loadThanas(districtId, selectedThanaId = null) {
+            if (districtId) {
+                fetch(`/get-upazilas/${districtId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        thanaSelect.innerHTML = '<option selected disabled>Select a thana</option>';
+                        data.forEach(upazila => {
+                            const option = document.createElement('option');
+                            option.value = upazila.id;
+                            option.textContent = upazila.name;
+                            if (selectedThanaId && selectedThanaId == upazila.id) {
+                                option.selected = true;
+                            }
+                            thanaSelect.appendChild(option);
+                        });
+                    })
+                    .catch(() => {
+                        thanaSelect.innerHTML = '<option selected disabled>Error loading thanas</option>';
+                    });
+            }
+        }
+
+        function loadShippingMethods(upazilaId) {
+            if (upazilaId) {
+                fetch(`/get-shipping-methods/${upazilaId}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        const shippingOptionsContainer = document.getElementById('shipping-options');
+                        shippingOptionsContainer.innerHTML = '';
+                        data.forEach((method, index) => {
+                            const div = document.createElement('div');
+                            div.classList.add('form-check');
+                            div.innerHTML = `
+                                <input class="form-check-input" type="radio" name="shipping-option" id="shipping-option-${method.id}" value="${method.price}" ${index === 0 ? 'checked' : ''}>
+                                <label class="form-check-label" for="shipping-option-${method.id}">
+                                    ${method.name} (${method.min_weight} - ${method.max_weight} Kg): ${method.price}à§³
+                                </label>
+                            `;
+                            shippingOptionsContainer.appendChild(div);
+                        });
+
+                        const shippingOptionInputs = document.querySelectorAll('input[name="shipping-option"]');
+                        if (shippingOptionInputs) {
+                            shippingOptionInputs.forEach(option => {
+                                option.addEventListener('change', updateTotals);
+                            });
+                        }
+
+                        document.getElementById('shipping-options-container').style.display = 'block';
+                        updateTotals(); // Update totals after loading shipping methods
+                    })
+                    .catch(() => {
+                        const shippingOptionsContainer = document.getElementById('shipping-options');
+                        shippingOptionsContainer.innerHTML = '<p>Error loading shipping methods.</p>';
+                        document.getElementById('shipping-options-container').style.display = 'block';
+                    });
+            }
+        }
+
+        districtSelect.addEventListener('change', () => {
+            loadThanas(districtSelect.value);
+        });
+
+        thanaSelect.addEventListener('change', () => {
+            loadShippingMethods(thanaSelect.value);
+        });
+
+        @if($location && $location->district_id)
+            loadThanas("{{ $location->district_id }}", "{{ $location->upazila_id }}");
+            loadShippingMethods("{{ $location->upazila_id }}");
+        @endif
     }
 
     // âœ… Update totals function
@@ -474,6 +534,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 if (shippingOptionsContainer) {
                     shippingOptionsContainer.style.display = 'block';
                 }
+                if (selectedAddressElement) {
+                    selectedAddressElement.textContent = `Shipping options available for zip code: ${zipCode}`;
+                }
                 
                 // Update totals
                 updateTotals();
@@ -481,6 +544,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Hide shipping options if zip code is empty
                 if (shippingOptionsContainer) {
                     shippingOptionsContainer.style.display = 'none';
+                }
+                if (selectedAddressElement) {
+                    selectedAddressElement.textContent = 'Please enter zip code to see shipping options.';
                 }
                 
                 // Reset to free shipping and update totals
@@ -509,6 +575,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const email = document.getElementById('email')?.value;
             const mobile = document.getElementById('mobile')?.value;
             const billingAddress = document.getElementById('billing-address')?.value;
+            const billingDistrictId = document.getElementById('district')?.value;
+            const billingThanaId = document.getElementById('thana')?.value;
 
             if (!name || !email || !mobile || !billingAddress) {
                 Swal.fire('Error', 'Please fill in all required shipping address fields.', 'error');
@@ -533,6 +601,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 mobile: mobile,
                 billing_address: billingAddress,
                 payment_method: selected.value,
+                billing_district_id : billingDistrictId,
+                billing_thana_id :  billingThanaId,
                 transaction_id: selected.value === 'online' ? document.getElementById('transaction_id')?.value : null,
             };
 
@@ -568,7 +638,9 @@ document.addEventListener('DOMContentLoaded', () => {
     toggleProceedButton();
     updateTotals();
     
-
+    // Trigger change event on district dropdown to load thanas for Dhaka
+    var event = new Event('change');
+    districtSelect.dispatchEvent(event);
 });
 </script>
 

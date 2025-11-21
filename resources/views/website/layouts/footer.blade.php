@@ -417,7 +417,7 @@ $(document).on("click", ".quick-view-btn", function (e) {
 
                                     </li>
                                     <li>
-                                        <a href="#" class="theme-btn-1 btn btn-effect-1" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                        <a href="#" class="theme-btn-1 btn btn-effect-1 add-to-cart-btn" title="Add to Cart" data-id="${response.id}">
                                             <i class="fas fa-shopping-cart"></i>
                                             <span>ADD TO CART</span>
                                         </a>

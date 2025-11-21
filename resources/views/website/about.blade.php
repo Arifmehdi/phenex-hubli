@@ -355,13 +355,7 @@
 
         {{-- Team Badge --}}
         <div class="text-center">
-            <div class="d-inline-flex align-items-center gap-3 bg-success bg-opacity-10 px-5 py-3 rounded-pill border border-success border-2">
-                <i class="bi bi-people-fill text-success" style="font-size: 2rem;"></i>
-                <div class="text-start">
-                    <div class="fw-bold text-white">Contact Hubli</div>
-                    <!-- <small class=" text-white">Supply Chain Innovators</small> -->
-                </div>
-            </div>
+            <button class="btn theme-btn-1 btn-effect-1 text-uppercase" type="submit">Submit Quote</button>
         </div>
     </div>
 </section>
@@ -399,18 +393,20 @@
 <section class="py-5 bg-light">
     <div class="container">
 
-        <div class="row g-4">
-            <div class="col-md-6">
+        <div class="row g-4 justify-content-center">
+
+            <div class="col-md-6 d-flex flex-column align-items-center text-center">
                 <h4 class="fw-bold mb-3">Annual Per Person Food Waste in South Asia</h4>
                 <img src="{{ asset('frontend/img/about_us/bar_chart_south_asia.webp') }}"
-                     class="img-fluid rounded shadow animate-fade-up">
+                     class="chart-img img-fluid rounded shadow animate-fade-up">
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-6 d-flex flex-column align-items-center text-center">
                 <h4 class="fw-bold mb-3">Breakdown of Annual Food Wastage</h4>
                 <img src="{{ asset('frontend/img/about_us/pie_chart_wastage_stage.webp') }}"
-                     class="img-fluid rounded shadow animate-fade-up">
+                     class="chart-img img-fluid rounded shadow animate-fade-up">
             </div>
+
         </div>
 
     </div>

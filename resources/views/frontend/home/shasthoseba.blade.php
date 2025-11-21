@@ -1,6 +1,6 @@
-@extends('frontend.layouts.ecommercemaster')
+@extends('website.layouts.master')
 
-@section('title', "North Bengal Dairy Farm - Premium Products Online")
+@section('title', 'Checkout')
 
 @section('meta')
 <meta name="description" content="Browse and shop high-quality products from North Bengal Dairy Farm. Find dairy products, groceries, and more with best prices and fast delivery.">
@@ -29,6 +29,13 @@
 @endpush
 
 @section('content')
+
+
+<!-- BREADCRUMB AREA START -->
+<x-breadcrumb title="Checkout" pageName="Checkout" bgImage="frontend/img/bg/9.jpg" />
+<!-- BREADCRUMB AREA END -->
+
+
 <section class="section my-0 py-0">
     <div class="container py-5">
         <div class="row g-4">

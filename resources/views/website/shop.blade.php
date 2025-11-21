@@ -18,9 +18,9 @@
     
     <!-- PRODUCT DETAILS AREA START -->
     <div class="ltn__product-area ltn__product-gutter">
-        <div class="container">
+        <div class="container-fluid px-5">
             <div class="row">
-                <div class="col-lg-8 order-lg-2 mb-120">
+                <div class="col-lg-9 order-lg-2 mb-120">
                     <div class="ltn__shop-options">
                         <ul>
                             <li>
@@ -60,7 +60,7 @@
 
                                     @forelse ($products as $product)
                                     <!-- ltn__product-item -->
-                                    <div class="col-xl-4 col-sm-6 col-6">
+                                    <div class="col-xl-3 col-sm-6 col-6">
                                         <div class="ltn__product-item ltn__product-item-3 text-center">
                                             <div class="product-img">
                                                 <a href="{{ route('productDetails', $product->slug) }}">
@@ -79,7 +79,7 @@
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="#" title="Add to Cart" class="add-to-cart-btn"  data-bs-toggle="modal" data-id="{{ $product->id }}" data-bs-target="#add_to_cart_modal">
+                                                            <a href="#" title="Add to Cart" class="add-to-cart-btn"  data-id="{{ $product->id }}">
                                                                 <i class="fas fa-shopping-cart"></i>
                                                             </a>
                                                         </li>
@@ -181,7 +181,7 @@
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="#" title="Add to Cart" class="add-to-cart-btn"  data-bs-toggle="modal" data-id="{{ $product->id }}" data-bs-target="#add_to_cart_modal">
+                                                            <a href="#" title="Add to Cart" class="add-to-cart-btn"  data-id="{{ $product->id }}">
                                                                 <i class="fas fa-shopping-cart"></i>
                                                             </a>
                                                         </li>
@@ -211,7 +211,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4  mb-120">
+                <div class="col-lg-3  mb-120">
                     <aside class="sidebar ltn__shop-sidebar">
                         <!-- Category Widget -->
                         <div class="widget ltn__menu-widget">
@@ -438,6 +438,7 @@ $(document).on('click', '.add-to-wishlist', function() {
             $("#cart_modal_img").attr("src", res.image);
             $("#cart_modal_name").html(res.name);
             $("#cart_modal_message").html("Successfully added to your Cart");
+            $("#add_to_cart_modal").modal('show');
         }
     });
 });
