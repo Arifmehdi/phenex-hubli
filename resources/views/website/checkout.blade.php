@@ -1,4 +1,4 @@
-@extends('frontend.layouts.master')
+@extends('website.layouts.master')
 
 @section('title', 'Checkout - '. env('APP_NAME') )
 
@@ -96,56 +96,6 @@
                                             </div>
                                         </div>
                                     </div>
-                                    <div class="row">
-                                        <div class="col-lg-4 col-md-6">
-                                            <h6>Country</h6>
-                                            <div class="input-item">
-                                                <select class="nice-select">
-                                                    <option>Select Country</option>
-                                                    <option>Australia</option>
-                                                    <option>Canada</option>
-                                                    <option>China</option>
-                                                    <option>Morocco</option>
-                                                    <option>Saudi Arabia</option>
-                                                    <option>United Kingdom (UK)</option>
-                                                    <option>United States (US)</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-12 col-md-12">
-                                            <h6>Address</h6>
-                                            <div class="row">
-                                                <div class="col-md-6">
-                                                    <div class="input-item">
-                                                        <input type="text" placeholder="House number and street name">
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-6">
-                                                    <div class="input-item">
-                                                        <input type="text" placeholder="Apartment, suite, unit etc. (optional)">
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6">
-                                            <h6>Town / City</h6>
-                                            <div class="input-item">
-                                                <input type="text" placeholder="City">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6">
-                                            <h6>State </h6>
-                                            <div class="input-item">
-                                                <input type="text" placeholder="State">
-                                            </div>
-                                        </div>
-                                        <div class="col-lg-4 col-md-6">
-                                            <h6>Zip</h6>
-                                            <div class="input-item">
-                                                <input type="text" placeholder="Zip">
-                                            </div>
-                                        </div>
-                                    </div>
                                     <p><label class="input-info-save mb-0"><input type="checkbox" name="agree"> Create an account?</label></p>
                                     <h6>Order Notes (optional)</h6>
                                     <div class="input-item input-item-textarea ltn__custom-icon">
@@ -163,17 +113,6 @@
                         <div id="checkout_accordion_1">
                             <!-- card -->
                             <div class="card">
-                                <h5 class="collapsed ltn__card-title" data-bs-toggle="collapse" data-bs-target="#faq-item-2-1" aria-expanded="false">
-                                    Check payments
-                                </h5>
-                                <div id="faq-item-2-1" class="collapse" data-parent="#checkout_accordion_1">
-                                    <div class="card-body">
-                                        <p>Please send a check to Store Name, Store Street, Store Town, Store State / County, Store Postcode.</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- card -->
-                            <div class="card">
                                 <h5 class="ltn__card-title" data-bs-toggle="collapse" data-bs-target="#faq-item-2-2" aria-expanded="true"> 
                                     Cash on delivery  <img src="{{ asset('frontend/img/icons/cash.png') }}" alt="#">
                                 </h5>
@@ -183,25 +122,15 @@
                                     </div>
                                 </div>
                             </div>                             
-                            <!-- card -->
-                            <div class="card">
-                                <h5 class="collapsed ltn__card-title" data-bs-toggle="collapse" data-bs-target="#faq-item-2-3" aria-expanded="false" >
-                                    ApplePay  <img src="{{ asset('frontend/img/icons/applepay.png') }}" alt="#">
-                                </h5>
-                                <div id="faq-item-2-3" class="collapse" data-parent="#checkout_accordion_1">
-                                    <div class="card-body">
-                                        <p>Apple Pay is the modern way to pay.</p>
-                                    </div>
-                                </div>
-                            </div>
+
                             <!-- card -->
                             <div class="card">
                                 <h5 class="collapsed ltn__card-title" data-bs-toggle="collapse" data-bs-target="#faq-item-2-4" aria-expanded="false" >
-                                    PayPal <img src="{{ asset('frontend/img/icons/payment-3.png') }}" alt="#">
+                                    Online Payment <img src="{{ asset('frontend/img/icons/payment-3.png') }}" alt="#">
                                 </h5>
                                 <div id="faq-item-2-4" class="collapse" data-parent="#checkout_accordion_1">
                                     <div class="card-body">
-                                        <p>Pay via PayPal; you can pay with your credit card if you don’t have a PayPal account.</p>
+                                        <p>Pay via Online; you can pay with your credit card if you don’t have a PayPal account.</p>
                                     </div>
                                 </div>
                             </div>

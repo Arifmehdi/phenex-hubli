@@ -678,8 +678,114 @@ class FrontendController extends Controller
 
     public function cart()
     {
-        return view('website.cart');
+        $session_id = Session::get('session_id', function () {
+            $id = Session::getId();
+            Session::put('session_id', $id);
+            return $id;
+        });
+
+        $user_id = Auth::id() ?? 0;
+
+        // Fetch cart items for this user/session
+        $cartItems = Cart::with('product') // make sure Cart model has 'product' relation
+            ->where('session_id', $session_id)
+            ->orWhere('user_id', $user_id)
+            ->get();
+
+        // Calculate totals
+        $cartSubtotal = $cartItems->sum(function ($item) {
+            return $item->quantity * $item->product->final_price;
+        });
+
+        return view('website.cart', compact('cartItems', 'cartSubtotal'));
     }
+
+        public function updateQuantity(Request $request, $cartId)
+    {
+        try {
+            // Validate the request
+            $request->validate([
+                'quantity' => 'required|integer|min:1'
+            ]);
+
+            // Find the cart item
+            $cartItem = Cart::where('id', $cartId);
+            
+            // If you have user authentication, you might want to check if the cart item belongs to the user
+            if (Auth::check()) {
+                $cartItem = $cartItem->where('user_id', Auth::id());
+            } else {
+                // For guest users, you might use session_id or other identifier
+                $cartItem = $cartItem->where('session_id', session()->getId());
+            }
+            
+            $cartItem = $cartItem->first();
+
+            if (!$cartItem) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Cart item not found!'
+                ], 404);
+            }
+
+            // Check product stock if needed
+            $product = $cartItem->product;
+            if ($product->stock < $request->quantity) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'Only ' . $product->stock . ' items available in stock!'
+                ]);
+            }
+
+            // Update quantity
+            $cartItem->update([
+                'quantity' => $request->quantity
+            ]);
+
+            // Calculate updated cart totals
+            $cartItems = Cart::with('product')
+                ->when(Auth::check(), function($query) {
+                    $query->where('user_id', Auth::id());
+                }, function($query) {
+                    $query->where('session_id', session()->getId());
+                })
+                ->get();
+
+            $cartSubtotal = $cartItems->sum(function($item) {
+                return $item->quantity * $item->product->final_price;
+            });
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Quantity updated successfully!',
+                'cartSubtotal' => $cartSubtotal,
+                'cartCount' => $cartItems->sum('quantity')
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Something went wrong! Please try again.'
+            ], 500);
+        }
+    }
+
+    public function remove($id)
+    {
+        Cart::findOrFail($id)->delete();
+        return redirect()->back()->with('success', 'Product removed from cart!');
+    }
+
+public function update(Request $request)
+{
+    foreach($request->qty as $id => $qty){
+        $cart = Cart::find($id);
+        if($cart) $cart->update(['quantity' => $qty]);
+    }
+    return redirect()->back()->with('success', 'Cart updated successfully!');
+}
+
+
 
     public function checkouts()
     {
@@ -744,6 +850,54 @@ class FrontendController extends Controller
 
         return response()->noContent();
     }
+
+public function quickAdd(Request $request)
+{
+    $request->validate([
+        'id' => 'required|integer|exists:products,id'
+    ]);
+
+    $productId = $request->id;
+
+    $session_id = Session::get('session_id', function () {
+        $id = Session::getId();
+        Session::put('session_id', $id);
+        return $id;
+    });
+
+    $user_id = Auth::id() ?? 0;
+
+    // Cache product
+    $product = Cache::remember("product_{$productId}", now()->addMinutes(10), function () use ($productId) {
+        return Product::find($productId);
+    });
+
+    if (!$product) {
+        return response()->json(['error' => 'Product not found'], 404);
+    }
+
+    // Find or create cart item
+    $cart = Cart::firstOrNew([
+        'product_id' => $product->id,
+        'session_id' => $session_id,
+        'user_id'    => $user_id,
+    ]);
+
+    $cart->quantity   = $cart->exists ? $cart->quantity + 1 : 1;
+    $cart->addedby_id = $user_id;
+    $cart->save();
+
+    return response()->json([
+        'success' => true,
+        'message' => $product->name_en . ' added to cart successfully!',
+        'id'      => $product->id,
+        'name'    => $product->name_en,
+        'price'   => $product->final_price,
+        'image'   => route('imagecache', ['template' => 'pnism', 'filename' => $product->fi()])
+    ]);
+}
+
+
 
 
 
@@ -844,12 +998,12 @@ class FrontendController extends Controller
             ], 404);
         }
 
-        // Security check
-        if (Auth::check() && $cart->user_id != Auth::id()) {
-            abort(403, 'Unauthorized action. 02');
-        } elseif (!Auth::check() && $cart->session_id !== session('session_id')) {
-            abort(403, 'Unauthorized action.');
-        }
+        // // Security check
+        // if (Auth::check() && $cart->user_id != Auth::id()) {
+        //     abort(403, 'Unauthorized action. 02');
+        // } elseif (!Auth::check() && $cart->session_id !== session('session_id')) {
+        //     abort(403, 'Unauthorized action.');
+        // }
     
         $cartId    = $cart->id;
         $productId = $cart->product_id;

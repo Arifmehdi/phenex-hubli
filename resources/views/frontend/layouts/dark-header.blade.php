@@ -1,5 +1,6 @@
+    
     <!-- HEADER AREA START (header-5) -->
-    <header class="ltn__header-area ltn__header-5 ltn__header-transparent gradient-color-2">
+    <header class="ltn__header-area ltn__header-5" style="background-color: #071c1f;">
         <!-- ltn__header-top-area start -->
         <div class="ltn__header-top-area d-none">
             <div class="container">
@@ -127,7 +128,7 @@
                         <div class="mini-cart-icon">
                             <a href="#ltn__utilize-cart-menu" class="ltn__utilize-toggle">
                                 <i class="icon-shopping-cart"></i>
-                                <sup>2</sup>
+                                <sup id="cart-count">{{ $cartCount ?? 0 }}</sup>
                             </a>
                         </div>
                         <!-- mini-cart -->
@@ -150,67 +151,50 @@
     <!-- HEADER AREA END -->
     
     <!-- Utilize Cart Menu Start -->
-    <div id="ltn__utilize-cart-menu" class="ltn__utilize ltn__utilize-cart-menu">
-        <div class="ltn__utilize-menu-inner ltn__scrollbar">
-            <div class="ltn__utilize-menu-head">
-                <span class="ltn__utilize-menu-title">Cart</span>
-                <button class="ltn__utilize-close">×</button>
-            </div>
-            <div class="mini-cart-product-area ltn__scrollbar">
-                <div class="mini-cart-item clearfix">
-                    <div class="mini-cart-img">
-                        <a href="#"><img src="img/product/1.png" alt="Image"></a>
-                        <span class="mini-cart-item-delete"><i class="icon-cancel"></i></span>
-                    </div>
-                    <div class="mini-cart-info">
-                        <h6><a href="#">Red Hot Tomato</a></h6>
-                        <span class="mini-cart-quantity">1 x $65.00</span>
-                    </div>
-                </div>
-                <div class="mini-cart-item clearfix">
-                    <div class="mini-cart-img">
-                        <a href="#"><img src="img/product/2.png" alt="Image"></a>
-                        <span class="mini-cart-item-delete"><i class="icon-cancel"></i></span>
-                    </div>
-                    <div class="mini-cart-info">
-                        <h6><a href="#">Vegetables Juices</a></h6>
-                        <span class="mini-cart-quantity">1 x $85.00</span>
-                    </div>
-                </div>
-                <div class="mini-cart-item clearfix">
-                    <div class="mini-cart-img">
-                        <a href="#"><img src="img/product/3.png" alt="Image"></a>
-                        <span class="mini-cart-item-delete"><i class="icon-cancel"></i></span>
-                    </div>
-                    <div class="mini-cart-info">
-                        <h6><a href="#">Orange Sliced Mix</a></h6>
-                        <span class="mini-cart-quantity">1 x $92.00</span>
-                    </div>
-                </div>
-                <div class="mini-cart-item clearfix">
-                    <div class="mini-cart-img">
-                        <a href="#"><img src="img/product/4.png" alt="Image"></a>
-                        <span class="mini-cart-item-delete"><i class="icon-cancel"></i></span>
-                    </div>
-                    <div class="mini-cart-info">
-                        <h6><a href="#">Orange Fresh Juice</a></h6>
-                        <span class="mini-cart-quantity">1 x $68.00</span>
-                    </div>
-                </div>
-            </div>
-            <div class="mini-cart-footer">
-                <div class="mini-cart-sub-total">
-                    <h5>Subtotal: <span>$310.00</span></h5>
-                </div>
-                <div class="btn-wrapper">
-                    <a href="{{ route('cart') }}" class="theme-btn-1 btn btn-effect-1">View Cart</a>
-                    <a href="{{ route('frontend.checkout') }}" class="theme-btn-2 btn btn-effect-2">Checkout</a>
-                </div>
-                <p>Free Shipping on All Orders Over $100!</p>
-            </div>
 
+
+<!-- Mini-cart content -->
+<div id="ltn__utilize-cart-menu" class="ltn__utilize ltn__utilize-cart-menu">
+    <div class="ltn__utilize-menu-inner ltn__scrollbar">
+        <div class="ltn__utilize-menu-head">
+            <span class="ltn__utilize-menu-title">Cart</span>
+            <button class="ltn__utilize-close">×</button>
+        </div>
+
+        <div class="mini-cart-product-area ltn__scrollbar">
+            @forelse($cartItems as $item)
+            <div class="mini-cart-item clearfix">
+                <div class="mini-cart-img">
+                    <a href="{{ route('productDetails', $item->product->slug) }}">
+                        <img src="{{ route('imagecache', ['template' => 'pnism', 'filename' => $item->product->fi()]) }}" alt="{{ $item->product->name_en }}">
+                    </a>
+                    <span class="mini-cart-item-delete ">
+                        <i class="icon-cancel cart-product-remove"  data-id="{{ $item->id }}"></i>
+                    </span>
+                </div>
+                <div class="mini-cart-info">
+                    <h6><a href="{{ route('productDetails', $item->product->slug) }}">{{ $item->product->name_en }}</a></h6>
+                    <span class="mini-cart-quantity">{{ $item->quantity }} x {{ number_format($item->product->final_price, 2) }} ৳</span>
+                </div>
+            </div>
+            @empty
+            <p class="text-center">Your cart is empty!</p>
+            @endforelse
+        </div>
+
+        <div class="mini-cart-footer">
+            <div class="mini-cart-sub-total">
+                <h5>Subtotal: <span>{{ number_format($cartItems->sum(fn($i) => $i->quantity * $i->product->final_price), 2) }} ৳</span></h5>
+            </div>
+            <div class="btn-wrapper">
+                <a href="{{ route('cart') }}" class="theme-btn-1 btn btn-effect-1">View Cart</a>
+                <a href="{{ route('frontend.checkout') }}" class="theme-btn-2 btn btn-effect-2">Checkout</a>
+            </div>
+            <!-- <p>Free Shipping on All Orders Over $100!</p> -->
         </div>
     </div>
+</div>
+
     <!-- Utilize Cart Menu End -->
 
     <!-- Utilize Mobile Menu Start -->
@@ -280,3 +264,145 @@
     <!-- Utilize Mobile Menu End -->
 
     <div class="ltn__utilize-overlay"></div>
+    @push('js')
+    <script>
+    $(document).ready(function() {
+        let isUpdating = false; // Flag to prevent multiple simultaneous updates
+
+        // Remove item functionality
+        $(document).on('click', '.cart-product-remove', function(e) {
+            e.preventDefault();
+            var cartId = $(this).data('id');
+            alert(cartId)
+
+            if (!cartId) return;
+
+            $.ajax({
+                url: '/cart/remove/item/' + cartId,
+                type: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}"
+                },
+                success: function(res) {
+                    if (res.status) {
+                        location.reload();
+                    } else {
+                        alert(res.message);
+                    }
+                },
+                error: function(err) {
+                    alert(err.responseJSON?.message || 'Something went wrong!');
+                }
+            });
+        });
+
+        // Function to update cart totals
+        function updateCartTotals() {
+            let subtotal = 0;
+            
+            // Calculate subtotal from all items
+            $('.cart-product-subtotal').each(function() {
+                let val = parseFloat($(this).text().replace(/,/g, '').replace(' ৳', '')) || 0;
+                subtotal += val;
+            });
+            
+            // Update displayed totals
+            $('#cart-subtotal').text(subtotal.toFixed(2) + ' ৳');
+            $('#order-total strong').text(subtotal.toFixed(2) + ' ৳');
+        }
+
+        // Handle quantity changes - use only 'change' event
+        $(document).on('change', '.cart-plus-minus-box', function() {
+            if (isUpdating) return; // Prevent multiple simultaneous updates
+            
+            isUpdating = true;
+            
+            let $this = $(this);
+            let cartId = $this.data('id');
+            let quantity = parseInt($this.val()) || 1;
+            
+            // Ensure minimum quantity
+            if (quantity < 1) {
+                quantity = 1;
+                $this.val(1);
+            }
+
+            // Get price from data attribute
+            let price = parseFloat($('#cart-item-' + cartId + ' .cart-product-price').data('price')) || 0;
+            
+            // Calculate new subtotal for this item
+            let newSubtotal = (quantity * price).toFixed(2);
+            $('#subtotal-' + cartId).text(newSubtotal + ' ৳');
+
+            // Update cart totals
+            updateCartTotals();
+
+            // Send AJAX request to update quantity in backend
+            $.ajax({
+                url: '/cart/update-quantity/' + cartId,
+                type: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    quantity: quantity
+                },
+                success: function(res) {
+                    isUpdating = false;
+                    if (!res.status) {
+                        alert(res.message);
+                    }
+                },
+                error: function(err) {
+                    isUpdating = false;
+                    console.log('Error updating quantity');
+                    alert('Error updating quantity. Please try again.');
+                }
+            });
+        });
+
+        // Alternative: If you want to use input for immediate feedback but prevent duplicates
+        // $(document).on('input', '.cart-plus-minus-box', function() {
+        //     clearTimeout(window.quantityTimeout);
+        //     window.quantityTimeout = setTimeout(() => {
+        //         $(this).trigger('change');
+        //     }, 500);
+        // });
+
+        // If you have plus/minus buttons (add these to your HTML if needed)
+        $(document).on('click', '.qtybutton', function() {
+            let $input = $(this).closest('.cart-plus-minus').find('.cart-plus-minus-box');
+            let currentVal = parseInt($input.val()) || 1;
+            
+            if ($(this).hasClass('inc')) {
+                $input.val(currentVal + 1).trigger('change');
+            } else if ($(this).hasClass('dec') && currentVal > 1) {
+                $input.val(currentVal - 1).trigger('change');
+            }
+        });
+    });
+    </script>
+
+<script>
+$(document).ready(function () {
+    let lastScrollTop = 0;
+    let header = $('.ltn__header-middle-area');
+
+    $(window).on('scroll', function () {
+        let st = $(this).scrollTop();
+
+        // If scrolling DOWN → hide sticky class
+        if (st > lastScrollTop) {
+            header.removeClass('sticky-active');
+        } 
+        // If scrolling UP → show sticky class
+        else {
+            if (st > 200) { // activate only after 200px down, optional
+                header.addClass('sticky-active');
+            }
+        }
+
+        lastScrollTop = st;
+    });
+});
+</script>
+
+    @endpush 

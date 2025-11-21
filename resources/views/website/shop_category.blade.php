@@ -1,4 +1,4 @@
-@extends('frontend.layouts.master')
+@extends('website.layouts.master')
 
 @section('title', 'Shop - Hubli')
 
@@ -84,8 +84,9 @@
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="#" title="Wishlist" data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal">
-                                                                <i class="far fa-heart"></i></a>
+                                                            <a href="#" title="Wishlist" class="add-to-wishlist" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal">
+                                                                <i class="far fa-heart"></i>
+                                                            </a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -170,7 +171,7 @@
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -180,8 +181,9 @@
                                                             </a>
                                                         </li>
                                                         <li>
-                                                            <a href="#" title="Wishlist" data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal">
-                                                                <i class="far fa-heart"></i></a>
+                                                            <a href="#" title="Wishlist" class="add-to-wishlist" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal">
+                                                                <i class="far fa-heart"></i>
+                                                            </a>
                                                         </li>
                                                     </ul>
                                                 </div>
@@ -386,3 +388,24 @@
     </div>
     <!-- PRODUCT DETAILS AREA END -->
 @endsection 
+@push('js')
+<script>
+$(document).on('click', '.add-to-wishlist', function() {
+    var id = $(this).data('id');
+
+    $.ajax({
+        url: "{{ route('wishlist.add') }}",
+        type: "POST",
+        data: {
+            product_id: id,
+            _token: "{{ csrf_token() }}"
+        },
+        success: function(res) {
+            $("#liton_wishlist_modal .added-cart").text(res.message);
+            $("#liton_wishlist_modal").modal('show');
+        }
+    });
+});
+</script>
+
+@endpush

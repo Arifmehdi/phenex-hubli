@@ -1,4 +1,4 @@
-@extends('frontend.layouts.ecommercemaster')
+@extends('website.layouts.ecommercemaster')
 @section('title', "North Bengal Dairy Farm")
 
 @push('css')

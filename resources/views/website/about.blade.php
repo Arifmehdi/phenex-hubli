@@ -1,4 +1,4 @@
-@extends('frontend.layouts.master')
+@extends('website.layouts.master')
 
 @section('title', 'About Us - Hubli')
 

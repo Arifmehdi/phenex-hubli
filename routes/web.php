@@ -20,6 +20,7 @@ use App\Http\Controllers\Admin\WebsiteParameterController;
 use App\Http\Controllers\Admin\AdminTestimonialController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\Frontend\FrontendController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
@@ -118,6 +119,11 @@ Route::get('/testimonial',[FrontendController::class,'testimonial'])->name('test
 Route::get('/about',[FrontendController::class,'about'])->name('about');
 Route::get('/shop',[FrontendController::class,'shop'])->name('shop');
 Route::get('/quick-view', [FrontendController::class, 'quickView'])->name('quick.view');
+
+Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+Route::post('/wishlist/add', [WishlistController::class, 'add'])->name('wishlist.add');
+Route::post('/wishlist/remove', [WishlistController::class, 'remove'])->name('wishlist.remove');
+
 Route::get('/contact',[FrontendController::class,'contact'])->name('contact');
 Route::post('/contact', [ContactController::class, 'store'])->name('contact.store');
 Route::get('/service',[FrontendController::class,'service'])->name('service');
@@ -171,8 +177,15 @@ Route::get('product/details/{slug}',[FrontendController::class, 'productDetails'
 Route::get('cart',[FrontendController::class, 'cart'])->name('cart');
 Route::get('checkouts',[FrontendController::class, 'checkouts'])->name('frontend.checkout');
 Route::post('add-to-cart',[FrontendController::class, 'addToCart'])->name('addToCart');
+Route::get('/cart/quick-add', [FrontendController::class, 'quickAdd'])->name('cart.quick.add');
 
-Route::post('add-to-cart/two',[FrontendController::class, 'addToCart2'])->name('addToCart2');
+Route::get('/cart/remove/{id}', [FrontendController::class, 'remove'])->name('cart.remove');
+Route::post('/cart/update', [FrontendController::class, 'update'])->name('cart.update');
+Route::post('/cart/update-quantity/{cartId}', [FrontendController::class, 'updateQuantity'])->name('cart.update.quantity');
+
+
+
+// Route::post('add-to-cart/two',[FrontendController::class, 'addToCart2'])->name('addToCart2');
 
 Route::post('cart/update/qty',[FrontendController::class, 'cartUpdateQty'])->name('cartUpdateQty');
 Route::post('cart/remove/item/{cart}',[FrontendController::class, 'cartRemoveItem'])->name('cartRemoveItem');
