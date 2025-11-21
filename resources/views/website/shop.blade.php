@@ -395,53 +395,5 @@
 
 @endsection 
 @push('js')
-<script>
-$(document).on('click', '.add-to-wishlist', function() {
-    var id = $(this).data('id');
 
-    $.ajax({
-        url: "{{ route('wishlist.add') }}",
-        type: "POST",
-        data: {
-            product_id: id,
-            _token: "{{ csrf_token() }}"
-        },
-        success: function(res) {
-            $("#liton_wishlist_modal .added-cart").text(res.message);
-            $("#liton_wishlist_modal").modal('show');
-        }
-    });
-
-});
-</script>
-<script>
-    $(document).on("click", ".add-to-cart-btn", function (e) {
-    e.preventDefault();
-
-    let id = $(this).data("id");
-
-    // Set ID in hidden input
-    $("#cart_product_id").val(id);
-
-    // Loading UI
-    $("#cart_modal_name").html("Loading...");
-    $("#cart_modal_img").attr("src", "");
-    $("#cart_modal_message").html("Adding product...");
-
-    // Ajax Request
-    $.ajax({
-        url: "{{ route('cart.quick.add') }}", // You must create this route
-        type: "GET",
-        data: { id: id },
-        success: function (res) {
-
-            $("#cart_modal_img").attr("src", res.image);
-            $("#cart_modal_name").html(res.name);
-            $("#cart_modal_message").html("Successfully added to your Cart");
-            $("#add_to_cart_modal").modal('show');
-        }
-    });
-});
-
-</script>
 @endpush

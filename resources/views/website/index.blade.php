@@ -3400,7 +3400,8 @@
                         <div class="product-hover-action">
                             <ul>
                                 <li>
-                                    <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $feature->id }}">
+                                    <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $feature->id }}"
+                                        data-bs-toggle="modal">
                                         <i class="far fa-eye"></i>
                                     </a>
                                 </li>
@@ -3410,11 +3411,6 @@
                                         <i class="fas fa-shopping-cart"></i>
                                     </a>
                                 </li>
-
-
-
-
-
                                 <li>
                                     <a href="#" title="Wishlist" class="add-to-wishlist" data-id="{{ $feature->id }}"
                                         data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal">

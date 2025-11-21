@@ -26,8 +26,8 @@
                         <tr class="cart-item" data-cart="{{ $cart->id }}">
                             <td class="text-center align-middle">
                                 <button title="Remove Product"
-                                        class="btn btn-sm btn-danger rounded-circle deleteCartItem"
-                                        data-url="{{ route('cartRemoveItem', $cart->id) }}">×</button>
+                                        class="btn btn-sm deleteCartItem"
+                                        data-url="{{ route('cartRemoveItem', $cart->id) }}"><i class="fas fa-trash-alt text-danger"></i></button>
                             </td>
                             <td class="align-middle">
                                 <a href="{{ route('productDetails', ['slug' => $cart->product->slug, 'id' => $cart->product_id]) }}">
@@ -51,14 +51,14 @@
                             </td>
                             <td class="align-middle">
                                 <div class="d-flex align-items-center gap-2 cart-action-wrapper">
-                                    <button class="btn btn-sm btn-primary minus updateCartItem"
+                                    <button class="btn btn-sm btn-outline-secondary minus updateCartItem"
                                             data-url="{{ route('cartUpdateQty') }}"
                                             data-cart="{{ $cart->id }}"
                                             data-qty="{{ $cart->quantity }}">−</button>
-                                    <span class="cartQtyDisplay border text-center rounded px-3 py-1">
+                                    <span class="cartQtyDisplay border text-center rounded px-3 py-1 mx-2">
                                         {{ $cart->quantity }}
                                     </span>
-                                    <button class="btn btn-sm btn-primary plus updateCartItem"
+                                    <button class="btn btn-sm btn-outline-secondary plus updateCartItem"
                                             data-url="{{ route('cartUpdateQty') }}"
                                             data-cart="{{ $cart->id }}"
                                             data-qty="{{ $cart->quantity }}">+</button>

@@ -28,8 +28,8 @@
                                 <div class="col-lg-4">
                                     <div class="ltn__tab-menu-list mb-50">
                                         <div class="nav">
-                                            <a class="active show" data-bs-toggle="tab" href="#liton_tab_1_1">Dashboard <i class="fas fa-home"></i></a>
-                                            <a data-bs-toggle="tab" href="#liton_tab_1_2">Orders <i class="fas fa-file-alt"></i></a>
+                                            <a class="{{ $activeTab == 'dashboard' ? 'active show' : '' }}" data-bs-toggle="tab" href="#liton_tab_1_1">Dashboard <i class="fas fa-home"></i></a>
+                                            <a class="{{ $activeTab == 'order' ? 'active show' : '' }}" href="{{ route('user.orders', ['type' => 'all']) }}">Orders <i class="fas fa-file-alt"></i></a>
                                             <a data-bs-toggle="tab" href="#liton_tab_1_3">Downloads <i class="fas fa-arrow-down"></i></a>
                                             <a data-bs-toggle="tab" href="#liton_tab_1_4">address <i class="fas fa-map-marker-alt"></i></a>
                                             <a data-bs-toggle="tab" href="#liton_tab_1_5">Account Details <i class="fas fa-user"></i></a>
@@ -39,50 +39,66 @@
                                 </div>
                                 <div class="col-lg-8">
                                     <div class="tab-content">
-                                        <div class="tab-pane fade active show" id="liton_tab_1_1">
+                                        <div class="tab-pane fade {{ $activeTab == 'dashboard' ? 'active show' : '' }}" id="liton_tab_1_1">
                                             <div class="ltn__myaccount-tab-content-inner">
                                                 <p>Hello   <strong>{{auth()->user()->name ?? 'User'}}</strong></p>
                                                 <p>From your account dashboard you can view your <span>recent orders</span>, manage your <span>shipping and billing addresses</span>, and <span>edit your password and account details</span>.</p>
                                             </div>
                                         </div>
-                                        <div class="tab-pane fade" id="liton_tab_1_2">
+                                        <div class="tab-pane fade {{ $activeTab == 'order' ? 'active show' : '' }}" id="liton_tab_1_2">
                                             <div class="ltn__myaccount-tab-content-inner">
-                                                <div class="table-responsive">
-                                                    <table class="table">
-                                                        <thead>
-                                                            <tr>
-                                                                <th>Order</th>
-                                                                <th>Date</th>
-                                                                <th>Status</th>
-                                                                <th>Total</th>
-                                                                <th>Action</th>
-                                                            </tr>
-                                                        </thead>
-                                                        <tbody>
-                                                            <tr>
-                                                                <td>1</td>
-                                                                <td>Jun 22, 2019</td>
-                                                                <td>Pending</td>
-                                                                <td>$3000</td>
-                                                                <td><a href="cart.html">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>2</td>
-                                                                <td>Nov 22, 2019</td>
-                                                                <td>Approved</td>
-                                                                <td>$200</td>
-                                                                <td><a href="cart.html">View</a></td>
-                                                            </tr>
-                                                            <tr>
-                                                                <td>3</td>
-                                                                <td>Jan 12, 2020</td>
-                                                                <td>On Hold</td>
-                                                                <td>$990</td>
-                                                                <td><a href="cart.html">View</a></td>
-                                                            </tr>
-                                                        </tbody>
-                                                    </table>
-                                                </div>
+                                                <div class="card">
+                                                    <div class="card-header text-white d-flex justify-content-between align-items-center" style="background: #699403;">
+                                                      <h5 class="mb-0 text-white">My Orders</h5>
+                                                      @if(isset($type))
+                                                        <div class="btn-group btn-group-sm">
+                                                          <a href="{{ route('user.orders', ['type' => 'all']) }}" 
+                                                             class="btn {{ $type=='all'?'btn-light border':'btn-outline-light' }}">All</a>
+                                                          <a href="{{ route('user.orders', ['type' => 'today']) }}" 
+                                                             class="btn {{ $type=='today'?'btn-light border':'btn-outline-light' }}">Today</a>
+                                                          <a href="{{ route('user.orders', ['type' => 'cancelled']) }}" 
+                                                             class="btn {{ $type=='cancelled'?'btn-light border':'btn-outline-light' }}">Cancelled</a>
+                                                        </div>
+                                                      @endif
+                                                    </div>
+                                                    <div class="card-body p-3">
+                                                      @if($orders->count())
+                                                        <div class="table-responsive">
+                                                          <table class="table table-bordered table-hover mb-0">
+                                                            <thead class="table-light">
+                                                              <tr>
+                                                                <th>ORDER</th>
+                                                                <th>DATE</th>
+                                                                <th>STATUS</th>
+                                                                <th>TOTAL</th>
+                                                                <th>ACTION</th>
+                                                              </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                              @foreach ($orders as $order)
+                                                                <tr>
+                                                                  <td>{{ $order->id }}</td>
+                                                                  <td>{{ $order->created_at->format('Y-m-d') }}</td>
+                                                                  <td class="text-capitalize">{{ $order->order_status }}</td>
+                                                                  <td>{{ number_format($order->grand_total, 2) }} tk</td>
+                                                                  <td>
+                                                                     <a class="btn btn-sm me-2" target="_blank" href="{{ route('user.orderPrint', $order->id) }}" title="Invoice"><i class="fas fa-file-invoice"></i></a>
+                                                                      <a class="btn btn-sm" target="_blank" href="{{ route('user.orderChalan', $order->id) }}" title="Chalan"><i class="fas fa-receipt"></i></a>
+                                                                        
+                                                                  </td>
+                                                                </tr>
+                                                              @endforeach
+                                                            </tbody>
+                                                          </table>
+                                                        </div>
+                                                        <div class="mt-3">
+                                                          {{ $orders->links() }}
+                                                        </div>
+                                                      @else
+                                                        <p class="text-center text-muted">No orders found.</p>
+                                                      @endif
+                                                    </div>
+                                                  </div>
                                             </div>
                                         </div>
                                         <div class="tab-pane fade" id="liton_tab_1_3">
