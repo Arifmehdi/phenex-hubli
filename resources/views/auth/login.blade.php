@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Hubli - Login </title>
+    <!-- CSRF Token -->
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <style>
         @import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
 
@@ -20,7 +22,7 @@
             height: 100%;
             width: 100%;
             place-items: center;
-            background: -webkit-linear-gradient(left, #003366, #004080, #0059b3, #0073e6);
+            background: -webkit-linear-gradient(left, #689502, #72BF44, #0fc98bff, #13a650ff);
         }
 
         ::selection {
@@ -86,7 +88,7 @@
             left: 0;
             z-index: 0;
             border-radius: 15px;
-            background: -webkit-linear-gradient(left, #003366, #004080, #0059b3, #0073e6);
+            background: -webkit-linear-gradient(left, #689502, #689502, #689502, #689502);
             transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
 
@@ -151,7 +153,7 @@
         }
 
         .form-inner form .field input:focus {
-            border-color: #1a75ff;
+            border-color: #689502;
             /* box-shadow: inset 0 0 3px #fb6aae; */
         }
 
@@ -161,7 +163,7 @@
         }
 
         form .field input:focus::placeholder {
-            color: #1a75ff;
+            color: #689502;
         }
 
         .form-inner form .pass-link {
@@ -197,7 +199,7 @@
             width: 300%;
             position: absolute;
             left: -100%;
-            background: -webkit-linear-gradient(right, #003366, #004080, #0059b3, #0073e6);
+            background: -webkit-linear-gradient(right, #689502, #689502, #689502, #689502);
             border-radius: 15px;
             transition: all 0.4s ease;
             ;
@@ -240,6 +242,12 @@
           <div class="form-inner">
               <form action="{{ route('login') }}" method="POST" class="login">
                 @csrf
+
+                    @if (session('error'))
+                        <div style="color:red; margin-top:10px; text-align:center;">
+                            {{ session('error') }}
+                        </div>
+                    @endif
                   <div class="field">
                         <input type="email" class="form-control form-control-lg"  name="email" placeholder="Enter Email" value="{{ old('email') }}">
                         @error('email')
@@ -259,15 +267,36 @@
                   </div>
                   <div class="signup-link">Not a member? <a href="">Signup now</a></div>
               </form>
-              <form action="#" class="signup">
+              <form action="{{ route('main.register') }}" method="post"class="signup">
+                @csrf
+                    @if (session('error'))
+                        <div style="color:red; margin-top:10px; text-align:center;">
+                            {{ session('error') }}
+                        </div>
+                    @endif
                   <div class="field">
-                      <input type="text" placeholder="Email Address" required>
+                      <input type="text" name="name" placeholder="Name" required>
+                        @error('name')
+                            <span class="text-danger small">{{ $message }}</span>
+                        @enderror
                   </div>
                   <div class="field">
-                      <input type="password" placeholder="Password" required>
+                      <input type="text" name="email" placeholder="Email Address" required>
+                        @error('email')
+                            <span class="text-danger small">{{ $message }}</span>
+                        @enderror
                   </div>
                   <div class="field">
-                      <input type="password" placeholder="Confirm password" required>
+                      <input type="password" name="password" placeholder="Password" required>
+                        @error('password')
+                            <span class="text-danger small">{{ $message }}</span>
+                        @enderror
+                  </div>
+                  <div class="field">
+                      <input type="password" name="password_confirmation" placeholder="Confirm password" required>
+                        @error('password_confirmation')
+                            <span class="text-danger small">{{ $message }}</span>
+                        @enderror
                   </div>
                   <div class="field btn">
                       <div class="btn-layer"></div>

@@ -1,7 +1,7 @@
-<style>
-            /* Compact Copyright Area Styles */
+    <style>
+        /* Compact Copyright Area Styles */
 .ltn__copyright-area {
-    padding: 15px 70px !important; /* Reduced from default padding */
+    padding: 15px 15px !important; /* Reduced from default padding */
 }
 
 .ltn__copyright-area p {
@@ -44,147 +44,121 @@
     }
 }
 
-</style>
+
+.footer-menu ul li {
+    margin-bottom: 6px;
+}
+
+.footer-title {
+    font-size: 18px;
+    margin-bottom: 12px;
+    font-weight: 600;
+}
+
+.footer-social ul li a {
+    font-size: 18px;
+    display: inline-block;
+    padding: 6px 10px;
+    background: #ffffff22;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.footer-social ul li a:hover {
+    background: #fff;
+    color: #000;
+}
+
+.footer-map iframe {
+    box-shadow: 0 3px 10px rgb(0 0 0 / 20%);
+}
+
+    </style>
+
+
 <!-- FOOTER AREA START -->
 <footer class="ltn__footer-area">
-    <div class="footer-top-area section-bg-1 plr--5">
-        <div class="container-fluid">
-            <div class="row">
+<div class="footer-top-area section-bg-1 plr--5 py-60">
+    <div class="container-fluid">
+        <div class="row g-4">
 
-                <!-- About + Address -->
-                {{--<div class="col-xl-3 col-md-6 col-sm-6 col-12">
-                    <div class="footer-widget footer-about-widget">
-                        <div class="footer-logo">
-                            <div class="site-logo">
-                                <img src="{{ route('imagecache', ['template'=>'original','filename' => $ws->logo_alt()]) }}" alt="{{ $ws->website_title ?? '' }}">
+            <!-- Map Left Side -->
+            <div class="col-xl-4 col-lg-4">
+                <div class="footer-widget">
+
+                    <!-- Google Map -->
+                    <div class="footer-map mb-20">
+                        <iframe 
+                            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.902078785858!2d90.39135781543182!3d23.750876394591774!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b894cf7199f5%3A0x1e4b028aaf77e651!2sDhaka!5e0!3m2!1sen!2sbd!4v000000"
+                            width="100%" height="200" style="border:0;border-radius:10px;" 
+                            allowfullscreen loading="lazy">
+                        </iframe>
+                    </div>
+
+                    <!-- Social Icons -->
+                    <div class="ltn__social-media mt-20">
+                        <x-blog-media />
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Menu Right Side -->
+            <div class="col-xl-8 col-lg-8">
+                <div class="row g-4">
+
+                    <!-- Company -->
+                    <div class="col-xl-4 col-md-6 col-sm-6">
+                        <div class="footer-widget footer-menu-widget clearfix">
+                            <h4 class="footer-title">Company</h4>
+                            <div class="footer-menu">
+                                <ul>
+                                    <li><a href="{{ route('about') }}">About Us</a></li>
+                                    <li><a href="{{ route('news') }}">News</a></li>
+                                    <li><a href="#">Terms & Conditions</a></li>
+                                    <li><a href="{{ route('contact') }}">Contact Us</a></li>
+                                </ul>
                             </div>
                         </div>
-                        <p>Hubli connects farmers, distributors, and businesses through a smart supply chain network across Bangladesh.</p>
+                    </div>
 
-                        <div class="footer-address">
-                            <ul>
-                                <li>
-                                    <div class="footer-address-icon">
-                                        <i class="icon-placeholder"></i>
-                                    </div>
-                                    <div class="footer-address-info">
-                                        <p>Banani, Dhaka 1213, Bangladesh</p>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="footer-address-icon">
-                                        <i class="icon-call"></i>
-                                    </div>
-                                    <div class="footer-address-info">
-                                        <p><a href="tel:+8801700000000">+880 1700-000000</a></p>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="footer-address-icon">
-                                        <i class="icon-mail"></i>
-                                    </div>
-                                    <div class="footer-address-info">
-                                        <p><a href="mailto:info@hubli.com">info@hubli.com</a></p>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="ltn__social-media mt-20">
-                            <ul>
-                                <li><a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
-                                <li><a href="#" title="Twitter"><i class="fab fa-twitter"></i></a></li>
-                                <li><a href="#" title="Instagram"><i class="fab fa-instagram"></i></a></li>
-                                <li><a href="#" title="Linkedin"><i class="fab fa-linkedin"></i></a></li>
-                            </ul>
+                    <!-- Services -->
+                    <div class="col-xl-4 col-md-6 col-sm-6">
+                        <div class="footer-widget footer-menu-widget clearfix">
+                            <h4 class="footer-title">Services</h4>
+                            <div class="footer-menu">
+                                <ul>
+                                    <li><a href="#">Wishlist</a></li>
+                                    <li><a href="#">My Account</a></li>
+                                    <li><a href="#">Return Policy</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
-                </div>--}}
 
-                <!-- Company Links -->
-                <div class="col-xl-3 col-md-6 col-sm-6 col-12">
-                    <div class="footer-widget footer-menu-widget clearfix">
-                        <h4 class="footer-title">Company</h4>
-                        <div class="footer-menu">
-                            <ul>
-                                <li><a href="{{ route('about') }}">About Us</a></li>
-                                <li><a href="{{ route('shop') }}">Our Products</a></li>
-                                <li><a href="#">Terms & Conditions</a></li>
-                                <li><a href="{{ route('contact') }}">Contact Us</a></li>
-                            </ul>
+                    <!-- Customer Care -->
+                    <div class="col-xl-4 col-md-6 col-sm-6">
+                        <div class="footer-widget footer-menu-widget clearfix">
+                            <h4 class="footer-title">Customer Care</h4>
+                            <div class="footer-menu">
+                                <ul>
+                                    <li><a href="#">FAQ</a></li>
+                                    <li><a href="#">Report Issue</a></li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
+
                 </div>
-
-                <!-- Services -->
-                <div class="col-xl-3 col-md-6 col-sm-6 col-12">
-                    <div class="footer-widget footer-menu-widget clearfix">
-                        <h4 class="footer-title">Services</h4>
-                        <div class="footer-menu">
-                            <ul>
-                                {{--<li><a href="#">Order Tracking</a></li>--}}
-                                <li><a href="#">Wishlist</a></li>
-                                {{--<li><a href="#">My Account</a></li>--}}
-                                <li><a href="#">Return Policy</a></li>
-                                {{--<li><a href="#">Delivery Info</a></li>--}}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Customer Care -->
-                <div class="col-xl-3 col-md-6 col-sm-6 col-12">
-                    <div class="footer-widget footer-menu-widget clearfix">
-                        <h4 class="footer-title">Customer Care</h4>
-                        <div class="footer-menu">
-                            <ul>
-                                <li><a href="#">FAQ</a></li>
-                                {{--<li><a href="#">Support Center</a></li>--}}
-                                <li><a href="#">Report Issue</a></li>
-                                {{--<li><a href="{{ route('contact') }}">Contact Support</a></li>--}}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Newsletter -->
-                <div class="col-xl-3 col-md-6 col-sm-12 col-12">
-                    <div class="footer-widget footer-newsletter-widget">
-                        <h4 class="footer-title">Social & Media</h4>
-                        <div class="ltn__social-media mt-20">
-                            <ul>
-                                <li><a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
-                                <li><a href="#" title="Twitter"><i class="fab fa-twitter"></i></a></li>
-                                <li><a href="#" title="Instagram"><i class="fab fa-instagram"></i></a></li>
-                                <li><a href="#" title="Linkedin"><i class="fab fa-linkedin"></i></a></li>
-                            </ul>
-                        </div>
-                        {{--<p>Subscribe to get updates, new products, and special offers.</p>
-
-                        <div class="footer-newsletter">
-                            <form action="#" method="post" style="display: flex; gap: 10px;">
-                                <input type="email" name="email" placeholder="Email*" 
-                                    style="flex: 1; padding: 10px; border-radius: 5px; border: 1px solid #ddd;">
-                                <button class="theme-btn-1 btn" type="submit" 
-                                        style="padding: 10px 20px; border-radius: 5px;">
-                                    <i class="fas fa-location-arrow"></i>
-                                </button>
-                            </form>
-                        </div>--}}
-
-
-                        {{--<h5 class="mt-30">We Accept</h5>--}}
-                        <div class="mt-20"><img src="{{ asset('frontend/img/icons/payment-4.png') }}" alt="Payment"></div>
-                        
-                    </div>
-                </div>
-
             </div>
+
         </div>
     </div>
+</div>
+
 
     <!-- Copyright -->
-    <div class="ltn__copyright-area ltn__copyright-2 section-bg-2 ltn__border-top-2--- plr--5">
+    <div class="ltn__copyright-area section-bg-2 ltn__border-top-2 plr--5 py-20">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-md-6 col-12">
@@ -196,8 +170,9 @@
             </div>
         </div>
     </div>
-
 </footer>
+<!-- FOOTER AREA END -->
+
 <!-- FOOTER AREA END -->
 <!-- QUICK VIEW MODAL -->
 <!-- <div class="modal fade" id="quickViewModal" tabindex="-1">
@@ -275,8 +250,8 @@
                                                  <i class="fa fa-check-circle"></i> <span id="cart_modal_message"></span>
                                              </p>         
                                             <div class="btn-wrapper">
-                                                <a href="{{ route('new.checkout') }}" class="theme-btn-1 btn btn-effect-1">View Cart</a>
-                                                {{--<a href="{{ route('checkout') }}" class="theme-btn-2 btn btn-effect-2">Checkout</a>--}}
+                                                <a href="{{ route('cart') }}" class="theme-btn-1 btn btn-effect-1">View Cart</a>
+                                                <a href="{{ route('checkout') }}" class="theme-btn-2 btn btn-effect-2">Checkout</a>
                                             </div>
                                          </div>
                                          <!-- additional-info -->
@@ -459,18 +434,18 @@ $(document).on("click", ".quick-view-btn", function (e) {
         }
     });
 
-});
+    $(document).on("click", ".qtybutton", function () {
+        let $button = $(this);
+        let oldValue = parseInt($button.parent().find("input").val());
 
-$(document).on("click", ".qtybutton", function () {
-    let $button = $(this);
-    let oldValue = parseInt($button.parent().find("input").val());
+        if ($button.hasClass("inc")) {
+            var newVal = oldValue + 1;
+        } else {
+            var newVal = oldValue > 1 ? oldValue - 1 : 1;
+        }
 
-    if ($button.hasClass("inc")) {
-        var newVal = oldValue + 1;
-    } else {
-        var newVal = oldValue > 1 ? oldValue - 1 : 1;
-    }
+        $button.parent().find("input").val(newVal);
+    });
 
-    $button.parent().find("input").val(newVal);
 });
 </script>

@@ -1,4 +1,4 @@
-<header class="bg-primary py-2 px-3">
+<header class="py-2 px-3" style="background: #699403">
     <h2 class="text-white h5 d-flex align-items-center gap-2 mb-0">
         <i class="fa fa-shopping-cart"></i> Cart Items
         <span class="badge bg-white text-success ms-2">{{ $cartItems->count() }}</span>
@@ -11,7 +11,7 @@
     @else
         <div class="table-responsive">
             <table class="table table-bordered align-middle text-sm mb-0">
-                <thead class="table-info text-success fw-semibold">
+                <thead class="table-success text-success fw-semibold">
                     <tr>
                         <th class="text-center w-5"></th>
                         <th class="w-15">Thumbnail</th>
@@ -84,8 +84,8 @@
 @endphp
 
 @if(!$cartItems->isEmpty())
-<div class="p-3 border-top bg-info bg-opacity-10 rounded">
-    <div class="text-center bg-primary text-white rounded py-1 fw-semibold mb-3 small">
+<div class="p-3 border-top  bg-opacity-10 rounded">
+    <div class="text-center  text-white rounded py-1 fw-semibold mb-3 small" style="background: #699403">
         You are saving Tk. {{ number_format($totalDiscountAmount, 2) }} in this order.
     </div>
 

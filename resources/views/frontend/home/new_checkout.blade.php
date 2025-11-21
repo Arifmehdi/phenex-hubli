@@ -1,7 +1,11 @@
-@extends('frontend.layouts.ecommercemaster')
+@extends('website.layouts.master')
 @section('title', 'Checkout')
 
 @section('content')
+
+<!-- BREADCRUMB AREA START -->
+<x-breadcrumb title="Checkout" pageName="Checkout" bgImage="frontend/img/bg/9.jpg" />
+<!-- BREADCRUMB AREA END -->
 @php
     $me = Auth::user();
     if($me){
@@ -12,12 +16,53 @@
     }
     $cartTotal = $cart_total ?? $cartItems->sum(fn($item) => $item->price * $item->quantity);
 @endphp
-<div class="container py-5">
+<div class="container ">
     <div class="row">
         <div class="col-12">
             <h1 class="mb-4"><strong>Checkout</strong></h1>
         </div>
     </div>
+
+                        <div class="ltn__checkout-single-content ltn__returning-customer-wrap">
+                        <h5>Returning customer? <a class="ltn__secondary-color" href="#ltn__returning-customer-login"
+                                data-bs-toggle="collapse">Click here to login</a></h5>
+                        <div id="ltn__returning-customer-login" class="collapse ltn__checkout-single-content-info">
+                            <div class="ltn_coupon-code-form ltn__form-box">
+                                <p>Please login your accont.</p>
+                                <form action="#">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <div class="input-item input-item-name ltn__custom-icon">
+                                                <input type="text" name="ltn__name" placeholder="Enter your name">
+                                            </div>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <div class="input-item input-item-email ltn__custom-icon">
+                                                <input type="email" name="ltn__email" placeholder="Enter email address">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <button class="btn theme-btn-1 btn-effect-1 text-uppercase">Login</button>
+                                    <label class="input-info-save mb-0"><input type="checkbox" name="agree"> Remember
+                                        me</label>
+                                    <p class="mt-30"><a href="register.html">Lost your password?</a></p>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="ltn__checkout-single-content ltn__coupon-code-wrap">
+                        <h5>Have a coupon? <a class="ltn__secondary-color" href="#ltn__coupon-code"
+                                data-bs-toggle="collapse">Click here to enter your code</a></h5>
+                        <div id="ltn__coupon-code" class="collapse ltn__checkout-single-content-info">
+                            <div class="ltn__coupon-code-form">
+                                <p>If you have a coupon code, please apply it below.</p>
+                                <form action="#">
+                                    <input type="text" name="coupon-code" placeholder="Coupon code">
+                                    <button class="btn theme-btn-2 btn-effect-2 text-uppercase">Apply Coupon</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
 
     @if($cartItems->isEmpty())
         <p class="text-center text-muted py-5 fs-5">Your cart is empty ðŸ›’</p>
@@ -37,7 +82,7 @@
                         <div class="alert alert-danger">{{ session('error') }}</div>
                     @endif
                     <div class="row">
-                        <header class="py-2 px-3" style="background: #2D529F;">
+                        <header class="py-2 px-3" style="background: #699403;">
                             <h2 class="text-white h5 d-flex align-items-center gap-2 mb-0">
                                 <i class="fas fa-shipping-fast"></i> Shipping Address
                             </h2>
@@ -86,13 +131,7 @@
                                                     @endforeach
                                                 </select>
                                             </div>
-                                            <div class="mb-3">
-                                                <label for="thana" class="form-label">Thana</label>
-                                                <select class="form-select" id="thana" name="thana" required style="font-size: 13px">
-                                                    <option selected disabled>Select a thana</option>
-                                                </select>
-                                            </div>
-            
+
         
                                             <!-- Shipping Options -->
                                             <div id="shipping-options-container" style="display: none;">
@@ -264,7 +303,7 @@
                     </div> -->
 
                     <!-- Proceed Button -->
-                    <button class="btn w-100 mt-3 text-white" id="proceed-to-pay-button" style="background:#2D529F;" disabled>
+                    <button class="btn w-100 mt-3 text-white" id="proceed-to-pay-button" style="background: #699403;" disabled>
                         Proceed to Pay
                     </button>
                 </div>

@@ -1,3 +1,17 @@
+<style>
+    .special-link a, .theme-btn-1{
+        padding: 10px 20px;
+        background: #66A931;   /* change color */
+        color: #fff;
+        border-radius: 8px;     /* <-- Rounded corners */
+        display: inline-block;
+    }
+    .btn-transparent {
+        padding: 10px 20px;/* change color */
+        border-radius: 8px;     /* <-- Rounded corners */
+        display: inline-block;
+    }
+</style>
     <header class="ltn__header-area ltn__header-5 ltn__header-transparent-- gradient-color-4---">
         <!-- ltn__header-top-area start -->
         {{--<div class="ltn__header-top-area">
@@ -82,6 +96,7 @@
                             </nav>
                         </div>
                     </div>
+
                     <div class="ltn__header-options ltn__header-options-2 mb-sm-20">
                         <!-- header-search-1 -->
                         <div class="header-search-wrap">
@@ -111,12 +126,13 @@
                                         @if ($user->hasRole('admin'))
                                         <li><a href="{{ route('admin.dashboard') }}">Admin Dashboard</a></li>
                                         @endif
-                                        <li><a href="{{ route('admin.dashboard') }}">Member Dashboard</a></li>
+                                        <li><a href="{{ route('user.dashboard') }}">Member Dashboard</a></li>
                                         <li><a href="#">My Account</a></li>
                                         <li><a href="#">Wishlist</a></li>
-                                        <li><a href="{{ route('logout') }}">Sign out</a></li>
+                                        <li><a href="{{ route('logout') }}">Log out</a></li>
                                         @else
-                                        <li><a href="{{ route('login') }}">Sign in</a></li>
+                                        <li><a href="{{ route('login') }}">Log in</a></li>
+                                        <li><a href="{{ route('login') }}">Register</a></li>
                                         @endif
                                     </ul>
                                 </li>

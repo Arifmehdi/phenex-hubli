@@ -27,6 +27,17 @@
     width: 100%;
     min-height: 550px;
 }
+
+</style>
+<style>
+/* Banner image zoom on hover */
+.ltn__banner-img img {
+    transition: transform 0.2s ease-in-out; /* Faster zoom: 0.2s */
+}
+
+.ltn__banner-img img:hover {
+    transform: scale(1.1); /* Zoom level */
+}
 </style>
 @endpush
 
@@ -251,13 +262,20 @@
                 <div class="col-lg-3 col-md-6 col-sm-12 text-center mb-5">
                     <div class="work-card" style="background: #fff; border-radius: 16px; padding: 30px 20px; box-shadow: 0 4px 12px rgba(0,0,0,0.08); transition: 0.3s;">
                         <div class="position-relative mb-4">
-                            <div class="circle-image" style="width: 120px; height: 120px; border-radius: 50%; overflow: hidden; margin: 0 auto; border: 4px solid #171F67;">
-                                <img src="{{ route('imagecache', [ 'template'=>'cpmd','filename' => $department->fi() ]) }}" alt="Request a Quote" style="width: 100%; height: 100%; object-fit: cover;">
+                            <div class="rectangle-image" style="width: 100%; height: 180px; overflow: hidden; border-radius: 12px; border: 3px solid #171F67;">
+                                <img src="{{ route('imagecache', [ 'template'=>'cpmd','filename' => $department->fi() ]) }}"
+                                    alt="{{ $department->name_en }}"
+                                    style="width: 100%; height: 100%; object-fit: cover;">
                             </div>
-                            <div class="small-circle" style="width: 40px; height: 40px; border-radius: 50%; background: #66A931; color: #fff; font-weight: 600; display: flex; align-items: center; justify-content: center; position: absolute; left: 50%; bottom: -20px; transform: translateX(-50%); font-size: 15px;">
+
+                            <div class="small-circle"
+                                style="width: 40px; height: 40px; border-radius: 50%; background: #66A931; color: #fff; font-weight: 600;
+                                display: flex; align-items: center; justify-content: center; position: absolute; left: 50%; bottom: -20px;
+                                transform: translateX(-50%); font-size: 15px;">
                                 {{ str_pad(++$key, 2, '0', STR_PAD_LEFT) }}
                             </div>
                         </div>
+
                         <h4 style="font-size: 20px; font-weight: 600; margin-top: 25px; color: #1D3564;">{{ $department->name_en }}</h4>
                         <p style="color: #555;">{{ $department->excerpt_en }}</p>
                     </div>
@@ -351,7 +369,6 @@
     </div>
 </div>
 <!-- BANNER AREA END -->
-
 
 <!-- BANNER AREA START -->
 <div class="ltn__banner-area mt-120">
@@ -3416,35 +3433,8 @@
 </div>
 <!-- PRODUCT AREA END -->
 
-    <!-- CALL TO ACTION START (call-to-action-4) -->
-    <div class="ltn__call-to-action-area ltn__call-to-action-4 bg-image pt-115 pb-120 mb-5" data-bg="{{ asset('frontend/img/bg/6.jpg') }}">
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-12">
-                    <div class="call-to-action-inner call-to-action-inner-4 text-center">
-                        <div class="section-title-area ltn__section-title-2">
-                            <h6 class="section-subtitle ltn__secondary-color">//  any question you have  //</h6>
-                            <h1 class="section-title white-color">{{ $ws->contact_mobile }}</h1>
-                        </div>
-                        <div class="btn-wrapper">
-                            <a href="tel:{{ str_replace('+','',$ws->contact_mobile) }}" class="theme-btn-1 btn btn-effect-1">MAKE A CALL</a>
-                            <a href="{{ route('contact') }}" class="btn btn-transparent btn-effect-4 white-color">CONTACT US</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="ltn__call-to-4-img-1">
-            <img src="{{ asset('frontend/img/bg/12.png') }}" alt="#">
-        </div>
-        <div class="ltn__call-to-4-img-2">
-            <img src="{{ asset('frontend/img/bg/11.png') }}" alt="#">
-        </div>
-    </div>
-    <!-- CALL TO ACTION END -->
 
-
-    <!-- VIDEO AREA START -->
+<!-- VIDEO AREA START -->
     <div class="ltn__video-popup-area ltn__video-popup-margin">
         <div class="container">
             <div class="row">
@@ -3503,6 +3493,51 @@
     </div>
     <!-- TESTIMONIAL AREA END -->
 
+<!-- CALL TO ACTION START (call-to-action-4) -->
+<div class="ltn__call-to-action-area ltn__call-to-action-4 bg-image pt-50 pb-50 mb-4"
+    data-bg="{{ asset('frontend/img/bg/6.jpg') }}">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="call-to-action-inner call-to-action-inner-4 text-center">
+                    <div class="section-title-area ltn__section-title-2">
+                        <h6 class="section-subtitle ltn__secondary-color" style="font-size: 14px;">
+                            // any question you have //
+                        </h6>
+                        <h2 class="section-title white-color" style="font-size: 28px; margin-bottom: 15px;">
+                            {{ $ws->contact_mobile }}
+                        </h2>
+                    </div>
+
+                    <div class="btn-wrapper" style="gap: 8px;">
+                        <a href="tel:{{ str_replace('+','',$ws->contact_mobile) }}"
+                           class="theme-btn-1 btn btn-effect-1"
+                           style="padding: 10px 20px; font-size: 14px;">
+                           MAKE A CALL
+                        </a>
+
+                        <a href="{{ route('contact') }}"
+                           class="btn btn-transparent btn-effect-4 white-color"
+                           style="padding: 10px 20px; font-size: 14px;">
+                           CONTACT US
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Decorative images hidden on mobile -->
+    <div class="ltn__call-to-4-img-1 d-none d-md-block" style="max-width: 250px;">
+        <img src="{{ asset('frontend/img/bg/12.png') }}" alt="#">
+    </div>
+
+    <div class="ltn__call-to-4-img-2 d-none d-md-block" style="max-width: 250px;">
+        <img src="{{ asset('frontend/img/bg/11.png') }}" alt="#">
+    </div>
+</div>
+<!-- CALL TO ACTION END -->
+
     <!-- BLOG AREA START (blog-3) -->
     <div class="ltn__blog-area pt-115 pb-70">
         <div class="container">
@@ -3552,6 +3587,7 @@
         </div>
     </div>
     <!-- BLOG AREA END -->
+
 @endsection
 
 

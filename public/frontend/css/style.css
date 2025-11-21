@@ -12341,8 +12341,8 @@ input.cart-plus-minus-box {
     Copyright Area
 ---------------------------------------------------- */
 .ltn__copyright-area {
-  padding-top: 30px;
-  padding-bottom: 30px; }
+  padding-top: 14px;
+  padding-bottom: 2px; }
   .ltn__copyright-area .payment-method {
     text-align: right; }
 
