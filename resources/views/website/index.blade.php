@@ -3455,6 +3455,38 @@
         </div>
     </div>
 </div>
+
+<div class="row mb-5">
+    <div class="col-12 text-center ">
+        <a href="{{ route('shop') }}" class="btn btn-featured-modern">
+            View All Featured Products
+        </a>
+    </div>
+</div>
+
+<style>
+    .btn-featured-modern {
+    display: inline-block;
+    padding: 14px 36px;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    color: #ffffff;
+    background: linear-gradient(135deg, #0e1573, #1e2bb8);
+    border-radius: 50px;
+    transition: all 0.3s ease;
+    box-shadow: 0 8px 20px rgba(14, 21, 115, 0.25);
+}
+
+.btn-featured-modern:hover {
+    color: #ffffff;
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(14, 21, 115, 0.35);
+}
+
+</style>
+
 <!-- PRODUCT AREA END -->
 
 

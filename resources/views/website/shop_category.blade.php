@@ -18,9 +18,9 @@
     
     <!-- PRODUCT DETAILS AREA START -->
     <div class="ltn__product-area ltn__product-gutter">
-        <div class="container">
+        <div class="container-fluid px-5">
             <div class="row">
-                <div class="col-lg-8 order-lg-2 mb-120">
+                <div class="col-lg-9 order-lg-2 mb-120">
                     <div class="ltn__shop-options">
                         <ul>
                             <li>
@@ -29,6 +29,17 @@
                                         <a class="active show" data-bs-toggle="tab" href="#liton_product_grid"><i class="fas fa-th-large"></i></a>
                                         <a data-bs-toggle="tab" href="#liton_product_list"><i class="fas fa-list"></i></a>
                                     </div>
+                                </div>
+                            </li>
+                            <li class="d-none d-mg-block d-lg-block">
+                                <div class="header-search-2">
+                                    <form method="GET" action="{{ route('shop') }}">
+                                        <input type="text" name="search" value="{{ request('search') }}" placeholder="Search here..."/>
+
+                                        <button type="submit">
+                                            <span><i class="icon-search"></i></span>
+                                        </button>
+                                    </form>
                                 </div>
                             </li>
                             <li>
@@ -60,7 +71,7 @@
 
                                     @forelse ($products as $product)
                                     <!-- ltn__product-item -->
-                                    <div class="col-xl-4 col-sm-6 col-6">
+                                    <div class="col-xl-3 col-sm-6 col-6">
                                         <div class="ltn__product-item ltn__product-item-3 text-center">
                                             <div class="product-img">
                                                 <a href="{{ route('productDetails', $product->slug) }}">
@@ -206,7 +217,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-lg-4  mb-120">
+                <div class="col-lg-3  mb-120">
                     <aside class="sidebar ltn__shop-sidebar">
                         <!-- Category Widget -->
                         <div class="widget ltn__menu-widget">
@@ -224,101 +235,25 @@
                         </div>
                         
                         <!-- Price Filter Widget -->
-                        <div class="widget ltn__price-filter-widget">
-                            <h4 class="ltn__widget-title ltn__widget-title-border">Filter by price</h4>
-                            <div class="price_filter">
-                                <div class="price_slider_amount">
-                                    <input type="submit"  value="Your range:"/> 
-                                    <input type="text" class="amount" name="price"  placeholder="Add Your Price" /> 
+                        <form method="GET" action="{{ url()->current() }}">
+                            <div class="widget ltn__price-filter-widget">
+                                <h4 class="ltn__widget-title ltn__widget-title-border">Filter by price</h4>
+                                <div class="price_filter">
+                                    <div class="price_slider_amount">
+                                        <input type="submit"  value="Your range:"/> 
+                                        <input type="text" class="amount" name="price"  placeholder="Add Your Price" /> 
+                                    </div>
+                                    <div class="slider-range"></div>
                                 </div>
-                                <div class="slider-range"></div>
                             </div>
-                        </div>
+                        </form>
                         <!-- Top Rated Product Widget -->
-                        {{--<div class="widget ltn__top-rated-product-widget">
+                        <div class="widget ltn__top-rated-product-widget">
                             <h4 class="ltn__widget-title ltn__widget-title-border">Top Rated Product</h4>
-                            <ul>
-                                <li>
-                                    <div class="top-rated-product-item clearfix">
-                                        <div class="top-rated-product-img">
-                                            <a href="{{ route('productDetails', $product->slug) }}"><img src="{{ asset('frontend/img/product/1.png') }}" alt="#"></a>
-                                        </div>
-                                        <div class="top-rated-product-info">
-                                            <div class="product-ratting">
-                                                <ul>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                </ul>
-                                            </div>
-                                            <h6><a href="{{ route('productDetails', $product->slug) }}">Mixel Solid Seat Cover</a></h6>
-                                            <div class="product-price">
-                                                <span>$49.00</span>
-                                                <del>$65.00</del>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="top-rated-product-item clearfix">
-                                        <div class="top-rated-product-img">
-                                            <a href="{{ route('productDetails', $product->slug) }}"><img src="{{ asset('frontend/img/product/2.png') }}" alt="#"></a>
-                                        </div>
-                                        <div class="top-rated-product-info">
-                                            <div class="product-ratting">
-                                                <ul>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                </ul>
-                                            </div>
-                                            <h6><a href="{{ route('productDetails', $product->slug) }}">Vegetables Juices</a></h6>
-                                            <div class="product-price">
-                                                <span>$49.00</span>
-                                                <del>$65.00</del>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                                <li>
-                                    <div class="top-rated-product-item clearfix">
-                                        <div class="top-rated-product-img">
-                                            <a href="{{ route('productDetails', $product->slug) }}"><img src="{{ asset('frontend/img/product/3.png') }}" alt="#"></a>
-                                        </div>
-                                        <div class="top-rated-product-info">
-                                            <div class="product-ratting">
-                                                <ul>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                    <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                                    <li><a href="#"><i class="far fa-star"></i></a></li>
-                                                </ul>
-                                            </div>
-                                            <h6><a href="{{ route('productDetails', $product->slug) }}">Coil Spring Conversion</a></h6>
-                                            <div class="product-price">
-                                                <span>$49.00</span>
-                                                <del>$65.00</del>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>--}}
-                        <!-- Search Widget -->
-                        <div class="widget ltn__search-widget">
-                            <h4 class="ltn__widget-title ltn__widget-title-border">Search Objects</h4>
-                            <form action="#">
-                                <input type="text" name="search" placeholder="Search your keyword...">
-                                <button type="submit"><i class="fas fa-search"></i></button>
-                            </form>
+                            @include('website.layouts.top_products', [ 'topClickedProducts' => $topClickedProducts ])
                         </div>
                         <!-- Tagcloud Widget -->
-                        <div class="widget ltn__tagcloud-widget">
+                        {{--<div class="widget ltn__tagcloud-widget">
                             <h4 class="ltn__widget-title ltn__widget-title-border">Popular Tags</h4>
                             <ul>
                                 <li><a href="#">Popular</a></li>
@@ -336,7 +271,7 @@
                                 <li><a href="#">Oil Change</a></li>
                                 <li><a href="#">Body Color</a></li>
                             </ul>
-                        </div>
+                        </div>--}}
                         <!-- Size Widget -->
                         {{--<div class="widget ltn__tagcloud-widget ltn__size-widget">
                             <h4 class="ltn__widget-title ltn__widget-title-border">Product Size</h4>
@@ -407,5 +342,34 @@ $(document).on('click', '.add-to-wishlist', function() {
     });
 });
 </script>
+<script>
+    $(document).ready(function() {
+        var priceRange = '{{ request()->get("price") }}';
+        var minPrice = 0;
+        var maxPrice = 5000;
 
+        if (priceRange) {
+            var priceParts = priceRange.split('-');
+            if (priceParts.length === 2) {
+                minPrice = parseInt(priceParts[0]);
+                maxPrice = parseInt(priceParts[1]);
+            }
+        }
+
+        $('.slider-range').slider({
+            range: true,
+            min: 0,
+            max: 5000,
+            values: [minPrice, maxPrice],
+            slide: function(event, ui) {
+                $('.amount').val('৳' + ui.values[0] + ' - ৳' + ui.values[1]);
+            },
+            stop: function(event, ui) {
+                $('input[name="price"]').val(ui.values[0] + '-' + ui.values[1]);
+                $(this).closest('form').submit();
+            }
+        });
+        $('.amount').val('৳' + $('.slider-range').slider('values', 0) + ' - ৳' + $('.slider-range').slider('values', 1));
+    });
+</script>
 @endpush

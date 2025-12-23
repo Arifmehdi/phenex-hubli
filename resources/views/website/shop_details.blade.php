@@ -135,17 +135,17 @@
                                                 <span>Add to Wishlist</span>
                                             </a>
                                         </li>
-                                        <li>
+                                        {{--<li>
                                             <a href="#" class="" title="Compare" data-bs-toggle="modal"
                                                 data-bs-target="#quick_view_modal">
                                                 <i class="fas fa-exchange-alt"></i>
                                                 <span>Compare</span>
                                             </a>
-                                        </li>
+                                        </li>--}}
                                     </ul>
                                 </div>
                                 <hr>
-                                <div class="ltn__social-media">
+                                {{--<div class="ltn__social-media">
                                     <ul>
                                         <li>Share:</li>
                                         <li><a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
@@ -159,7 +159,7 @@
                                 <div class="ltn__safe-checkout">
                                     <h5>Guaranteed Safe Checkout</h5>
                                     <img src="{{ asset('frontend/img/icons/payment-2.png') }}" alt="Payment Image">
-                                </div>
+                                </div>--}}
                             </div>
                         </div>
                     </div>
@@ -318,77 +318,8 @@
                     <!-- Top Rated Product Widget -->
                     <div class="widget ltn__top-rated-product-widget">
                         <h4 class="ltn__widget-title ltn__widget-title-border">Top Rated Product</h4>
-                        <ul>
-                            <li>
-                                <div class="top-rated-product-item clearfix">
-                                    <div class="top-rated-product-img">
-                                        <a href="#"><img src="{{ asset('frontend/img/product/1.png') }}" alt="#"></a>
-                                    </div>
-                                    <div class="top-rated-product-info">
-                                        <div class="product-ratting">
-                                            <ul>
-                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            </ul>
-                                        </div>
-                                        <h6><a href="#">Mixel Solid Seat Cover</a></h6>
-                                        <div class="product-price">
-                                            <span>$49.00</span>
-                                            <del>$65.00</del>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="top-rated-product-item clearfix">
-                                    <div class="top-rated-product-img">
-                                        <a href="#"><img src="{{ asset('frontend/img/product/2.png') }}" alt="#"></a>
-                                    </div>
-                                    <div class="top-rated-product-info">
-                                        <div class="product-ratting">
-                                            <ul>
-                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                            </ul>
-                                        </div>
-                                        <h6><a href="product-details.html">Vegetables Juices</a></h6>
-                                        <div class="product-price">
-                                            <span>$49.00</span>
-                                            <del>$65.00</del>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                            <li>
-                                <div class="top-rated-product-item clearfix">
-                                    <div class="top-rated-product-img">
-                                        <a href="product-details.html"><img src="{{ asset('frontend/img/product/3.png') }}" alt="#"></a>
-                                    </div>
-                                    <div class="top-rated-product-info">
-                                        <div class="product-ratting">
-                                            <ul>
-                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                                <li><a href="#"><i class="far fa-star"></i></a></li>
-                                            </ul>
-                                        </div>
-                                        <h6><a href="product-details.html">Coil Spring Conversion</a></h6>
-                                        <div class="product-price">
-                                            <span>$49.00</span>
-                                            <del>$65.00</del>
-                                        </div>
-                                    </div>
-                                </div>
-                            </li>
-                        </ul>
+                            @include('website.layouts.top_products', [ 'topClickedProducts' => $topClickedProducts ])
+
                     </div>
                     <!-- Banner Widget -->
                     <div class="widget ltn__banner-widget">

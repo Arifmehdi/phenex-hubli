@@ -21,7 +21,7 @@ class WebsiteParameterController extends Controller
         $wp = WebsiteParameter::find($request->id);
 
         $wp->website_title = $request->website_title;
-        $wp->shipping_cahrge = $request->shipping_cahrge;
+        $wp->shipping_charge = $request->shipping_cahrge;
         $wp->google_search_console = $request->google_search_console;
         $wp->google_analytics_code = $request->google_analytics_code;
         $wp->facebook_pixel_code = $request->facebook_pixel_code;

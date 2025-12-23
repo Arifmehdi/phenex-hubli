@@ -90,7 +90,6 @@
                                         <li><a href="{{ route('shop') }}">Shop</a> </li>
                                         <li><a href="{{ route('news') }}">News</a></li>
                                         <li><a href="{{ route('contact') }}">Contact</a></li>
-                                        <li class="special-link"><a href="#">GET A QUOTE</a></li>
                                     </ul>
                                 </div>
                             </nav>
@@ -107,7 +106,7 @@
                                 </div>
                             </div>
                             <div class="header-search-1-form">
-                                <form id="#" method="get" action="#">
+                                <form method="get" action="{{ route('shop') }}">
                                     <input type="text" name="search" value="" placeholder="Search here..." />
                                     <button type="submit">
                                         <span><i class="icon-search"></i></span>
@@ -145,6 +144,7 @@
                                 <sup id="cart-count">{{ $cartCount ?? 0 }}</sup>
                             </a>
                         </div>
+                        <div class="special-link d-none d-xl-block ms-3"><a href="{{ route('contact') }}">GET A QUOTE</a></div>
                         <!-- Mobile Menu Button -->
                         <div class="mobile-menu-toggle d-xl-none">
                             <a href="#ltn__utilize-mobile-menu" class="ltn__utilize-toggle">
@@ -399,22 +399,31 @@ $(document).ready(function() {
 $(document).ready(function() {
     let lastScrollTop = 0;
     let header = $('.ltn__header-middle-area');
+    let headerContainer = $('.ltn__header-area');
+    let headerHeight = header.outerHeight();
 
     $(window).on('scroll', function() {
         let st = $(this).scrollTop();
 
-        // If scrolling DOWN → hide sticky class
-        if (st > lastScrollTop) {
-            header.removeClass('sticky-active');
-        }
-        // If scrolling UP → show sticky class
-        else {
-            if (st > 200) { // activate only after 200px down, optional
+        if (st > 200) {
+            headerContainer.css('height', headerHeight);
+            if (st > lastScrollTop) {
+                // Scrolling down
+                header.removeClass('sticky-active');
+            } else {
+                // Scrolling up
                 header.addClass('sticky-active');
             }
+        } else {
+            headerContainer.css('height', 'auto');
+            header.removeClass('sticky-active');
         }
 
         lastScrollTop = st;
+    });
+
+    $(window).on('resize', function(){
+        headerHeight = header.outerHeight();
     });
 });
     </script>

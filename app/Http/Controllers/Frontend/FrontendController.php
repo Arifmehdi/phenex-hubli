@@ -70,7 +70,7 @@ class FrontendController extends Controller
 
         // dd($data['categories']);
 
-        $data['feature_products'] = Product::whereActive(true)->where('feature',true)->get();
+        $data['feature_products'] = Product::whereActive(true)->where('feature',true)->limit(20)->get();
 
         $data['departments'] = Department::whereActive(true)
             ->select('image','name_en','name_bn','excerpt_en')
@@ -116,6 +116,19 @@ class FrontendController extends Controller
     {
         $query = Product::whereActive(true);
 
+        // Search
+        if ($request->has('search')) {
+            $query->where('name_en', 'like', '%' . $request->get('search') . '%');
+        }
+
+        // Price filter
+        if ($request->has('price')) {
+            $priceRange = explode('-', $request->get('price'));
+            if (count($priceRange) == 2) {
+                $query->whereBetween('final_price', [$priceRange[0], $priceRange[1]]);
+            }
+        }
+
         // Sorting
         if ($request->get('sort') == 1) {
             $query->latest();
@@ -137,6 +150,13 @@ class FrontendController extends Controller
             ->where('active', 1)
             ->orderBy('name_en')
             ->get();
+        
+            // Top clicked products
+        $topClickedProducts = Product::where('active', true)
+            ->where('feature', true)
+            ->orderByDesc('click_count')
+            ->limit(6)
+            ->get();
 
         // Get all root categories for sidebar
         $allRootCategories = ProductCategory::whereNull('parent_id')
@@ -149,9 +169,10 @@ class FrontendController extends Controller
             'categories', 
             'total_products', 
             'subcategories',
-            'allRootCategories' // Add this
+            'allRootCategories',
+            'topClickedProducts' // Add this
         ));
-        return view('website.shop' );  
+
     }
 
     public function quickView(Request $request)
@@ -562,12 +583,20 @@ class FrontendController extends Controller
             ->orderBy('name_en')
             ->get();
 
+        // Top clicked products
+        $topClickedProducts = Product::where('active', true)
+            ->where('feature', true)
+            ->orderByDesc('click_count')
+            ->limit(6)
+            ->get();
+
         return view("frontend.home.shasthoseba", compact(
             'products', 
             'categories', 
             'total_products', 
             'subcategories',
-            'allRootCategories' // Add this
+            'allRootCategories',
+            'topClickedProducts' // Add this
         ));
     }
 
@@ -642,6 +671,21 @@ class FrontendController extends Controller
                 break;
         }
 
+        // Price filter
+        if ($request->has('price')) {
+            $priceRange = explode('-', $request->get('price'));
+            if (count($priceRange) == 2) {
+                $query->whereBetween('final_price', [$priceRange[0], $priceRange[1]]);
+            }
+        }
+
+        // Top clicked products
+        $topClickedProducts = Product::where('active', true)
+            ->where('feature', true)
+            ->orderByDesc('click_count')
+            ->limit(6)
+            ->get();
+
         // Pagination and count
         $products = $query->paginate(12)->appends($request->all());
         $total_products = $query->count();
@@ -653,28 +697,70 @@ class FrontendController extends Controller
             'subcategories',
             'total_products',
             'allRootCategories',
+            'topClickedProducts',
             'slug'
         ));
     }
 
+
+
     public function productDetails(Request $request, $slug)
     {
-        $product = Product::where('slug', $slug)->with('categories', 'reviews', 'media')->first();
+        $product = Product::where('slug', $slug)
+            ->with('categories', 'reviews', 'media')
+            ->firstOrFail();
 
-        if(!$product){
-            abort(404);
-        }
+        // Increment view count
+        $product->increment('click_count');
 
-        $relatedProducts = Product::whereHas('categories', function($q) use ($product) {
-                                $q->whereIn('product_categories.id', $product->categories->pluck('id'));
-                            })
-                            ->where('id', '!=', $product->id)
-                            ->take(12)
-                            ->get();
+        // Related products
+        $relatedProducts = Product::whereHas('categories', function ($q) use ($product) {
+                $q->whereIn('product_categories.id', $product->categories->pluck('id'));
+            })
+            ->where('id', '!=', $product->id)
+            ->where('feature', true)
+            ->take(12)
+            ->get();
 
-        return view('website.shop_details', compact('product','relatedProducts'));
-        return view('frontend.home.productDetails', compact('product','relatedProducts'));
+        // Exclude current + related
+        $excludeProductIds = collect([$product->id])
+            ->merge($relatedProducts->pluck('id'));
+
+        // Top clicked products
+            $topClickedProducts = Product::where('active', true)
+                ->whereNotIn('id', [$product->id])
+                ->where('feature', true)
+                ->orderByDesc('click_count')
+                ->limit(3)
+                ->get();
+
+
+        return view('website.shop_details', compact(
+            'product',
+            'relatedProducts',
+            'topClickedProducts'
+        ));
     }
+
+
+    // public function productDetails(Request $request, $slug)
+    // {
+    //     $product = Product::where('slug', $slug)->with('categories', 'reviews', 'media')->first();
+
+    //     if(!$product){
+    //         abort(404);
+    //     }
+
+    //     $relatedProducts = Product::whereHas('categories', function($q) use ($product) {
+    //                             $q->whereIn('product_categories.id', $product->categories->pluck('id'));
+    //                         })
+    //                         ->where('id', '!=', $product->id)
+    //                         ->where('feature', true)
+    //                         ->take(12)
+    //                         ->get();
+
+    //     return view('website.shop_details', compact('product','relatedProducts'));
+    // }
 
     public function cart()
     {

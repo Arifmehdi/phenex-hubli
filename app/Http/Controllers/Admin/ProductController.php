@@ -443,8 +443,6 @@ class ProductController extends Controller
             'additional_images.*' => 'nullable|image',
         ]);
 
-      
-
         // Update product attributes with request data
         $product->name_en = $request->name_en;
         $product->name_bn = $request->name_bn ?? null;
@@ -455,6 +453,7 @@ class ProductController extends Controller
         $product->discount_price = $request->discount ?? 0.00;
         $product->final_price = $product->price - $product->discount;
         $product->excerpt_en = $request->excerpt_en;
+        $product->stock = $request->stock;
         $product->excerpt_bn = $request->excerpt_bn ?? null;
         $product->description_en = $request->description_en;
         $product->description_bn = $request->description_bn ?? null;

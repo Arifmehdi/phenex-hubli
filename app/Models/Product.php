@@ -12,6 +12,7 @@ class Product extends Model
     use HasFactory;
 
     protected $fillable = [
+        'click_count',
         'name_en',
         'name_bn',
         'sku',
