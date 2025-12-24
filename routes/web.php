@@ -293,6 +293,12 @@ Route::group(['middleware' => ['web', 'auth'], 'prefix' => 'mypanel'], function 
 
     Route::get('chalan/print/{order}', [FrontendController::class, 'orderChalan'])->name('user.orderChalan');
 
+    Route::get('feature-products', [AuthController::class, 'featureProducts'])->name('user.feature_products');
+
+    // Product Stock Requests
+    Route::get('stock-requests', [\App\Http\Controllers\AuthController::class, 'stockRequests'])->name('user.stock_requests.index');
+    Route::get('stock-requests/create', [\App\Http\Controllers\AuthController::class, 'createStockRequestForm'])->name('user.stock_requests.create');
+    Route::post('stock-requests', [\App\Http\Controllers\ProductStockRequestController::class, 'store'])->name('user.stock_requests.store');
 });
 
 // Route::middleware(['web'])->prefix('order')->group(function() {
@@ -570,9 +576,20 @@ Route::middleware(['userRole:admin','auth'])->prefix('admin')->group(function(){
     Route::get('invoice/print/{order}', [ProductController::class, 'orderPrint'])->name('admin.orderPrint');
 
     // Contacts
-    Route::get('contacts', [\App\Http\Controllers\ContactController::class, 'index'])->name('admin.contacts.index');
-    Route::get('contacts/{contact}', [\App\Http\Controllers\ContactController::class, 'show'])->name('admin.contacts.show');
-    Route::delete('contacts/{contact}', [\App\Http\Controllers\ContactController::class, 'destroy'])->name('admin.contacts.destroy');
+    Route::get('contacts', [ContactController::class, 'index'])->name('admin.contacts.index');
+    Route::get('contacts/{contact}', [ContactController::class, 'show'])->name('admin.contacts.show');
+    Route::delete('contacts/{contact}', [ContactController::class, 'destroy'])->name('admin.contacts.destroy');
 
+    // Product Stock Request Admin Routes
+    Route::resource('stock-requests', \App\Http\Controllers\Admin\ProductStockRequestController::class)->names('admin.stock_requests');
+
+    // Vehicle Admin Routes
+    Route::resource('vehicles', \App\Http\Controllers\Admin\VehicleController::class)->names('admin.vehicles');
+
+    // Driver Admin Routes
+    Route::resource('drivers', \App\Http\Controllers\Admin\DriverController::class)->names('admin.drivers');
+
+    // Vehicle Assignment Admin Routes
+    Route::resource('vehicle-assignments', \App\Http\Controllers\Admin\VehicleAssignmentController::class)->names('admin.vehicle_assignments');
 
 });

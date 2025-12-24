@@ -11,6 +11,42 @@
 <meta property="og:image" content="{{ asset('frontend/assets/img/northbengal/contact_banner.png') }}">
 <meta property="og:type" content="website">
 @endsection
+@push('css')
+<style>
+  .status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    font-size: 13px;
+    font-weight: 600;
+    border-radius: 12px;
+    color: #fff;
+    text-transform: capitalize;
+}
+
+/* Status Colors */
+.status-pending {
+    background-color: #f0ad4e; /* orange */
+}
+
+.status-accepted {
+    background-color: #5bc0de; /* blue */
+}
+
+.status-approved {
+    background-color: #5cb85c; /* green */
+}
+
+.status-rejected {
+    background-color: #d9534f; /* red */
+}
+
+/* DEFAULT */
+.status-default {
+    background-color: #6c757d; /* gray */
+}
+
+</style>
+@endpush 
 @section('content')
 <!-- BREADCRUMB AREA START -->
 <x-breadcrumb title="Dashboard" pageName="Dashboard" bgImage="frontend/img/bg/9.jpg" />
@@ -30,6 +66,9 @@
                                         <div class="nav">
                                             <a class="{{ $activeTab == 'dashboard' ? 'active show' : '' }}" data-bs-toggle="tab" href="#liton_tab_1_1">Dashboard <i class="fas fa-home"></i></a>
                                             <a class="{{ $activeTab == 'order' ? 'active show' : '' }}" href="{{ route('user.orders', ['type' => 'all']) }}">Orders <i class="fas fa-file-alt"></i></a>
+                                            <a class="{{ $activeTab == 'feature_products' ? 'active show' : '' }}" href="{{ route('user.feature_products') }}">Feature Products <i class="fas fa-star"></i></a>
+                                            <a class="{{ $activeTab == 'stock_requests' ? 'active show' : '' }}" data-bs-toggle="tab" href="#liton_tab_stock_requests">My Stock Requests <i class="fas fa-cubes"></i></a>
+                                            <a class="{{ $activeTab == 'create_stock_request' ? 'active show' : '' }}" data-bs-toggle="tab" href="#liton_tab_create_stock_request">Add Stock Request <i class="fas fa-plus-circle"></i></a>
                                             <a data-bs-toggle="tab" href="#liton_tab_1_3">Downloads <i class="fas fa-arrow-down"></i></a>
                                             <a data-bs-toggle="tab" href="#liton_tab_1_4">address <i class="fas fa-map-marker-alt"></i></a>
                                             <a data-bs-toggle="tab" href="#liton_tab_1_5">Account Details <i class="fas fa-user"></i></a>
@@ -101,6 +140,176 @@
                                                   </div>
                                             </div>
                                         </div>
+                                        <div class="tab-pane fade {{ $activeTab == 'feature_products' ? 'active show' : '' }}" id="liton_tab_1_6">
+                                            <div class="ltn__myaccount-tab-content-inner">
+                                                <div class="card">
+                                                    <div class="card-header text-white d-flex justify-content-between align-items-center" style="background: #699403;">
+                                                      <h5 class="mb-0 text-white">Featured Products</h5>
+                                                      <a href="{{ route('user.stock_requests.create') }}" class="btn btn-sm btn-light">Add Stock Request</a>
+                                                    </div>
+                                                    <div class="card-body">
+                                                      @if($featured_products->count())
+                                                        <div class="table-responsive">
+                                                          <table class="table table-bordered table-hover mb-0">
+                                                            <thead class="table-light">
+                                                              <tr>
+                                                                <th>Image</th>
+                                                                <th>Product</th>
+                                                                <th>Price</th>
+                                                                <th>Action</th>
+                                                              </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                              @foreach ($featured_products as $product)
+                                                                <tr>
+                                                                  <td><img src="{{ asset('storage/product_images/'.$product->featured_image) }}" alt="{{ $product->name_en }}" class="img-fluid" style="width: 50px; height: 50px; object-fit: cover;"></td>
+                                                                  <td>{{ $product->name_en }}</td>
+                                                                  <td>{{ number_format($product->final_price, 2) }} tk</td>
+                                                                  <td>
+                                                                     <a class="btn btn-sm me-2" target="_blank" href="{{ route('productDetails', $product->slug) }}" title="View"><i class="fas fa-eye"></i></a>
+                                                                  </td>
+                                                                </tr>
+                                                              @endforeach
+                                                            </tbody>
+                                                          </table>
+                                                        </div>
+                                                        <div class="mt-3">
+                                                          {{ $featured_products->links() }}
+                                                        </div>
+                                                      @else
+                                                        <p class="text-center text-muted">No featured products found.</p>
+                                                      @endif
+                                                    </div>
+                                                  </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade {{ $activeTab == 'stock_requests' ? 'active show' : '' }}" id="liton_tab_stock_requests">
+                                            <div class="ltn__myaccount-tab-content-inner">
+                                                <div class="card">
+                                                    <div class="card-header text-white d-flex justify-content-between align-items-center" style="background: #699403;">
+                                                        <h5 class="mb-0 text-white">My Stock Requests</h5>
+                                                        <a href="#liton_tab_create_stock_request" data-bs-toggle="tab" class="btn btn-sm btn-light">Add New Stock Request</a>
+                                                    </div>
+                                                    <div class="card-body">
+                                                        @if(session('success'))
+                                                            <div class="alert alert-success">
+                                                                {{ session('success') }}
+                                                            </div>
+                                                        @endif
+
+                                                        <table class="table table-bordered">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>#</th>
+                                                                    <th>Product</th>
+                                                                    <th>Quantity</th>
+                                                                    <th>Collection Date & Time</th>
+                                                                    <th>Collection Location</th>
+                                                                    <th>Status</th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                @forelse($stockRequests as $request)
+
+                                                                    <tr>
+                                                                        <td>{{ $loop->iteration }}</td>
+                                                                        <td>{{ $request->product->name }}</td>
+                                                                        <td>{{ $request->quantity }}</td>
+                                                                        <td>{{ \Carbon\Carbon::parse($request->collection_datetime)->format('d-m-Y h:i A') }}</td>
+                                                                        <td>{{ $request->collection_location }}</td>
+
+                                                                      @php
+                                                                          $status = strtolower(trim($request->status));
+
+                                                                          $statusClass = match ($status) {
+                                                                              'pending'  => 'status-pending',
+                                                                              'accepted' => 'status-accepted',
+                                                                              'approved' => 'status-approved',
+                                                                              'rejected' => 'status-rejected',
+                                                                          };
+                                                                      @endphp
+
+                                                                      <td>
+                                                                          <span class="status-badge {{ $statusClass }}">
+                                                                              {{ $status }}
+                                                                          </span>
+                                                                      </td>
+                                                                    </tr>
+                                                                @empty
+                                                                    <tr>
+                                                                        <td colspan="6" class="text-center">No stock requests found.</td>
+                                                                    </tr>
+                                                                @endforelse
+                                                            </tbody>
+                                                        </table>
+
+                                                        <div class="d-flex justify-content-center">
+                                                            {{ $stockRequests->links() }}
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade {{ $activeTab == 'create_stock_request' ? 'active show' : '' }}" id="liton_tab_create_stock_request">
+                                            <div class="ltn__myaccount-tab-content-inner">
+                                                <div class="card">
+                                                    <div class="card-header text-white d-flex justify-content-between align-items-center"  style="background: #699403;">
+                                                        <div class="card-title">Create Product Stock Request</div>
+                                                    </div>
+                                                    <form action="{{ route('user.stock_requests.store') }}" method="POST">
+                                                        @csrf
+                                                        <div class="card-body w3-light-gray">
+                                                            <div class="row py-2">
+                                                                <div class="col-12 col-md-12 m-auto card p-5">
+
+                                                                    <div class="form-group">
+                                                                        <label for="product_id">Product</label> <br>
+                                                                        <select name="product_id" id="product_id" class="form-control @error('product_id') is-invalid @enderror">
+                                                                            <option value="">Select a product first</option>
+                                                                            @foreach($products as $product)
+                                                                                <option value="{{ $product->id }}" {{ old('product_id') == $product->id ? 'selected' : '' }}>{{ $product->name_en }}</option>
+                                                                            @endforeach
+                                                                        </select>
+                                                                        @error('product_id')
+                                                                        <p class="text-danger">{{ $message }}</p>
+                                                                        @enderror
+                                                                    </div>
+
+                                                                    <div class="form-group">
+                                                                        <label for="quantity">Quantity</label>
+                                                                        <input type="number" class="form-control @error('quantity') is-invalid @enderror" placeholder="Quantity" name="quantity" value="{{ old('quantity') }}" step="0.01">
+                                                                        @error('quantity')
+                                                                        <p class="text-danger">{{ $message }}</p>
+                                                                        @enderror
+                                                                    </div>
+
+                                                                    <div class="form-group">
+                                                                        <label for="collection_datetime">Collection Date and Time</label>
+                                                                        <input type="datetime-local" class="form-control @error('collection_datetime') is-invalid @enderror" name="collection_datetime" value="{{ old('collection_datetime') }}">
+                                                                        @error('collection_datetime')
+                                                                        <p class="text-danger">{{ $message }}</p>
+                                                                        @enderror
+                                                                    </div>
+
+                                                                    <div class="form-group">
+                                                                        <label for="collection_location">Collection Location</label>
+                                                                        <textarea name="collection_location" id="collection_location" class="form-control @error('collection_location') is-invalid @enderror" rows="3">{{ old('collection_location') }}</textarea>
+                                                                        @error('collection_location')
+                                                                        <p class="text-danger">{{ $message }}</p>
+                                                                        @enderror
+                                                                    </div>
+
+                                                                </div>
+                                                            </div>
+                                                        </div>
+
+                                                        <div class="card-footer text-right">
+                                                            <input type="submit" class="btn btn-success mt-2" value="Create Request">
+                                                        </div>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="tab-pane fade" id="liton_tab_1_3">
                                             <div class="ltn__myaccount-tab-content-inner">
                                                 <div class="table-responsive">
@@ -135,6 +344,11 @@
                                                         </tbody>
                                                     </table>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div class="tab-pane fade" id="liton_tab_1_3">
+                                            <div class="ltn__myaccount-tab-content-inner">
+                                                <p>No downloads available.</p>
                                             </div>
                                         </div>
                                         <div class="tab-pane fade" id="liton_tab_1_4">

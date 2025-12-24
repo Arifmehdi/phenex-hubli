@@ -6,6 +6,7 @@ use App\Models\Cart;
 use App\Models\IdCard;
 use App\Models\Role;
 use App\Models\User;
+use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
@@ -341,10 +342,13 @@ class AuthController extends Controller
         $todayOrdersCount = $user->orders()->whereDate('created_at', now()->toDateString())->count();
         $cancelOrdersCount = $user->orders()->where('order_status', 'cancelled')->count();
         $orders = $user->orders()->latest()->paginate(30);
+        $featured_products = \App\Models\Product::where('feature', 1)->where('active',1)->latest()->paginate(12);
+        $stockRequests = \App\Models\ProductStockRequest::where('user_id', Auth::id())->latest()->paginate(20); // Initialize
+        $products = \App\Models\Product::all(); // Add this line
 
         $activeTab = 'dashboard'; 
 
-        return view('user.dashboard', compact('user', 'todayOrdersCount', 'cancelOrdersCount', 'orders', 'activeTab'));
+        return view('user.dashboard', compact('user', 'todayOrdersCount', 'cancelOrdersCount', 'orders', 'activeTab','featured_products', 'stockRequests', 'products'));
     }
 
     public function orders(Request $request)
@@ -365,22 +369,29 @@ class AuthController extends Controller
         $orders = $query->latest()->paginate(30);
         $todayOrdersCount = $user->orders()->whereDate('created_at', now()->toDateString())->count();
         $cancelOrdersCount = $user->orders()->where('order_status', 'cancelled')->count();
+        $featured_products = \App\Models\Product::where('feature', 1)->where('active',1)->latest()->paginate(12); // Ensure it's always passed
+        $stockRequests = \App\Models\ProductStockRequest::where('user_id', Auth::id())->latest()->paginate(20); // Ensure it's always passed
+        $products = \App\Models\Product::all(); // Add this line
 
         $activeTab = 'order'; 
 
-        return view('user.dashboard', compact('user', 'todayOrdersCount', 'cancelOrdersCount', 'orders', 'activeTab', 'type'));
-    }
+        return view('user.dashboard', compact('user', 'todayOrdersCount', 'cancelOrdersCount', 'orders', 'activeTab', 'type','featured_products', 'stockRequests', 'products'));
 
+    }
+    
     public function editMyInformation()
     {
         $user = Auth::user();
         $todayOrdersCount = $user->orders()->whereDate('created_at', now()->toDateString())->count();
         $cancelOrdersCount = $user->orders()->where('order_status', 'cancelled')->count();
         $orders = $user->orders()->latest()->paginate(30);
+        $featured_products = \App\Models\Product::where('feature', 1)->where('active',1)->latest()->paginate(12);
+        $stockRequests = \App\Models\ProductStockRequest::where('user_id', Auth::id())->latest()->paginate(20); // Initialize
+        $products = \App\Models\Product::all(); // Add this line
 
         $activeTab = 'edit'; 
 
-        return view('user.dashboard', compact('user', 'todayOrdersCount', 'cancelOrdersCount', 'orders', 'activeTab'));
+        return view('user.dashboard', compact('user', 'todayOrdersCount', 'cancelOrdersCount', 'orders', 'activeTab', 'featured_products', 'stockRequests', 'products'));
     }
 
     public function idcard()
@@ -393,6 +404,69 @@ class AuthController extends Controller
         $activeTab = 'edit'; 
 
         return view('user.idcard', compact('user', 'todayOrdersCount', 'cancelOrdersCount', 'orders', 'activeTab'));
+    }
+
+    public function featureProducts()
+    {
+        $user = Auth::user();
+        $todayOrdersCount = $user->orders()->whereDate('created_at', now()->toDateString())->count();
+        $cancelOrdersCount = $user->orders()->where('order_status', 'cancelled')->count();
+        $orders = $user->orders()->latest()->paginate(30);
+        $featured_products = Product::where('feature', 1)->where('active',1)->latest()->paginate(12);
+        $stockRequests = \App\Models\ProductStockRequest::where('user_id', Auth::id())->latest()->paginate(20); // Initialize
+        $products = \App\Models\Product::all(); // Add this line
+
+        $activeTab = 'feature_products'; 
+
+        return view('user.dashboard', compact('user', 'todayOrdersCount', 'cancelOrdersCount', 'orders', 'activeTab', 'featured_products', 'stockRequests', 'products'));
+    }
+
+    public function stockRequests()
+    {
+        $user = Auth::user();
+        $orders = $user->orders()->latest()->paginate(30);
+        $todayOrdersCount = $user->orders()->whereDate('created_at', now()->toDateString())->count();
+        $cancelOrdersCount = $user->orders()->where('order_status', 'cancelled')->count();
+        $featured_products = collect(); // Initialize as empty collection
+        $products = \App\Models\Product::all(); // Add this line
+
+        $stockRequests = \App\Models\ProductStockRequest::with('product')->where('user_id', Auth::id())->latest()->paginate(20);
+
+        $activeTab = 'stock_requests'; 
+
+        return view('user.dashboard', compact('user', 'todayOrdersCount', 'cancelOrdersCount', 'orders', 'activeTab', 'stockRequests', 'featured_products', 'products'));
+    }
+
+    // public function createStockRequestForm()
+    // {
+    //     $user = Auth::user();
+    //     $todayOrdersCount = $user->orders()->whereDate('created_at', now()->toDateString())->count();
+    //     $cancelOrdersCount = $user->orders()->where('order_status', 'cancelled')->count();
+    //     $orders = $user->orders()->latest()->paginate(30);
+    //     $featured_products = collect(); // Initialize as empty collection
+    //     $stockRequests = collect(); // Initialize as empty collection
+
+    //     $products = \App\Models\Product::all(); // Products needed for the form
+
+    //     $activeTab = 'create_stock_request'; 
+
+    //     return view('user.dashboard', compact('user', 'todayOrdersCount', 'cancelOrdersCount', 'orders', 'activeTab', 'featured_products', 'stockRequests', 'products'));
+    // }
+
+    public function createStockRequestForm()
+    {
+        $user = Auth::user();
+        $todayOrdersCount = $user->orders()->whereDate('created_at', now()->toDateString())->count();
+        $cancelOrdersCount = $user->orders()->where('order_status', 'cancelled')->count();
+        $orders = $user->orders()->latest()->paginate(30);
+        $featured_products = collect(); // Initialize as empty collection
+        $stockRequests = \App\Models\ProductStockRequest::with('product')->where('user_id', Auth::id())->latest()->paginate(20); // Initialize as empty collection
+
+        $products = \App\Models\Product::all(); // Products needed for the form
+
+        $activeTab = 'create_stock_request'; 
+
+        return view('user.dashboard', compact('user', 'todayOrdersCount', 'cancelOrdersCount', 'orders', 'activeTab', 'featured_products', 'stockRequests', 'products'));
     }
 
 
