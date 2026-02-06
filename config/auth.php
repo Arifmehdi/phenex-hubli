@@ -40,6 +40,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'api' => [
+        'driver' => 'sanctum',  // Make sure this is set
+        'provider' => 'users',
+    ],
     ],
 
     /*

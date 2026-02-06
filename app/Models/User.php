@@ -36,6 +36,7 @@ class User extends Authenticatable
         'ssc_registration',
         'blood_group',
         'image',
+        'role'
     ];
 
     /**
