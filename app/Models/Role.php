@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 class Role extends Model
 {
     use HasFactory;
+    protected $fillable =['user_id','role_name','role_value','added_by_id','edited_by_id'];
     private static $role;
 
     public static function newRole($request){
@@ -32,6 +33,10 @@ class Role extends Model
         if($request->role_name=='blog_admin'){
             $role->role_name='blog_admin';
             $role->role_value='BlogAdmin';
+        }
+        if($request->role_name=='user'){
+            $role->role_name='user';
+            $role->role_value='User';
         }
 
         if($request->added_by_id){

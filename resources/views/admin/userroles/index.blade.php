@@ -16,11 +16,9 @@
                                     <thead>
                                     <tr>
                                         <th width="20">SL NO</th>
-                                        <th width=100>Action</th>
                                         <th>Name</th>
                                         <th>Email</th>
-                                        <th>Role name</th>
-                                        <th>Role Value</th>
+                                        <th>Roles</th>
 
                                     </tr>
                                     </thead>
@@ -31,19 +29,14 @@
                                                 <td>{{$user->name}}</td>
                                                 <td>{{$user->email}}</td>
                                                 <td>
-                                                    @foreach($user->roles as $role)
-                                                        <span class="bg-success mr-2">{{$role->role_name=='Admin'?'Admin':''}}</span>
-                                                        <span class="bg-primary mr-2">{{$role->role_name=='Blog_Admin'?'Blog Admin':''}}</span>
-                                                    @endforeach
-                                                </td>
-                                                <td>
-                                                    @foreach($user->roles as $role)
-                                                        <span class="bg-primary mr-2 ">{{$role->role_value=='Editor'?'Editor':''}}</span>
-                                                        <span class="bg-success mr-2 ">{{$role->role_value=='Super_Editor'?'Super Editor':''}}</span>
-                                                    @endforeach
-                                                </td>
-                                                <td>
-                                                    <a href="" class="text-danger"><i class="fa fa-trash"></i></a>
+                                                    @if($user->hasAnyRole())
+                                                        @foreach($user->roles as $role)
+                                                            <span class="bg-success mr-2">{{$role->role_value}}</span>
+                                                        @endforeach
+                                                        <a href="{{route('admin.manage-role')}}" class="btn btn-xs btn-outline-primary "><i class="fa fa-edit"></i> Manage</a>
+                                                    @else
+                                                        <a href="{{route('admin.assign-role')}}" class="btn btn-xs btn-outline-primary "><i class="fa fa-plus"></i> Assign Role</a>
+                                                    @endif
                                                 </td>
                                             </tr>
                                         @endforeach

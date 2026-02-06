@@ -6,7 +6,6 @@
                 <h3 class="card-title">Assign Role</h3>
             </div>
 
-
             <form action="{{route('admin.update-role',$role->id)}}" method="post">
                 @csrf
                 <div class="card-body">
@@ -20,8 +19,9 @@
                         <label for="exampleInputEmail1">Role Name</label>
                         <select name="role_name" class="form-control">
                             <option disabled >--  Select Role --</option>
-                            <option value="admin" {{$role->role_name=='admin'? 'selected':''}}>Admin</option>
-                            <option value="blog_admin" {{$role->role_name=='blog_admin'? 'selected':''}}>Blog Admin</option>
+                            @foreach($roles as $role_item)
+                                <option value="{{$role_item->role_name}}" {{$role->role_name==$role_item->role_name? 'selected':''}}>{{$role_item->role_value}}</option>
+                            @endforeach
                         </select>
                     </div>
 

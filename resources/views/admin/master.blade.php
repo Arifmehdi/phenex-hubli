@@ -170,7 +170,7 @@
                         </ul>
                     </li>
 
-                    {{--<li class="nav-item {{ session('lsbm') == 'roles'? ' menu-open ' : ''}}">
+                    <li class="nav-item {{ session('lsbm') == 'roles'? ' menu-open ' : ''}}">
                         <a href="#" class="nav-link {{ session('lsbm') == 'roles'? ' active ' : ''}}">
                             <i class="nav-icon fas fa-diagnoses"></i>
                             <p>
@@ -192,7 +192,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>--}}
+                    </li>
 
 
                     <li class="nav-item {{ session('lsbm') == 'slider'? ' menu-open ' : ''}}">

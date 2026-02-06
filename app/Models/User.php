@@ -89,8 +89,8 @@ class User extends Authenticatable
     public function hasRole($role){
         return (bool) $this->roles()->where('role_name',$role)->count();
     }
-    public function hasRoleUserId($usrId){
-        return (bool) $this->roles()->where('user_id',$usrId)->count();
+    public function hasAnyRole(){
+        return (bool) $this->roles()->count();
     }
 
 

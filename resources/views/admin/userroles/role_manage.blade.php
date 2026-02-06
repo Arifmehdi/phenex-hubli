@@ -17,10 +17,11 @@
                                     <tr>
                                         <th width="20">SL</th>
                                         <th width="100">Action</th>
+                                        <th>Name</th>
                                         <th>Email</th>
                                         <th>Role name</th>
                                         <th>Role Value</th>
-                                        <th>Name</th>
+                                        <th>Created At</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -29,7 +30,7 @@
                                             <td>{{$loop->iteration}}</td>
                                             <td>
                                                 <a href="{{route('admin.edit-role',$role->id)}}" class="btn btn-xs btn-outline-primary {{$role->user_id==Auth::user()->id ? 'disabled' : '' }}"><i class="fa fa-edit"></i></a>
-                                                <a href="{{route('admin.delete-role',$role->id)}}" class="btn btn-xs btn-outline-danger {{$role->user_id==Auth::user()->id ? 'disabled' : '' }}" ><i class="fa fa-trash"></i></a>
+                                                {{--<a href="{{route('admin.delete-role',$role->id)}}" class="btn btn-xs btn-outline-danger {{$role->user_id==Auth::user()->id ? 'disabled' : '' }}" ><i class="fa fa-trash"></i></a>--}}
                                             </td>
                                             @if(isset($role->user->name))
                                             <td>{{$role->user->name}}</td>
@@ -37,6 +38,7 @@
                                             @endif
                                             <td>{{$role->role_name}}</td>
                                             <td>{{$role->role_value}}</td>
+                                            <td>{{ $role->created_at->diffForHumans() }}</td>
 
                                         </tr>
                                     @endforeach

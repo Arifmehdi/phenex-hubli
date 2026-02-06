@@ -16,7 +16,7 @@
                                 <select name="user_id" class="form-control" required id="select2">
                                     <option disabled >--  Select Role --</option>
                                         @foreach($users as $user)
-                                            @if($user->hasRoleUserId($user->id))
+                                            @if($user->hasAnyRole())
                                             @else
                                                 <option value="{{$user->id}}">{{$user->name}}, Email: {{$user->email}}</option>
                                             @endif
@@ -31,7 +31,9 @@
                                 <label for="exampleInputEmail1">Role Value</label>
                                 <select name="role_name" class="form-control" required>
                                     <option disabled >--  Select Role --</option>
-                                    <option value="admin">Admin</option>
+                                    @foreach($roles as $role)
+                                        <option value="{{$role->role_name}}">{{$role->role_value}}</option>
+                                    @endforeach
                                 </select>
                             </div>
 
