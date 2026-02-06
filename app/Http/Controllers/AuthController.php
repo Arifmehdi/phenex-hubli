@@ -20,8 +20,11 @@ class AuthController extends Controller
 {
     public function index(){
         if(Auth::check()){
-            if(Auth::user()->hasRole('Admin')){
+            if(Auth::user()->hasRole('admin')){
                 return redirect('admin/dashboard');
+            }
+            if(Auth::user()->hasRole('retailer')){
+                return redirect('retailer/dashboard');
             }
             return redirect('/');
         }
@@ -62,6 +65,9 @@ class AuthController extends Controller
             // Redirect based on role
             if ($user->hasRole('admin')) {
                 return redirect()->route('admin.dashboard')->with('success', 'Signed in successfully');
+            }
+            if ($user->hasRole('retailer')) {
+                return redirect()->route('retailer.dashboard')->with('success', 'Signed in successfully');
             }
 
             return redirect()->route('user.dashboard')->with('success', 'Signed in successfully');

@@ -593,3 +593,7 @@ Route::middleware(['userRole:admin','auth'])->prefix('admin')->group(function(){
     Route::resource('vehicle-assignments', \App\Http\Controllers\Admin\VehicleAssignmentController::class)->names('admin.vehicle_assignments');
 
 });
+
+Route::middleware(['auth', 'retailer'])->prefix('retailer')->group(function () {
+    Route::get('/dashboard', [\App\Http\Controllers\Retailer\RetailerController::class, 'index'])->name('retailer.dashboard');
+});

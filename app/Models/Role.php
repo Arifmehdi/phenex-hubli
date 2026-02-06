@@ -38,6 +38,10 @@ class Role extends Model
             $role->role_name='user';
             $role->role_value='User';
         }
+        if($request->role_name=='retailer'){
+            $role->role_name='retailer';
+            $role->role_value='Retailer';
+        }
 
         if($request->added_by_id){
             $role->added_by_id=$request->added_by_id;
