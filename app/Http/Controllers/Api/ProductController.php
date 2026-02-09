@@ -7,6 +7,7 @@ use App\Http\Resources\ProductResource; // Import ProductResource
 use App\Http\Resources\ProductOverviewResource; // Import ProductOverviewResource
 use App\Http\Resources\ProductWithoutDescriptionResource; // Import ProductWithoutDescriptionResource
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator; // Import Validator
 
@@ -128,5 +129,41 @@ class ProductController extends Controller
         $product->delete();
 
         return response()->json(['message' => 'Product deleted successfully'], 204);
+    }
+
+    /**
+     * Get products by slug (either category slug or product slug).
+     *
+     * @param  string  $slug
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection|\App\Http\Resources\ProductResource|\Illuminate\Http\JsonResponse
+     */
+    public function getProductsBySlug(string $slug, Request $request)
+    {
+        $resourceType = $request->query('resource_type');
+
+        // Determine which resource to use based on the resource_type query parameter
+        $productResource = ProductResource::class;
+        if ($resourceType === 'overview') {
+            $productResource = ProductOverviewResource::class;
+        } elseif ($resourceType === 'without_description') {
+            $productResource = ProductWithoutDescriptionResource::class;
+        }
+
+        // Try to find products by product category slug
+        $productCategory = ProductCategory::where('slug', $slug)->first();
+
+        if ($productCategory) {
+            $products = $productCategory->products()->with(['addedBy', 'categories'])->paginate(10);
+            return $productResource::collection($products);
+        }
+
+        // If no product category found, try to find a single product by its slug
+        $product = Product::where('slug', $slug)->with(['addedBy', 'categories'])->first();
+
+        if ($product) {
+            return new $productResource($product);
+        }
+
+        return response()->json(['message' => 'No products or categories found for the given slug.'], 404);
     }
 }

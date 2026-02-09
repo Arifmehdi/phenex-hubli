@@ -16,7 +16,7 @@ class ProductCategoryResource extends JsonResource
     {
         return [
             'id' => $this->id,
-            'name' => $this->name, // Assuming 'name' is an attribute of ProductCategory
+            'name' => $this->name_en, // Assuming 'name' is an attribute of ProductCategory
             'slug' => $this->slug, // Assuming 'slug' is an attribute of ProductCategory
             'image' => $this->fi(), // Using the accessor
             'parent_id' => $this->parent_id,

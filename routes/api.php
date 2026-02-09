@@ -28,6 +28,7 @@ Route::apiResource('products', ProductController::class);
 Route::get('products/{product}/overview', [ProductController::class, 'overview']); // New route for product overview
 Route::get('products/{product}/no-description', [ProductController::class, 'withoutDescription']); // New route for product without description
 Route::get('products-no-description', [ProductController::class, 'indexWithoutDescription']); // New route for all products without description
+Route::get('products/by-slug/{slug}', [ProductController::class, 'getProductsBySlug']); // New route to get products by slug
 Route::apiResource('product-categories', ProductCategoryController::class);
 
 Route::middleware('auth:sanctum')->group(function () {
