@@ -339,6 +339,7 @@ Route::middleware(['userRole:admin','auth'])->prefix('admin')->group(function(){
     Route::post('user/update/{id}',[UserController::class,'update'])->name('admin.update-user');
     Route::get('user/delete/{id}',[UserController::class,'delete'])->name('admin.delete-user');
     Route::post('user/change-password/{id}',[UserController::class,'changePassword'])->name('admin.user.change-password');
+    Route::put('user/{user}/toggle-approval', [UserController::class, 'toggleApproval'])->name('admin.user.toggle-approval');
 
 
     //search alllllllllllllllllllllll

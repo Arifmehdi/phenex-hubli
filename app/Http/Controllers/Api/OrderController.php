@@ -118,4 +118,58 @@ class OrderController extends Controller
         $order->load(['orderItems', 'user', 'payments']); // Eager load relationships
         return new OrderResource($order);
     }
+
+    /**
+     * Update the specified resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Order  $order
+     * @return \App\Http\Resources\OrderResource|\Illuminate\Http\JsonResponse
+     */
+    public function update(Request $request, Order $order)
+    {
+        // Ensure the order belongs to the authenticated user or is an admin action
+        // For simplicity, we'll assume only the user can update their own order,
+        // or an admin would have a separate route/policy.
+        if ($order->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name' => 'sometimes|required|string|max:255',
+            'mobile' => 'sometimes|required|string|max:20',
+            'email' => 'sometimes|required|email|max:255',
+            'address_title' => 'sometimes|required|string|max:255',
+            'payment_method' => 'sometimes|required|string|max:50',
+            'payment_status' => 'sometimes|required|string|max:50', // Allow updating payment status
+            'delivery_cost' => 'sometimes|numeric|min:0',
+            'order_note' => 'nullable|string',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $order->update($request->all());
+
+        return new OrderResource($order->load(['orderItems', 'user', 'payments']));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     *
+     * @param  \App\Models\Order  $order
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function destroy(Order $order)
+    {
+        // Ensure the order belongs to the authenticated user or is an admin action
+        if ($order->user_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $order->delete();
+
+        return response()->json(['message' => 'Order deleted successfully'], 204);
+    }
 }

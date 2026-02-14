@@ -85,4 +85,11 @@ class UserController extends Controller
         menuSubmenu('users', 'allUsers');
         return redirect('/admin/users')->with('success','Successfully Deleted');
     }
+
+    public function toggleApproval(User $user){
+        $user->is_approve = !$user->is_approve;
+        $user->save();
+
+        return back()->with('success', 'User approval status updated successfully.');
+    }
 }

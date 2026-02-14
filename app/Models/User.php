@@ -36,7 +36,9 @@ class User extends Authenticatable
         'ssc_registration',
         'blood_group',
         'image',
-        'role'
+        'role',
+        'is_approve',
+        'short_bio'
     ];
 
     /**
@@ -56,6 +58,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'email_verified_at' => 'datetime',
+        'is_approve' => 'boolean',
     ];
 
     public static function createUser($request){
@@ -132,6 +135,17 @@ class User extends Authenticatable
         return $this->hasOne(IdCard::class);
     }
     
- 
+    // conversation , message , chat method 
+    // Add to your existing User model
+    public function conversations()
+    {
+        return $this->belongsToMany(Conversation::class, 'conversation_participants');
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+    
 
 }

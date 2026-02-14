@@ -6,7 +6,7 @@
         <th>Name</th>
         <th>Email</th>
         <th>Temp Password</th>
-        <th>Doctor Id</th>
+        <th>Approval</th>
     </tr>
     </thead>
     <tbody class="">
@@ -36,8 +36,16 @@
             <td>{{$user->name}}</td>
             <td>{{$user->email}}</td>
             <td>{{ $user->password_temp }}</td>
-            <td><a href="{{route('categories.index',['id' =>$user->doctor->id ?? ''])}}">{{ Str::ucfirst( $user->doctor->id ?? '') }}</a></td>
-
+            <td>
+                <form action="{{ route('admin.user.toggle-approval', $user->id) }}" method="POST">
+                    @csrf
+                    @method('PUT')
+                    <div class="custom-control custom-switch">
+                        <input type="checkbox" class="custom-control-input" id="isApprovedSwitch{{ $user->id }}" name="is_approve" onchange="this.form.submit()" {{ $user->approve ? 'checked' : '' }}>
+                        <label class="custom-control-label" for="isApprovedSwitch{{ $user->id }}"></label>
+                    </div>
+                </form>
+            </td>
         </tr>
 
     @endforeach

@@ -41,16 +41,22 @@ class AuthController extends Controller
 
     public function register(Request $request)
     {
+
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:6'
+            'password' => 'required|min:6',
+            'mobile' => 'required|string',
+            'role' => 'required|string',
         ]);
-
+        // dd($request->all());
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
+            'mobile' => $request->mobile,
+            'role' => $request->role,
+            'is_approve' => 0
         ]);
 
         $token = $user->createToken('flutter')->plainTextToken;
