@@ -8,6 +8,7 @@ use App\Http\Controllers\Api\CartController; // Import CartController
 use App\Http\Controllers\Api\OrderController; // Import OrderController
 use App\Http\Controllers\ChatController; // Import OrderController
 use App\Http\Controllers\Api\UserController; // Import UserController
+use App\Http\Controllers\Api\ContactFormController; // Import ContactFormController
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,9 @@ Route::get('products/{product}/no-description', [ProductController::class, 'with
 Route::get('products-no-description', [ProductController::class, 'indexWithoutDescription']); // New route for all products without description
 Route::get('products/by-slug/{slug}', [ProductController::class, 'getProductsBySlug']); // New route to get products by slug
 Route::apiResource('product-categories', ProductCategoryController::class);
+
+// API route for contact form submission
+Route::post('/contact', [ContactFormController::class, 'store']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [ApiAuthController::class, 'logout']);
