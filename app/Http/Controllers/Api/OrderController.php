@@ -36,8 +36,17 @@ class OrderController extends Controller
      */
     public function store(Request $request)
     {
-        $user = Auth::user();
-        $cartItems = Cart::where('user_id', $user->id)->with('product')->get();
+        $user = Auth::guard('sanctum')->user();
+        $userId = $user ? $user->id : null;
+        $sessionId = $request->header('X-Session-ID') ?: $request->session_id;
+
+        if ($userId) {
+            $cartItems = Cart::where('user_id', $userId)->with('product')->get();
+        } elseif ($sessionId) {
+            $cartItems = Cart::where('session_id', $sessionId)->with('product')->get();
+        } else {
+            return response()->json(['message' => 'Your cart is empty or session session_id is missing.'], 400);
+        }
 
         if ($cartItems->isEmpty()) {
             return response()->json(['message' => 'Your cart is empty.'], 400);
@@ -46,26 +55,41 @@ class OrderController extends Controller
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
             'mobile' => 'required|string|max:20',
-            'email' => 'required|email|max:255',
-            'address_title' => 'required|string|max:255',
+            'email' => 'nullable|email|max:255',
+            'address_title' => 'required|string|max:1000',
             'payment_method' => 'required|string|max:50',
             'order_note' => 'nullable|string',
-            // Add validation for delivery_cost, payment_gateway if necessary
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        return DB::transaction(function () use ($request, $user, $cartItems) {
+        return DB::transaction(function () use ($request, $userId, $cartItems, $sessionId) {
+            // Update or Create Delivery Location if user is authenticated
+            if ($userId) {
+                \App\Models\DeliveryLocation::updateOrCreate(
+                    ['user_id' => $userId],
+                    [
+                        'name' => $request->name,
+                        'mobile' => $request->mobile,
+                        'email' => $request->email,
+                        'address_title' => $request->address_title,
+                    ]
+                );
+            }
+
+            $ws = \App\Models\WebsiteParameter::first();
+            
             $subtotal = $cartItems->sum(function ($item) {
                 return $item->quantity * ($item->product->final_price ?? 0);
             });
-            $deliveryCost = 0; // Implement logic to calculate delivery cost
+            
+            $deliveryCost = $ws->shipping_cahrge ?? 0;
             $grandTotal = $subtotal + $deliveryCost;
 
             $order = Order::create([
-                'user_id' => $user->id,
+                'user_id' => $userId,
                 'name' => $request->name,
                 'mobile' => $request->mobile,
                 'email' => $request->email,
@@ -73,30 +97,38 @@ class OrderController extends Controller
                 'subtotal' => $subtotal,
                 'grand_total' => $grandTotal,
                 'payment_method' => $request->payment_method,
-                'payment_status' => 'pending', // Default status
+                'payment_status' => 'unpaid',
+                'payment_gateway' => $request->payment_method,
                 'delivery_cost' => $deliveryCost,
                 'order_note' => $request->order_note,
-                'addedby_id' => $user->id,
+                'pending_at' => now(),
+                'addedby_id' => $userId,
             ]);
 
             foreach ($cartItems as $cartItem) {
                 OrderItem::create([
                     'order_id' => $order->id,
-                    'user_id' => $user->id,
+                    'user_id' => $userId,
                     'product_id' => $cartItem->product_id,
                     'quantity' => $cartItem->quantity,
                     'product_price' => $cartItem->product->final_price ?? 0,
                     'product_name' => $cartItem->product->name_en ?? $cartItem->product->name_bn,
                     'total_cost' => $cartItem->quantity * ($cartItem->product->final_price ?? 0),
-                    'addedby_id' => $user->id,
+                    'addedby_id' => $userId,
                 ]);
 
-                // Decrement product stock (if applicable)
-                $cartItem->product->decrement('stock', $cartItem->quantity);
+                // Decrement product stock
+                if ($cartItem->product) {
+                    $cartItem->product->decrement('stock', $cartItem->quantity);
+                }
             }
 
-            // Clear the user's cart
-            Cart::where('user_id', $user->id)->delete();
+            // Clear the cart
+            if ($userId) {
+                Cart::where('user_id', $userId)->delete();
+            } else {
+                Cart::where('session_id', $sessionId)->delete();
+            }
 
             return new OrderResource($order->load(['orderItems', 'user']));
         });

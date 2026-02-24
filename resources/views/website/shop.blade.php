@@ -71,7 +71,7 @@
 
                                     @forelse ($products as $product)
                                     <!-- ltn__product-item -->
-                                    <div class="col-xl-3 col-sm-6 col-6">
+                                    <div class="col-xl-3 col-sm-6 col-6 mb-3">
                                         <div class="ltn__product-item ltn__product-item-3 text-center">
                                             <div class="product-img">
                                                 <a href="{{ route('productDetails', $product->slug) }}">
@@ -329,6 +329,24 @@
     <!-- PRODUCT DETAILS AREA END -->
 
 @endsection 
+@push('css')
+<style>
+    body {
+        background-color: #F8F9FB !important; /* Set body background as requested */
+    }
+    .ltn__product-area {
+        background-color: #F8F9FB !important; /* Ensure content area is white */
+    }
+    .ltn__product-item {
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+    .widget {
+        background-color: white !important; /* Make sidebar widgets white */
+    }
+</style>
+@endpush
 @push('js')
 <script>
     $(document).ready(function() {

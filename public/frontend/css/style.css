@@ -6518,11 +6518,22 @@ ul.wp-block-latest-posts.is-grid.alignwide {
 ---------------------------------------------------- */
 .ltn__product-item {
   position: relative;
-  margin-bottom: 50px; }
+  margin-bottom: 50px;
+  background-color: white; /* Added: White background */
+  min-height: 450px; /* Modified: Changed to min-height */
+  display: flex; /* Added: Flex display */
+  flex-direction: column; /* Added: Column direction for flex */
+  overflow: hidden; /* Added: Hide overflowing content */
+}
 
 .product-img {
   position: relative;
-  overflow: hidden; }
+  overflow: hidden;
+  flex-grow: 1; /* Added: Allow product image to grow */
+  display: flex; /* Added: Enable flexbox for centering */
+  align-items: center; /* Added: Center vertically */
+  justify-content: center; /* Added: Center horizontally */
+}
 
 .product-img a {
   display: inline-block; }
@@ -6535,7 +6546,10 @@ ul.wp-block-latest-posts.is-grid.alignwide {
   -webkit-transition: all 3.5s ease 0s;
   -o-transition: all 3.5s ease 0s;
   transition: all 3.5s ease 0s;
-  z-index: -1; }
+  width: 100%; /* Added: Make image fill width of parent */
+  height: 100%; /* Added: Make image fill height of parent */
+  object-fit: cover; /* Added: Cover the area, cropping if necessary */
+}
 
 .product-img:before {
   position: absolute;

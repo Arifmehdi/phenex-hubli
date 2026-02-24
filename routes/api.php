@@ -9,6 +9,8 @@ use App\Http\Controllers\Api\OrderController; // Import OrderController
 use App\Http\Controllers\ChatController; // Import OrderController
 use App\Http\Controllers\Api\UserController; // Import UserController
 use App\Http\Controllers\Api\ContactFormController; // Import ContactFormController
+use App\Http\Controllers\Api\SellerDashboardController; // Import SellerDashboardController
+use App\Http\Controllers\Api\RiderDashboardController; // Import RiderDashboardController
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +28,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('/login', [ApiAuthController::class, 'login']);
 Route::post('/register', [ApiAuthController::class, 'register']);
 
+// Password Reset Routes
+Route::post('/forgot-password', [ApiAuthController::class, 'forgotPassword'])->name('password.email');
+Route::post('/reset-password', [ApiAuthController::class, 'resetPassword'])->name('password.reset');
+
 // Public API routes for products and product categories (index and show will be public)
 Route::apiResource('products', ProductController::class);
 Route::get('products/{product}/overview', [ProductController::class, 'overview']); // New route for product overview
@@ -33,6 +39,10 @@ Route::get('products/{product}/no-description', [ProductController::class, 'with
 Route::get('products-no-description', [ProductController::class, 'indexWithoutDescription']); // New route for all products without description
 Route::get('products/by-slug/{slug}', [ProductController::class, 'getProductsBySlug']); // New route to get products by slug
 Route::apiResource('product-categories', ProductCategoryController::class);
+
+// Cart routes accessible to both authenticated and guest users
+Route::apiResource('cart', CartController::class)->only(['index', 'store', 'destroy']);
+Route::post('orders', [OrderController::class, 'store']);
 
 // API route for contact form submission
 Route::post('/contact', [ContactFormController::class, 'store']);
@@ -43,10 +53,14 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Authenticated API routes for Cart and Orders
     Route::apiResource('cart', CartController::class)->only(['index', 'store', 'destroy']);
-    Route::apiResource('orders', OrderController::class);
+    Route::apiResource('orders', OrderController::class)->except(['store']);
     Route::apiResource('users', UserController::class); // New Route for User management
     Route::patch('/user/profile', [UserController::class, 'updateMyProfile']);
     Route::patch('/user/password', [UserController::class, 'changePassword']);
+
+    // Dashboard routes for Seller and Rider
+    Route::get('/seller/dashboard', [SellerDashboardController::class, 'index']);
+    Route::get('/rider/dashboard', [RiderDashboardController::class, 'index']);
 
 
     // routes/api.php

@@ -3372,7 +3372,7 @@
 <!-- COUNTER UP AREA END -->
 
 <!-- PRODUCT AREA START (product-item-3) -->
-<div class="ltn__product-area ltn__product-gutter pt-115 pb-70">
+<div class="ltn__product-area ltn__product-gutter pt-115 pb-70" style="background: #F8F9FB;">
     <div class="container">
         <div class="row">
             <div class="col-lg-12">
@@ -3453,17 +3453,19 @@
             @endforelse
             <!--  -->
         </div>
+
+        <div class="row mb-5">
+            <div class="col-12 text-center ">
+                <a href="{{ route('shop') }}" class="btn btn-featured-modern">
+                    View All Featured Products
+                </a>
+            </div>
+        </div>
     </div>
 </div>
 
-<div class="row mb-5">
-    <div class="col-12 text-center ">
-        <a href="{{ route('shop') }}" class="btn btn-featured-modern">
-            View All Featured Products
-        </a>
-    </div>
-</div>
 
+<!-- kljsdfkasjdf klasjfkasjflkjasfkjasd fkjasdkjfksladjfkasdjfk sakjaslkjflksa fjasfkjasdkfjksadlfj kjasdkfjasdf   -->
 <style>
     .btn-featured-modern {
     display: inline-block;
@@ -3509,6 +3511,12 @@
 </div>
 <!-- VIDEO AREA END -->
 
+<style>
+    .ltn__testimonial-item-4 {
+    height: 300px;
+}
+
+</style>
 <!-- TESTIMONIAL AREA START (testimonial-4) -->
 <div class="ltn__testimonial-area section-bg-1 pt-290 pb-70">
     <div class="container-fluid">
@@ -3592,6 +3600,36 @@
 </div>
 <!-- CALL TO ACTION END -->
 
+<style>
+    .ltn__blog-item-3 {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.ltn__blog-img img {
+    width: 100%;
+    height: 220px;       /* fixed image height */
+    object-fit: cover;   /* crop nicely */
+}
+
+.ltn__blog-brief {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+
+.row.ltn__blog-slider-one-active {
+    align-items: stretch;
+}
+
+.ltn__blog-item-3 {
+    height: 480px; /* adjust */
+}
+
+</style>
 <!-- BLOG AREA START (blog-3) -->
 <div class="ltn__blog-area pt-115 pb-70">
     <div class="container">

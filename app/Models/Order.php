@@ -5,16 +5,39 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\Driver; // Import Driver model
 
 class Order extends Model
 {
     use HasFactory;
 
-     protected $fillable = [
-        'user_id', 'name', 'mobile', 'email', 'address_title',
-        'subtotal', 'grand_total', 'payment_method', 'payment_status',
-        'payment_gateway', 'delivery_cost', 'addedby_id', 'editedby_id', 'order_note','payment_trx_id'
-        // ,'district_id','upazila_id',
+    protected $fillable = [
+        'user_id',
+        'name',
+        'mobile',
+        'email',
+        'address_title',
+        'subtotal',
+        'grand_total',
+        'payment_method',
+        'payment_status',
+        'payment_gateway',
+        'delivery_cost',
+        'addedby_id',
+        'editedby_id',
+        'order_note',
+        'payment_trx_id',
+        'seller_id',
+        'rider_id',
+        'driver_id',
+        'vehicle_id',
+        'assigned_at',
+        'pending_at',
+    ];
+
+    protected $casts = [
+        'assigned_at' => 'datetime',
+        'pending_at' => 'datetime',
     ];
 
     public function orderItems()
@@ -26,6 +49,11 @@ class Order extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    // public function driver()
+    // {
+    //     return $this->belongsTo(Driver::class);
+    // }
 
     public function payments()
     {
@@ -42,6 +70,16 @@ class Order extends Model
     public function paid()
     {
         return  $this->payments()->sum('paid_amount');
+    }
+
+    public function driver()
+    {
+        return $this->belongsTo(Driver::class);
+    }
+
+    public function vehicle()
+    {
+        return $this->belongsTo(Vehicle::class);
     }
 
 }

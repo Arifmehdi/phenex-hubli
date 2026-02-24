@@ -2,14 +2,14 @@
 
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Illuminate\Contracts\Auth\CanResetPassword;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Cookie;
 use Laravel\Sanctum\HasApiTokens;
 
-class User extends Authenticatable
+class User extends Authenticatable implements CanResetPassword
 {
     use HasApiTokens, HasFactory, Notifiable;
     private static $user;
@@ -110,11 +110,27 @@ class User extends Authenticatable
         return $this->image ?: 'profile.jpg';
     }
 
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        $this->notify(new \App\Notifications\ApiResetPasswordNotification($token));
+    }
+
  
 
 
     public function doctor(){
         return $this->hasOne(Doctor::class);
+    }
+
+    public function driver()
+    {
+        return $this->hasOne(Driver::class);
     }
 
 
@@ -145,6 +161,16 @@ class User extends Authenticatable
     public function messages()
     {
         return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function productsAsSeller()
+    {
+        return $this->hasMany(Product::class, 'seller_id');
+    }
+
+    public function productsAsRider()
+    {
+        return $this->hasMany(Product::class, 'rider_id');
     }
     
 

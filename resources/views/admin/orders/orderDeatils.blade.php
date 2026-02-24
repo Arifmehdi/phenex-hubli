@@ -29,6 +29,8 @@
                      
                         @include('admin.orders.sections.order_status_form', ['order' => $order])
 
+                        @include('admin.orders.sections.assign_driver', ['order' => $order, 'drivers' => $drivers, 'vehicles' => $vehicles])
+
                         {{-- List of all ordered items --}}
                         @include('admin.orders.sections.order_items', ['order' => $order])
 

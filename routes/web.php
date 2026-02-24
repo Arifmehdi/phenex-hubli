@@ -203,6 +203,20 @@ Route::get('/health-card',[AuthController::class,'healthCard'])->name('health.re
 Route::post('/register',[AuthController::class,'register'])->name('register');
 Route::post('/main-register',[AuthController::class,'mainRegister'])->name('main.register');
 
+// Password Reset Frontend Bridge
+Route::get('/reset-password', function (Illuminate\Http\Request $request) {
+    $token = $request->input('token');
+    $email = $request->input('email');
+    $frontendUrl = env('FRONTEND_URL');
+
+    if (!$frontendUrl) {
+        return "FRONTEND_URL is not configured in .env file. Please set it to your frontend application's base URL.";
+    }
+
+    return redirect()->to($frontendUrl . '/reset-password?token=' . $token . '&email=' . $email);
+})->name('password.reset.web');
+
+
 
 Route::get('/news', [
     'uses' => 'App\Http\Controllers\Frontend\FrontendController@news',
@@ -570,6 +584,7 @@ Route::middleware(['userRole:admin','auth'])->prefix('admin')->group(function(){
 
     Route::get('order/list', [ProductController::class, 'orderList'])->name('admin.orderList');
     Route::get('order/details/{order}', [ProductController::class, 'orderDeatils'])->name('admin.orderDeatils');
+    Route::post('order/assign-driver/{order}', [ProductController::class, 'assignDriver'])->name('admin.assignDriver');
     Route::post('order/status/{order}', [ProductController::class, 'orderStatus'])->name('admin.orderStatus');
     Route::post('order/payment/{order}', [ProductController::class, 'orderPayment'])->name('admin.orderPayment');
     Route::post('order/item/delete/{orderItem}', [ProductController::class, 'orderItemDelete'])->name('admin.orderItemDelete');

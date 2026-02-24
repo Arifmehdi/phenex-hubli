@@ -741,8 +741,37 @@ class ProductController extends Controller
         // Highlight the order menu and submenu for active navigation
         menuSubmenu('order', 'orderList');
 
+        $drivers = \App\Models\Driver::where('status', 1)->get();
+        $vehicles = \App\Models\Vehicle::where('status', 1)->get();
+
         // Return the order details view with the selected order
-        return view('admin.orders.orderDeatils', compact('order'));
+        return view('admin.orders.orderDeatils', compact('order', 'drivers', 'vehicles'));
+    }
+
+    /**
+     * Assign a driver and vehicle to a specific order.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \App\Models\Order  $order
+     * @return \Illuminate\Http\RedirectResponse
+     */
+    public function assignDriver(Request $request, Order $order)
+    {
+        $request->validate([
+            'driver_id' => 'required|exists:drivers,id',
+            'vehicle_id' => 'required|exists:vehicles,id',
+        ]);
+
+        $order->update([
+            'driver_id' => $request->driver_id,
+            'vehicle_id' => $request->vehicle_id,
+            'assigned_at' => now(),
+            'order_status' => 'confirmed', // Optionally set status to confirmed when assigned
+        ]);
+
+        toast('Driver and Vehicle assigned successfully.', 'success');
+
+        return redirect()->back();
     }
 
 

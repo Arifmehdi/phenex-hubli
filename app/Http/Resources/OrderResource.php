@@ -29,6 +29,7 @@ class OrderResource extends JsonResource
             'delivery_cost' => $this->delivery_cost,
             'order_note' => $this->order_note,
             'payment_trx_id' => $this->payment_trx_id,
+            'pending_at' => $this->pending_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'user' => new UserResource($this->whenLoaded('user')),

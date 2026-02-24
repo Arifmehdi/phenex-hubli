@@ -34,6 +34,8 @@ class Product extends Model
         'editor',
         'addedby_id',
         'editedby_id',
+        'seller_id',
+        'rider_id',
     ];
 
 
@@ -45,6 +47,16 @@ class Product extends Model
     public function addedBy()
     {
         return $this->belongsTo(User::class, 'addedby_id');
+    }
+
+    public function seller()
+    {
+        return $this->belongsTo(User::class, 'seller_id');
+    }
+
+    public function rider()
+    {
+        return $this->belongsTo(User::class, 'rider_id');
     }
 
     public function categories()

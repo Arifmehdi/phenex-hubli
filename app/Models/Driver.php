@@ -16,5 +16,17 @@ class Driver extends Model
         'nid',
         'address',
         'status',
+        'user_id', // Assuming a user_id column links to the User model
     ];
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
 }

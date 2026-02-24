@@ -3,18 +3,20 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource; // Add this line
+use App\Http\Resources\UserResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Validation\ValidationException;
+use Illuminate\Support\Str;
+use App\Http\Controllers\Api\CartController; // Add this import
 
 class AuthController extends Controller
 {
-    
-
-    public function login(Request $request)
+    public function login(Request $request, CartController $cartController) // Inject CartController
     {
-
         $request->validate([
             'email' => 'required|email',
             'password' => 'required'
@@ -28,6 +30,11 @@ class AuthController extends Controller
 
         $user = Auth::user();
 
+        // Merge guest cart items with the authenticated user's cart
+        $guestSessionId = $request->header('X-Session-ID') ?: $request->session_id;
+        $cartController->mergeGuestCart($user->id, $guestSessionId);
+
+
         // delete old tokens (optional but recommended)
         $user->tokens()->delete();
 
@@ -35,13 +42,12 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token,
-            'user' => new UserResource($user) // Use UserResource here
+            'user' => new UserResource($user)
         ]);
     }
 
     public function register(Request $request)
     {
-
         $request->validate([
             'name' => 'required|string',
             'email' => 'required|email|unique:users',
@@ -49,7 +55,7 @@ class AuthController extends Controller
             'mobile' => 'required|string',
             'role' => 'required|string',
         ]);
-        // dd($request->all());
+
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
@@ -63,7 +69,7 @@ class AuthController extends Controller
 
         return response()->json([
             'token' => $token,
-            'user' => new UserResource($user) // Use UserResource here
+            'user' => new UserResource($user)
         ]);
     }
 
@@ -76,4 +82,57 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Send a reset link to the given user.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    public function forgotPassword(Request $request)
+    {
+        $request->validate(['email' => 'required|email']);
+
+        $response = Password::sendResetLink(
+            $request->only('email')
+        );
+
+        if ($response == Password::RESET_LINK_SENT) {
+            return response()->json(['message' => trans($response)], 200);
+        }
+
+        return response()->json(['message' => trans($response)], 400);
+    }
+
+    /**
+     * Reset the given user's password.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token' => 'required',
+            'email' => 'required|email',
+            'password' => 'required|confirmed|min:8',
+        ]);
+
+        $response = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password' => bcrypt($password),
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        if ($response == Password::PASSWORD_RESET) {
+            return response()->json(['message' => trans($response)], 200);
+        }
+
+        return response()->json(['message' => trans($response)], 400);
+    }
 }

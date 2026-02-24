@@ -15,4 +15,10 @@ class Vehicle extends Model
         'capacity',
         'status',
     ];
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
 }
