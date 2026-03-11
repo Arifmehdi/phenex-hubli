@@ -33,6 +33,13 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="email">Email</label>
+                            <input type="text" class="form-control @error('email') is-invalid @enderror" placeholder="Email Address" name="email" value="{{ old('email', $driver->email) }}">
+                            @error('email')
+                            <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+                        <div class="form-group">
                             <label for="mobile">Mobile</label>
                             <input type="text" class="form-control @error('mobile') is-invalid @enderror" placeholder="Mobile Number" name="mobile" value="{{ old('mobile', $driver->mobile) }}">
                             @error('mobile')
@@ -65,12 +72,27 @@
                         </div>
 
                         <div class="form-group">
-                            <label for="status">Status</label>
-                            <select name="status" id="status" class="form-control @error('status') is-invalid @enderror">
-                                <option value="1" {{ old('status', $driver->status) == '1' ? 'selected' : '' }}>Active</option>
-                                <option value="0" {{ old('status', $driver->status) == '0' ? 'selected' : '' }}>Inactive</option>
+                            <label for="vehicle_id">Assigned Vehicle</label>
+                            <select name="vehicle_id" id="vehicle_id" class="form-control @error('vehicle_id') is-invalid @enderror">
+                                <option value="">Select Vehicle</option>
+                                @foreach($vehicles as $vehicle)
+                                    <option value="{{ $vehicle->id }}" {{ old('vehicle_id', $driver->vehicle_id) == $vehicle->id ? 'selected' : '' }}>
+                                        {{ $vehicle->plate_number }} ({{ $vehicle->vehicle_type }})
+                                    </option>
+                                @endforeach
                             </select>
-                            @error('status')
+                            @error('vehicle_id')
+                            <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
+                            <label for="is_approve">Status</label>
+                            <select name="is_approve" id="is_approve" class="form-control @error('is_approve') is-invalid @enderror">
+                                <option value="1" {{ old('is_approve', $driver->is_approve) == '1' ? 'selected' : '' }}>Active</option>
+                                <option value="0" {{ old('is_approve', $driver->is_approve) == '0' ? 'selected' : '' }}>Inactive</option>
+                            </select>
+                            @error('is_approve')
                             <p class="text-danger">{{ $message }}</p>
                             @enderror
                         </div>

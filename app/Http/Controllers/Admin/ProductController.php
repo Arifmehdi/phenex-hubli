@@ -270,6 +270,8 @@ class ProductController extends Controller
         // Fetch paginated media items for media selection (20 per page)
         $data['medias'] = Media::latest()->paginate(20);
 
+        $data['riders'] = \App\Models\User::where('role', 'rider')->where('is_approve', 1)->get();
+
         // Return the create product view with categories and medias data
         return view('admin.products.productCreate', $data);
     }
@@ -297,6 +299,7 @@ class ProductController extends Controller
             'slug'           => 'required|string',
             'featured_image' => 'nullable|image',
             'additional_images.*' => 'nullable|image',
+            'rider_id'       => 'nullable|exists:users,id',
         ]);
 
     
@@ -328,6 +331,7 @@ class ProductController extends Controller
         $product->feature = $request->feature ? 1 : 0;
         $product->editor = $request->editor ? 1 : 0;
         $product->active = $request->active ? 1 : 0;
+        $product->rider_id = $request->rider_id;
 
         $product->addedby_id = Auth::id();
 
@@ -411,6 +415,7 @@ class ProductController extends Controller
             'product'    => $product,
             'categories' => ProductCategory::latest()->get(),
             'medias'     => Media::latest()->paginate(20),
+            'riders'     => \App\Models\User::where('role', 'rider')->where('is_approve', 1)->get(),
             // Explode tags string into array or null if no tags
             'ots'        => $product->tags ? explode(', ', $product->tags) : null,
         ];
@@ -441,6 +446,7 @@ class ProductController extends Controller
             'slug' => 'required|string',
             'featured_image' => 'nullable|image',
             'additional_images.*' => 'nullable|image',
+            'rider_id' => 'nullable|exists:users,id',
         ]);
 
         // Update product attributes with request data
@@ -460,6 +466,7 @@ class ProductController extends Controller
         $product->feature = $request->feature ? 1 : 0;
         $product->editor = $request->editor ? 1 : 0;
         $product->active = $request->active ? 1 : 0;
+        $product->rider_id = $request->rider_id;
 
       
 
@@ -741,7 +748,7 @@ class ProductController extends Controller
         // Highlight the order menu and submenu for active navigation
         menuSubmenu('order', 'orderList');
 
-        $drivers = \App\Models\Driver::where('status', 1)->get();
+        $drivers = \App\Models\User::where('role', 'rider')->where('is_approve', 1)->get();
         $vehicles = \App\Models\Vehicle::where('status', 1)->get();
 
         // Return the order details view with the selected order
@@ -758,7 +765,7 @@ class ProductController extends Controller
     public function assignDriver(Request $request, Order $order)
     {
         $request->validate([
-            'driver_id' => 'required|exists:drivers,id',
+            'driver_id' => 'required|exists:users,id',
             'vehicle_id' => 'required|exists:vehicles,id',
         ]);
 
@@ -769,7 +776,7 @@ class ProductController extends Controller
             'order_status' => 'confirmed', // Optionally set status to confirmed when assigned
         ]);
 
-        toast('Driver and Vehicle assigned successfully.', 'success');
+        toast('Rider and Vehicle assigned successfully.', 'success');
 
         return redirect()->back();
     }

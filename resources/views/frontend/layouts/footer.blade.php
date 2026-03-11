@@ -1,3 +1,50 @@
+<style>
+            /* Compact Copyright Area Styles */
+.ltn__copyright-area {
+    padding: 15px 70px !important; /* Reduced from default padding */
+}
+
+.ltn__copyright-area p {
+    margin-bottom: 0;
+    line-height: 1.4;
+    font-size: 14px;
+}
+
+.ltn__copyright-area .row {
+    align-items: center;
+}
+
+/* Extra compact version - use this for even less height */
+.ltn__copyright-area.compact {
+    padding: 10px 0 !important;
+}
+
+.ltn__copyright-area.compact p {
+    font-size: 13px;
+    line-height: 1.2;
+}
+
+/* Mobile responsive */
+@media (max-width: 767px) {
+    .ltn__copyright-area {
+        padding: 12px 0 !important;
+    }
+    
+    .ltn__copyright-area p {
+        font-size: 13px;
+        text-align: center !important;
+    }
+    
+    .ltn__copyright-area .col-md-6 {
+        margin-bottom: 5px;
+    }
+    
+    .ltn__copyright-area .col-md-6:last-child {
+        margin-bottom: 0;
+    }
+}
+
+</style>
 <!-- FOOTER AREA START -->
 <footer class="ltn__footer-area">
     <div class="footer-top-area section-bg-1 plr--5">
@@ -5,7 +52,7 @@
             <div class="row">
 
                 <!-- About + Address -->
-                <div class="col-xl-3 col-md-6 col-sm-6 col-12">
+                {{--<div class="col-xl-3 col-md-6 col-sm-6 col-12">
                     <div class="footer-widget footer-about-widget">
                         <div class="footer-logo">
                             <div class="site-logo">
@@ -21,7 +68,7 @@
                                         <i class="icon-placeholder"></i>
                                     </div>
                                     <div class="footer-address-info">
-                                        <p>{{ $ws->contact_address }}</p>
+                                        <p>Banani, Dhaka 1213, Bangladesh</p>
                                     </div>
                                 </li>
                                 <li>
@@ -29,7 +76,7 @@
                                         <i class="icon-call"></i>
                                     </div>
                                     <div class="footer-address-info">
-                                        <p><a href="tel:{{ str_replace('+','',$ws->contact_mobile) }}">{{ $ws->contact_mobile }}</a></p>
+                                        <p><a href="tel:+8801700000000">+880 1700-000000</a></p>
                                     </div>
                                 </li>
                                 <li>
@@ -37,26 +84,30 @@
                                         <i class="icon-mail"></i>
                                     </div>
                                     <div class="footer-address-info">
-                                        <p><a href="mailto:{{ $ws->contact_email }}">{{ $ws->contact_email }}</a></p>
+                                        <p><a href="mailto:info@hubli.com">info@hubli.com</a></p>
                                     </div>
                                 </li>
                             </ul>
                         </div>
 
                         <div class="ltn__social-media mt-20">
-                            <x-blog-media />
+                            <ul>
+                                <li><a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
+                                <li><a href="#" title="Twitter"><i class="fab fa-twitter"></i></a></li>
+                                <li><a href="#" title="Instagram"><i class="fab fa-instagram"></i></a></li>
+                                <li><a href="#" title="Linkedin"><i class="fab fa-linkedin"></i></a></li>
+                            </ul>
                         </div>
                     </div>
-                </div>
+                </div>--}}
 
                 <!-- Company Links -->
-                <div class="col-xl-2 col-md-6 col-sm-6 col-12">
+                <div class="col-xl-3 col-md-6 col-sm-6 col-12">
                     <div class="footer-widget footer-menu-widget clearfix">
                         <h4 class="footer-title">Company</h4>
                         <div class="footer-menu">
                             <ul>
                                 <li><a href="{{ route('about') }}">About Us</a></li>
-                                <li><a href="{{ route('news') }}">News</a></li>
                                 <li><a href="{{ route('shop') }}">Our Products</a></li>
                                 <li><a href="#">Terms & Conditions</a></li>
                                 <li><a href="{{ route('contact') }}">Contact Us</a></li>
@@ -66,31 +117,32 @@
                 </div>
 
                 <!-- Services -->
-                <div class="col-xl-2 col-md-6 col-sm-6 col-12">
+                <div class="col-xl-3 col-md-6 col-sm-6 col-12">
                     <div class="footer-widget footer-menu-widget clearfix">
                         <h4 class="footer-title">Services</h4>
                         <div class="footer-menu">
                             <ul>
-                                <li><a href="#">Order Tracking</a></li>
+                                {{--<li><a href="#">Order Tracking</a></li>--}}
                                 <li><a href="#">Wishlist</a></li>
-                                <li><a href="#">My Account</a></li>
-                                <li><a href="#">Return Policy</a></li>
-                                <li><a href="#">Delivery Info</a></li>
+                                {{--<li><a href="#">My Account</a></li>--}}
+                                <li><a href="/page/return-policy">Return Policy</a></li>
+                                <li><a href="/page/privacy-policy">Privacy Policy</a></li>
+                                {{--<li><a href="#">Delivery Info</a></li>--}}
                             </ul>
                         </div>
                     </div>
                 </div>
 
                 <!-- Customer Care -->
-                <div class="col-xl-2 col-md-6 col-sm-6 col-12">
+                <div class="col-xl-3 col-md-6 col-sm-6 col-12">
                     <div class="footer-widget footer-menu-widget clearfix">
                         <h4 class="footer-title">Customer Care</h4>
                         <div class="footer-menu">
                             <ul>
                                 <li><a href="#">FAQ</a></li>
-                                <li><a href="#">Support Center</a></li>
+                                {{--<li><a href="#">Support Center</a></li>--}}
                                 <li><a href="#">Report Issue</a></li>
-                                <li><a href="{{ route('contact') }}">Contact Support</a></li>
+                                {{--<li><a href="{{ route('contact') }}">Contact Support</a></li>--}}
                             </ul>
                         </div>
                     </div>
@@ -99,8 +151,16 @@
                 <!-- Newsletter -->
                 <div class="col-xl-3 col-md-6 col-sm-12 col-12">
                     <div class="footer-widget footer-newsletter-widget">
-                        <h4 class="footer-title">Newsletter</h4>
-                        <p>Subscribe to get updates, new products, and special offers.</p>
+                        <h4 class="footer-title">Social & Media</h4>
+                        <div class="ltn__social-media mt-20">
+                            <ul>
+                                <li><a href="{{ $ws->fb_url }}" title="Facebook"><i class="fab fa-facebook-f"></i></a></li>
+                                <li><a href="{{ $ws->twitter_url }}" title="Twitter"><i class="fab fa-twitter"></i></a></li>
+                                <li><a href="#" title="Instagram"><i class="fab fa-instagram"></i></a></li>
+                                <li><a href="{{ $ws->youtube_url }}" title="Linkedin"><i class="fab fa-youtube"></i></a></li>
+                            </ul>
+                        </div>
+                        {{--<p>Subscribe to get updates, new products, and special offers.</p>
 
                         <div class="footer-newsletter">
                             <form action="#" method="post" style="display: flex; gap: 10px;">
@@ -111,11 +171,12 @@
                                     <i class="fas fa-location-arrow"></i>
                                 </button>
                             </form>
-                        </div>
+                        </div>--}}
 
 
-                        <h5 class="mt-30">We Accept</h5>
-                        <img src="{{ asset('frontend/img/icons/payment-4.png') }}" alt="Payment">
+                        {{--<h5 class="mt-30">We Accept</h5>--}}
+                        <div class="mt-20"><img src="{{ asset('frontend/img/icons/payment-4.png') }}" alt="Payment"></div>
+                        
                     </div>
                 </div>
 
@@ -215,8 +276,8 @@
                                                  <i class="fa fa-check-circle"></i> <span id="cart_modal_message"></span>
                                              </p>         
                                             <div class="btn-wrapper">
-                                                <a href="{{ route('cart') }}" class="theme-btn-1 btn btn-effect-1">View Cart</a>
-                                                <a href="{{ route('checkout') }}" class="theme-btn-2 btn btn-effect-2">Checkout</a>
+                                                <a href="{{ route('new.checkout') }}" class="theme-btn-1 btn btn-effect-1">View Cart</a>
+                                                {{--<a href="{{ route('checkout') }}" class="theme-btn-2 btn btn-effect-2">Checkout</a>--}}
                                             </div>
                                          </div>
                                          <!-- additional-info -->
@@ -357,7 +418,7 @@ $(document).on("click", ".quick-view-btn", function (e) {
 
                                     </li>
                                     <li>
-                                        <a href="#" class="theme-btn-1 btn btn-effect-1" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                        <a href="#" class="theme-btn-1 btn btn-effect-1 add-to-cart-btn" title="Add to Cart" data-id="${response.id}">
                                             <i class="fas fa-shopping-cart"></i>
                                             <span>ADD TO CART</span>
                                         </a>
@@ -399,18 +460,18 @@ $(document).on("click", ".quick-view-btn", function (e) {
         }
     });
 
-    $(document).on("click", ".qtybutton", function () {
-        let $button = $(this);
-        let oldValue = parseInt($button.parent().find("input").val());
+});
 
-        if ($button.hasClass("inc")) {
-            var newVal = oldValue + 1;
-        } else {
-            var newVal = oldValue > 1 ? oldValue - 1 : 1;
-        }
+$(document).on("click", ".qtybutton", function () {
+    let $button = $(this);
+    let oldValue = parseInt($button.parent().find("input").val());
 
-        $button.parent().find("input").val(newVal);
-    });
+    if ($button.hasClass("inc")) {
+        var newVal = oldValue + 1;
+    } else {
+        var newVal = oldValue > 1 ? oldValue - 1 : 1;
+    }
 
+    $button.parent().find("input").val(newVal);
 });
 </script>

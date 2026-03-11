@@ -23,6 +23,40 @@ class OrderController extends Controller
     {
         $orders = Order::where('user_id', Auth::id())
                         ->with(['orderItems', 'user']) // Eager load relationships
+                        ->orderBy('created_at', 'desc')
+                        ->paginate(10);
+
+        return OrderResource::collection($orders);
+    }
+
+    /**
+     * Get a simple list of all orders (Public/Flutter optimized).
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function simpleList()
+    {
+        $orders = Order::select('id', 'name', 'grand_total', 'payment_status', 'order_status', 'created_at')
+            ->orderBy('created_at', 'desc')
+            ->get();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'All orders retrieved successfully.',
+            'data' => $orders
+        ]);
+    }
+
+    /**
+     * Display a listing of orders for the currently authenticated seller.
+     * 
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function sellerOrders()
+    {
+        $orders = Order::where('user_id', Auth::id())
+                        ->with(['orderItems', 'user']) // Eager load relationships
+                        ->orderBy('created_at', 'desc')
                         ->paginate(10);
 
         return OrderResource::collection($orders);

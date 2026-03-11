@@ -23,6 +23,7 @@
                         <th>Vehicle Type</th>
                         <th>Plate Number</th>
                         <th>Capacity</th>
+                        <th>Assigned Rider</th>
                         <th>Status</th>
                         <th>Actions</th>
                     </tr>
@@ -34,7 +35,16 @@
                             <td>{{ $vehicle->vehicle_type }}</td>
                             <td>{{ $vehicle->plate_number }}</td>
                             <td>{{ $vehicle->capacity }}</td>
-                            <td><span class="badge badge-{{ $vehicle->status == '1' ? 'success' : ($vehicle->status == '0' ? 'warning' : 'danger') }}">{{ ucfirst($vehicle->status) }}</span></td>
+                            <td>
+                                @if($vehicle->drivers->count() > 0)
+                                    @foreach($vehicle->drivers as $rider)
+                                        <span class="badge badge-secondary">{{ $rider->name }} ({{ $rider->mobile }})</span><br>
+                                    @endforeach
+                                @else
+                                    <span class="text-muted">None</span>
+                                @endif
+                            </td>
+                            <td><span class="badge badge-{{ $vehicle->status == '1' ? 'success' : ($vehicle->status == '0' ? 'warning' : 'danger') }}">{{ $vehicle->status == '1' ? 'Active' : 'Inactive' }}</span></td>
                             <td>
                                 <a href="{{ route('admin.vehicles.edit', $vehicle->id) }}" class="btn btn-sm btn-primary">Edit</a>
                                 <form action="{{ route('admin.vehicles.destroy', $vehicle->id) }}" method="POST" style="display:inline;">

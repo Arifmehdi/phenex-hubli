@@ -196,24 +196,37 @@
 <!-- About Us - Agriculture Product Transport End -->
 
 <!-- COUNTDOWN AREA START -->
+@php
+$nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
+@endphp
+
 <div class="ltn__call-to-action-area ltn__call-to-action-4 section-bg-1 pt-110 pb-120">
     <div class="container">
         <div class="row">
+
             <div class="col-lg-5 col-md-12">
                 <img src="{{ asset('frontend/img/banner/11.png') }}" alt="#">
             </div>
+
             <div class="col-lg-7 col-md-12">
-                <div class="call-to-action-inner call-to-action-inner-4 text-color-white--- text-center---">
+                <div class="call-to-action-inner call-to-action-inner-4 text-center---">
+
                     <div class="section-title-area ltn__section-title-2 text-center---">
                         <h6 class="ltn__secondary-color">Todays Hot Deals</h6>
                         <h1 class="section-title">Farm to Market <br> Transport</h1>
                     </div>
-                    <div class="ltn__countdown ltn__countdown-3 bg-white--" data-countdown="2024/12/28"></div>
-                    <div class="btn-wrapper animated">
-                        <a href="#" class="theme-btn-1 btn btn-effect-1 text-uppercase">Shop now</a>
+
+                    <div class="ltn__countdown ltn__countdown-3 bg-white--" 
+                        data-countdown="{{ $nextThreeDays }}">
                     </div>
+
+                    <div class="btn-wrapper animated">
+                        <a href="{{ route('shop') }}" class="theme-btn-1 btn btn-effect-1 text-uppercase">Shop now</a>
+                    </div>
+
                 </div>
             </div>
+
         </div>
     </div>
 </div>
@@ -3533,9 +3546,9 @@
             <div class="col-lg-12">
                 <div class="ltn__testimonial-item ltn__testimonial-item-4">
                     <div class="ltn__testimoni-img">
-                        <img src="{{ Storage::disk('public')->url($testimonial->image) }}"
+                        <img 
+                            src="{{ $testimonial->image ? Storage::disk('public')->url($testimonial->image) : asset('img/profile.jpg') }}"
                             alt="testimonial {{ $testimonial->id }} image">
-
                     </div>
                     <div class="ltn__testimoni-info">
                         <p>{{ Str::limit(strip_tags($testimonial->text_en), 180) }}</p>

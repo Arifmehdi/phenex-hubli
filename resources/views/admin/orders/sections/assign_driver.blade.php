@@ -1,6 +1,6 @@
 <div class="card shadow mt-3">
     <div class="card-header">
-        <h3 class="card-title">Assign Driver & Vehicle</h3>
+        <h3 class="card-title">Assign Rider & Vehicle</h3>
     </div>
     <form action="{{ route('admin.assignDriver', $order->id) }}" method="post">
         @csrf
@@ -8,11 +8,11 @@
             <div class="row">
                 <div class="col-md-5">
                     <div class="form-group">
-                        <label for="driver_id">Driver</label>
-                        <select name="driver_id" id="driver_id" class="form-control" required>
-                            <option value="">Select Driver</option>
+                        <label for="driver_id">Rider (Driver)</label>
+                        <select name="driver_id" id="driver_id" class="form-control" required onchange="updateVehicle(this)">
+                            <option value="">Select Rider</option>
                             @foreach ($drivers as $driver)
-                                <option value="{{ $driver->id }}" {{ $driver->id == $order->driver_id ? 'selected' : '' }}>
+                                <option value="{{ $driver->id }}" {{ $driver->id == $order->driver_id ? 'selected' : '' }} data-vehicle="{{ $driver->vehicle_id }}">
                                     {{ $driver->name }} ({{ $driver->mobile }})
                                 </option>
                             @endforeach
@@ -47,3 +47,17 @@
         </div>
     </form>
 </div>
+
+<script>
+    function updateVehicle(selectElement) {
+        var selectedOption = selectElement.options[selectElement.selectedIndex];
+        var vehicleId = selectedOption.getAttribute('data-vehicle');
+        var vehicleSelect = document.getElementById('vehicle_id');
+        
+        if (vehicleId) {
+            vehicleSelect.value = vehicleId;
+        } else {
+            vehicleSelect.value = "";
+        }
+    }
+</script>

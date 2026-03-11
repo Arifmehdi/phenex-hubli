@@ -27,6 +27,8 @@ class Product extends Model
         'discount',
         'discount_price',
         'final_price',
+        'selling_price',
+        'purchase_price',
         'unit',
         'tags',
         'active',

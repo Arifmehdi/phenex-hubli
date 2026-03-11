@@ -22,6 +22,7 @@
                         <th>#</th>
                         <th>Name</th>
                         <th>Mobile</th>
+                        <th>Name</th>
                         <th>License No</th>
                         <th>NID</th>
                         <th>Address</th>
@@ -35,10 +36,11 @@
                             <td>{{ $loop->iteration }}</td>
                             <td>{{ $driver->name }}</td>
                             <td>{{ $driver->mobile }}</td>
+                            <td>{{ $driver->email }}</td>
                             <td>{{ $driver->license_no }}</td>
                             <td>{{ $driver->nid }}</td>
                             <td>{{ $driver->address }}</td>
-                            <td><span class="badge badge-{{ $driver->status == '1' ? 'success' : 'warning' }}">{{ $driver->status == '1' ? 'Active' : 'Inactive' }}</span></td>
+                            <td><span class="badge badge-{{ $driver->is_approve == '1' ? 'success' : 'warning' }}">{{ $driver->is_approve == '1' ? 'Approved' : 'Pending' }}</span></td>
                             <td>
                                 <a href="{{ route('admin.drivers.edit', $driver->id) }}" class="btn btn-sm btn-primary">Edit</a>
                                 <form action="{{ route('admin.drivers.destroy', $driver->id) }}" method="POST" style="display:inline;">

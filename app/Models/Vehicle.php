@@ -21,4 +21,9 @@ class Vehicle extends Model
         return $this->hasMany(Order::class);
     }
 
+    public function drivers()
+    {
+        return $this->hasMany(User::class, 'vehicle_id');
+    }
+
 }

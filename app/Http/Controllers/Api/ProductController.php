@@ -8,20 +8,107 @@ use App\Http\Resources\ProductOverviewResource; // Import ProductOverviewResourc
 use App\Http\Resources\ProductWithoutDescriptionResource; // Import ProductWithoutDescriptionResource
 use App\Models\Product;
 use App\Models\ProductCategory;
+use App\Models\ProductCat;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Validator; // Import Validator
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 
 class ProductController extends Controller
 {
     /**
      * Display a listing of the resource.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
      */
-    public function index()
+    public function index(Request $request)
     {
-        $products = Product::with(['addedBy', 'categories'])->paginate(10); // Example with pagination and eager loading
+        $query = Product::with(['addedBy', 'categories']);
+
+        if ($request->has('seller_id')) {
+            $query->where('seller_id', $request->seller_id);
+        }
+
+        $products = $query->paginate(10);
         return ProductResource::collection($products);
+    }
+
+    /**
+     * Display products for the currently authenticated seller.
+     *
+     * @return \Illuminate\Http\Resources\Json\AnonymousResourceCollection
+     */
+    public function sellerProducts()
+    {
+        $products = Product::with(['addedBy', 'categories'])
+            ->where('seller_id', Auth::id())
+            ->latest()
+            ->paginate(10);
+
+        return ProductResource::collection($products);
+    }
+
+    /**
+     * Update a product specifically for a seller.
+     */
+    public function sellerUpdate(Request $request, Product $product)
+    {
+        // Log::info('Seller Product Update Request Data:', $request->all());
+        // Log::info('Ownership Check:', [
+        //     'auth_id' => Auth::id(),
+        //     'product_seller_id' => $product->seller_id,
+        //     'is_match' => (int)$product->seller_id === (int)Auth::id()
+        // ]);
+
+        if ((int)$product->seller_id !== (int)Auth::id()) {
+            return response()->json([
+                'message' => 'Unauthorized. You do not own this product.',
+                'debug' => [
+                    'your_id' => Auth::id(),
+                    'owner_id' => $product->seller_id
+                ]
+            ], 403);
+        }
+
+        $validator = Validator::make($request->all(), [
+            'name_en' => 'sometimes|required|string|max:255',
+            'price' => 'sometimes|required|numeric|min:0',
+            'stock' => 'sometimes|required|integer|min:0',
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'category_id' => 'nullable',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
+
+        $product->update($request->except(['categories', 'category_id', 'featured_image']));
+
+        if ($request->hasFile('featured_image')) {
+            if ($product->featured_image) {
+                Storage::disk('public')->delete('product_images/' . $product->featured_image);
+            }
+            $file = $request->file('featured_image');
+            $imageName = $product->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            Storage::disk('public')->put('product_images/' . $imageName, File::get($file));
+            $product->featured_image = $imageName;
+            $product->save();
+        }
+
+        $catId = $request->category_id;
+        if ($catId) {
+            $product->categories()->detach();
+            ProductCat::create([
+                'product_id' => $product->id,
+                'product_category_id' => $catId,
+                'addedby_id' => Auth::id(),
+            ]);
+        }
+
+        return new ProductResource($product->load(['addedBy', 'categories']));
     }
 
     /**
@@ -43,20 +130,61 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
             'name_en' => 'required|string|max:255',
             'price' => 'required|numeric|min:0',
             'stock' => 'required|integer|min:0',
-            // Add other validation rules as needed
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'categories' => 'nullable', 
+            'category_id' => 'nullable',
+            'seller_id' => 'nullable|exists:users,id',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $product = Product::create($request->all()); // Ensure fillable properties are set in Product model
+        $product = new Product();
+        $product->name_en = $request->name_en;
+        $product->name_bn = $request->name_bn;
+        $product->price = $request->price;
+        $product->stock = $request->stock ?? 1;
+        $product->discount = $request->discount ?? 0;
+        $product->discount_price = $request->discount ?? 0;
+        $product->final_price = $request->price - ($request->discount ?? 0);
+        $product->slug = getSlug($request->slug ?? $request->name_en, $product);
+        $product->excerpt_en = $request->excerpt_en;
+        $product->description_en = $request->description_en;
+        $product->seller_id = $request->seller_id ?? Auth::id();
+        $product->addedby_id = Auth::id();
+        $product->active = $request->active ?? 1;
 
-        return new ProductResource($product);
+        $product->save();
+
+        if ($request->hasFile('featured_image')) {
+            $file = $request->file('featured_image');
+            $imageName = $product->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            Storage::disk('public')->put('product_images/' . $imageName, File::get($file));
+            $product->featured_image = $imageName;
+            $product->save();
+        }
+
+        $catInput = $request->categories ?? $request->category_id;
+        if ($catInput) {
+            $categories = is_array($catInput) ? $catInput : explode(',', $catInput);
+            foreach ($categories as $catId) {
+                if (!empty($catId)) {
+                    ProductCat::create([
+                        'product_id' => $product->id,
+                        'product_category_id' => trim($catId),
+                        'addedby_id' => Auth::id(),
+                    ]);
+                }
+            }
+        }
+
+        return new ProductResource($product->load(['addedBy', 'categories']));
     }
 
     /**
@@ -102,20 +230,60 @@ class ProductController extends Controller
      */
     public function update(Request $request, Product $product)
     {
+        Log::info('Product Update Request Data:', $request->all());
+
+        if (!Auth::check()) {
+            return response()->json(['message' => 'Unauthenticated.'], 401);
+        }
+
+        if (Auth::user()->role === 'seller' && $product->seller_id !== Auth::id()) {
+            return response()->json(['message' => 'Unauthorized. You can only modify your own products.'], 403);
+        }
+
         $validator = Validator::make($request->all(), [
             'name_en' => 'sometimes|required|string|max:255',
             'price' => 'sometimes|required|numeric|min:0',
             'stock' => 'sometimes|required|integer|min:0',
-            // Add other validation rules as needed
+            'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
+            'categories' => 'nullable',
+            'category_id' => 'nullable',
         ]);
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
 
-        $product->update($request->all());
+        $product->update($request->except(['categories', 'category_id', 'featured_image']));
 
-        return new ProductResource($product);
+        if ($request->hasFile('featured_image')) {
+            // Delete old image if exists
+            if ($product->featured_image) {
+                Storage::disk('public')->delete('product_images/' . $product->featured_image);
+            }
+
+            $file = $request->file('featured_image');
+            $imageName = $product->id . '_' . time() . '.' . $file->getClientOriginalExtension();
+            Storage::disk('public')->put('product_images/' . $imageName, File::get($file));
+            $product->featured_image = $imageName;
+            $product->save();
+        }
+
+        $catInput = $request->categories ?? $request->category_id;
+        if ($catInput) {
+            $product->categories()->detach();
+            $categories = is_array($catInput) ? $catInput : explode(',', $catInput);
+            foreach ($categories as $catId) {
+                if (!empty($catId)) {
+                    ProductCat::create([
+                        'product_id' => $product->id,
+                        'product_category_id' => trim($catId),
+                        'addedby_id' => Auth::id(),
+                    ]);
+                }
+            }
+        }
+
+        return new ProductResource($product->load(['addedBy', 'categories']));
     }
 
     /**

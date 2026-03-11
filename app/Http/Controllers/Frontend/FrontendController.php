@@ -1306,7 +1306,7 @@ public function quickAdd(Request $request)
             'name'           => $location->name,
             'email'          => $location->email,
             'address_title'  => $location->address_title,
-            // 'mobile'         => $location->mobile,
+            'mobile'         => $location->mobile,
             // 'district_id'  => $location->district_id,
             // 'upazila_id'  => $location->upazila_id,
             'subtotal'       => $subtotal,

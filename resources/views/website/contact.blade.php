@@ -61,7 +61,7 @@
         <div class="row">
             <div class="col-lg-12">
                 <div class="ltn__form-box contact-form-box box-shadow white-bg">
-                    <h4 class="title-2">Get A Quote</h4>
+                    <h4 class="title-2">Help Desk Form</h4>
                     @if(session('success'))
                         <div class="alert alert-success">{{ session('success') }}</div>
                     @endif
@@ -111,7 +111,7 @@
                         </div>
                         <p><label class="input-info-save mb-0"><input type="checkbox" name="agree"> Save my name, email, and website in this browser for the next time I comment.</label></p>
                         <div class="btn-wrapper mt-0">
-                            <button class="btn theme-btn-1 btn-effect-1 text-uppercase" type="submit">Submit Quote</button>
+                            <button class="btn theme-btn-1 btn-effect-1 text-uppercase" type="submit">Submit For Help</button>
                         </div>
                         <p class="form-messege mb-0 mt-20"></p>
                     </form>

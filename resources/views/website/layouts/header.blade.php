@@ -144,7 +144,7 @@
                                 <sup id="cart-count">{{ $cartCount ?? 0 }}</sup>
                             </a>
                         </div>
-                        <div class="special-link d-none d-xl-block ms-3"><a href="{{ route('contact') }}">GET A QUOTE</a></div>
+                        <div class="special-link d-none d-xl-block ms-3"><a href="{{ route('contact') }}">Help Desk</a></div>
                         <!-- Mobile Menu Button -->
                         <div class="mobile-menu-toggle d-xl-none">
                             <a href="#ltn__utilize-mobile-menu" class="ltn__utilize-toggle">

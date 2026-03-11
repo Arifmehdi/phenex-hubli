@@ -4,7 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Driver; // Import the Driver model
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
 
 class DriverController extends Controller
 {
@@ -16,7 +19,8 @@ class DriverController extends Controller
     public function index()
     {
         menuSubmenu('drivers', 'allDrivers');
-        $drivers = Driver::latest()->paginate(10);
+        // $drivers = Driver::latest()->paginate(10);
+        $drivers = User::where('role', 'rider')->latest()->paginate(10);
         return view('admin.drivers.index', compact('drivers'));
     }
 
@@ -28,7 +32,8 @@ class DriverController extends Controller
     public function create()
     {
         menuSubmenu('drivers', 'createDriver');
-        return view('admin.drivers.create');
+        $vehicles = \App\Models\Vehicle::where('status', 1)->get();
+        return view('admin.drivers.create', compact('vehicles'));
     }
 
     /**
@@ -41,16 +46,25 @@ class DriverController extends Controller
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'mobile' => 'required|string|max:20|unique:drivers',
+            'mobile' => 'required|string|max:20|unique:users',
+            'email' => 'nullable|string|email|max:255|unique:users',
             'license_no' => 'nullable|string|max:255',
             'nid' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:500',
-            'status' => 'required|integer|in:0,1', // 0=inactive, 1=active/available
+            'is_approve' => 'required|integer|in:0,1',
+            'vehicle_id' => 'nullable|exists:vehicles,id',
         ]);
 
-        Driver::create($request->all());
+        $data = $request->all();
 
-        return redirect()->route('admin.drivers.index')->with('success', 'Driver created successfully.');
+        // Set default password
+        $data['password'] = Hash::make('Hubli@2025');
+        $data['role'] = 'rider';
+
+        User::create($data);
+
+        return redirect()->route('admin.drivers.index')
+                        ->with('success', 'Driver created successfully.');
     }
 
     /**
@@ -59,9 +73,10 @@ class DriverController extends Controller
      * @param  \App\Models\Driver  $driver
      * @return \Illuminate\Http\Response
      */
-    public function edit(Driver $driver)
+    public function edit(User $driver)
     {
-        return view('admin.drivers.edit', compact('driver'));
+        $vehicles = \App\Models\Vehicle::where('status', 1)->get();
+        return view('admin.drivers.edit', compact('driver', 'vehicles'));
     }
 
     /**
@@ -71,15 +86,17 @@ class DriverController extends Controller
      * @param  \App\Models\Driver  $driver
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Driver $driver)
+    public function update(Request $request, User $driver)
     {
         $request->validate([
             'name' => 'required|string|max:255',
-            'mobile' => 'required|string|max:20|unique:drivers,mobile,' . $driver->id,
+            'mobile' => 'required|string|max:20|unique:users,mobile,' . $driver->id,
+            'email' => 'nullable|string|email|max:255|unique:users,email,' . $driver->id,
             'license_no' => 'nullable|string|max:255',
             'nid' => 'nullable|string|max:255',
             'address' => 'nullable|string|max:500',
-            'status' => 'required|integer|in:0,1',
+            'is_approve' => 'required|integer|in:0,1',
+            'vehicle_id' => 'nullable|exists:vehicles,id',
         ]);
 
         $driver->update($request->all());
@@ -93,7 +110,7 @@ class DriverController extends Controller
      * @param  \App\Models\Driver  $driver
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Driver $driver)
+    public function destroy(User $driver)
     {
         $driver->delete();
         return redirect()->route('admin.drivers.index')->with('success', 'Driver deleted successfully.');

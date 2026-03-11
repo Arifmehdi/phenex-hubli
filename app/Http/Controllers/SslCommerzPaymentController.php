@@ -127,14 +127,14 @@ class SslCommerzPaymentController  extends Controller
                 $name = $user->name;
                 $email = $user->email;
                 $mobile = $user->mobile;
-                $address = $location->address ?? 'Dhaka';
+                $address = $location->address ?? ' ';
                 // $district_id = $location->district_id;
                 // $upazila_id = $location->upazila_id;
                 $userId = $user->id;
             } else {
                 $request->validate([
                     'name' => 'required|string|max:255',
-                    'email' => 'required|email|max:255',
+                    'email' => 'nullable|email|max:255',
                     'mobile' => 'required|string|max:20',
                     'billing_address' => 'required|string|max:1000',
                     // 'billing_district_id' => 'required',

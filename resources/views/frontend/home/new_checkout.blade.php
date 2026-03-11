@@ -97,15 +97,15 @@
                                     <div class="col-md-6 mt-3">
                                         <form>
                                             <div class="mb-3">
-                                                <label for="billing-name" class="form-label">Name</label>
-                                                <input type="text" class="form-control" id="name" name="name" value="{{ $dl ? $dl->name : (Auth::user() ? Auth::user()->name : '') }}" placeholder="Enter full name">
+                                                <label for="billing-name" class="form-label">Name <span class="text-danger">*</span></label>
+                                                <input type="text" class="form-control" id="name" name="name" value="{{ $dl ? $dl->name : (Auth::user() ? Auth::user()->name : '') }}" placeholder="Enter full name" required>
                                             </div>
                                             <div class="mb-3">
                                                 <label for="billing-email" class="form-label">Email</label>
-                                                <input type="email" class="form-control" id="email" name="email" value="{{ $dl ? $dl->email : (Auth::user() ? Auth::user()->email : '') }}">
+                                                <input type="email" class="form-control" id="email" name="email" value="{{ $dl ? $dl->email : (Auth::user() ? Auth::user()->email : '') }}" placeholder="Enter email address (optional)">
                                             </div>
                                             <div class="mb-3">
-                                                <label for="billing-phone" class="form-label">Phone</label>
+                                                <label for="billing-phone" class="form-label">Phone <span class="text-danger">*</span></label>
                                                 <input type="tel" 
                                                     class="form-control" 
                                                     id="mobile" 
@@ -114,12 +114,12 @@
                                                     placeholder="e.g. 01XXXXXXXXX"
                                                     maxlength="11"
                                                     pattern="\d{11}"
-                                                    title="Please enter exactly 11 digits">
+                                                    title="Please enter exactly 11 digits" required>
                                             </div>
 
                                             <div class="mb-3">
-                                                <label for="billing-address" class="form-label">Address</label>
-                                                <textarea class="form-control" id="billing-address" name="billing_address" rows="3" placeholder="e.g. Home, Office, Momâ€™s House" value="{{ $dl ? $dl->address_title : old('address_title') }}">{{ $dl ? $dl->address_title : old('address_title') }}</textarea>
+                                                <label for="billing-address" class="form-label">Address <span class="text-danger">*</span></label>
+                                                <textarea class="form-control" id="billing-address" name="billing_address" rows="3" placeholder="e.g. Home, Office House etc." value="{{ $dl ? $dl->address_title : old('address_title') }}" required>{{ $dl ? $dl->address_title : old('address_title') }}</textarea>
                                             </div>
 
                                             
@@ -510,7 +510,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const mobile = document.getElementById('mobile')?.value;
             const billingAddress = document.getElementById('billing-address')?.value;
 
-            if (!name || !email || !mobile || !billingAddress) {
+            // if (!name || !email || !mobile || !billingAddress) {
+            if (!name || !mobile || !billingAddress) {
                 Swal.fire('Error', 'Please fill in all required shipping address fields.', 'error');
                 return;
             }

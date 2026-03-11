@@ -32,12 +32,13 @@ Route::post('/register', [ApiAuthController::class, 'register']);
 Route::post('/forgot-password', [ApiAuthController::class, 'forgotPassword'])->name('password.email');
 Route::post('/reset-password', [ApiAuthController::class, 'resetPassword'])->name('password.reset');
 
-// Public API routes for products and product categories (index and show will be public)
-Route::apiResource('products', ProductController::class);
-Route::get('products/{product}/overview', [ProductController::class, 'overview']); // New route for product overview
-Route::get('products/{product}/no-description', [ProductController::class, 'withoutDescription']); // New route for product without description
-Route::get('products-no-description', [ProductController::class, 'indexWithoutDescription']); // New route for all products without description
-Route::get('products/by-slug/{slug}', [ProductController::class, 'getProductsBySlug']); // New route to get products by slug
+// Public API routes for products
+Route::get('products', [ProductController::class, 'index']);
+Route::get('products/{product}', [ProductController::class, 'show']);
+Route::get('products/{product}/overview', [ProductController::class, 'overview']);
+Route::get('products/{product}/no-description', [ProductController::class, 'withoutDescription']);
+Route::get('products-no-description', [ProductController::class, 'indexWithoutDescription']);
+Route::get('products/by-slug/{slug}', [ProductController::class, 'getProductsBySlug']);
 Route::apiResource('product-categories', ProductCategoryController::class);
 
 // Cart routes accessible to both authenticated and guest users
@@ -51,43 +52,50 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [ApiAuthController::class, 'logout']);
     Route::get('/user', [ApiAuthController::class, 'me']);
 
+    Route::apiResource('products', ProductController::class)->except(['index', 'show']);
+
     // Authenticated API routes for Cart and Orders
-    Route::apiResource('cart', CartController::class)->only(['index', 'store', 'destroy']);
+    // Route::apiResource('cart', CartController::class)->only(['index', 'store', 'destroy']);
     Route::apiResource('orders', OrderController::class)->except(['store']);
+    Route::get('order-list', [OrderController::class, 'simpleList']);
     Route::apiResource('users', UserController::class); // New Route for User management
     Route::patch('/user/profile', [UserController::class, 'updateMyProfile']);
     Route::patch('/user/password', [UserController::class, 'changePassword']);
 
     // Dashboard routes for Seller and Rider
     Route::get('/seller/dashboard', [SellerDashboardController::class, 'index']);
+    Route::get('/seller/products', [ProductController::class, 'sellerProducts']);
+    Route::get('/seller/orders', [OrderController::class, 'sellerOrders']);
+    Route::patch('/seller/products/{product}', [ProductController::class, 'sellerUpdate']);
     Route::get('/rider/dashboard', [RiderDashboardController::class, 'index']);
+    Route::get('/rider/assigned-products', [RiderDashboardController::class, 'assignedProducts']);
 
 
     // routes/api.php
-Route::get('/test-relationships', function() {
-    $user = \App\Models\User::first();
-    
-    // Test 1: Check if user has conversations
-    $conversations = $user->conversations;
-    // dd('User conversations:', $conversations);
-    
-    // Test 2: Create a conversation
-    $conversation = \App\Models\Conversation::create([
-        'type' => 'private',
-        'created_by' => $user->id
-    ]);
-    
-    // Test 3: Add participants
-    $participant = \App\Models\User::where('id', '!=', $user->id)->first();
-    
-    $cp = \App\Models\ConversationParticipant::create([
-        'conversation_id' => $conversation->id,
-        'user_id' => $participant->id,
-        'is_admin' => false
-    ]);
-    
-    dd('Created participant:', $cp);
-});
+    Route::get('/test-relationships', function() {
+        $user = \App\Models\User::first();
+        
+        // Test 1: Check if user has conversations
+        $conversations = $user->conversations;
+        // dd('User conversations:', $conversations);
+        
+        // Test 2: Create a conversation
+        $conversation = \App\Models\Conversation::create([
+            'type' => 'private',
+            'created_by' => $user->id
+        ]);
+        
+        // Test 3: Add participants
+        $participant = \App\Models\User::where('id', '!=', $user->id)->first();
+        
+        $cp = \App\Models\ConversationParticipant::create([
+            'conversation_id' => $conversation->id,
+            'user_id' => $participant->id,
+            'is_admin' => false
+        ]);
+        
+        dd('Created participant:', $cp);
+    });
 
         // Chat Routes
     Route::prefix('chat')->group(function () {

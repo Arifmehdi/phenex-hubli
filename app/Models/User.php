@@ -35,10 +35,12 @@ class User extends Authenticatable implements CanResetPassword
         'ssc_passing',
         'ssc_registration',
         'blood_group',
+        'license_no',
         'image',
         'role',
         'is_approve',
-        'short_bio'
+        'short_bio',
+        'vehicle_id'
     ];
 
     /**
@@ -145,10 +147,20 @@ class User extends Authenticatable implements CanResetPassword
         return $this->hasMany(Order::class);
     }
 
+    public function assignedOrders()
+    {
+        return $this->hasMany(Order::class, 'driver_id');
+    }
+
 
     public function idcard()
     {
         return $this->hasOne(IdCard::class);
+    }
+
+    public function vehicle()
+    {
+        return $this->belongsTo(Vehicle::class);
     }
     
     // conversation , message , chat method 

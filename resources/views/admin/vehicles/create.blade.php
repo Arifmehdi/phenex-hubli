@@ -48,6 +48,21 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="rider_id">Assign Rider</label>
+                            <select name="rider_id" id="rider_id" class="form-control @error('rider_id') is-invalid @enderror">
+                                <option value="">Select Rider</option>
+                                @foreach($riders as $rider)
+                                    <option value="{{ $rider->id }}" {{ old('rider_id') == $rider->id ? 'selected' : '' }}>
+                                        {{ $rider->name }} ({{ $rider->mobile }})
+                                    </option>
+                                @endforeach
+                            </select>
+                            @error('rider_id')
+                            <p class="text-danger">{{ $message }}</p>
+                            @enderror
+                        </div>
+
+                        <div class="form-group">
                             <label for="status">Status</label>
                             <select name="status" id="status" class="form-control @error('status') is-invalid @enderror">
                                 <option value="1" {{ old('status') == '1' ? 'selected' : '' }}>Active</option>

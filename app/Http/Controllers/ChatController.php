@@ -228,8 +228,13 @@ class ChatController extends Controller
             DB::commit();
 
             // Broadcast event for real-time (if using WebSockets)
-            broadcast(new \App\Events\NewMessage($message))->toOthers();
-
+            // try {
+            //      // Attempt to broadcast, but don't crash if it fails
+            //      broadcast(new \App\Events\NewMessage($message))->toOthers();
+            //  } catch (\Exception $broadcastError) {
+            //      // Log the error but continue, the user still gets their message saved
+            //      \Log::error("Broadcast failed: " . $broadcastError->getMessage());
+            // }
             return response()->json([
                 'success' => true,
                 'message' => $message->load('sender')

@@ -98,6 +98,22 @@
                                     <input type="number" name="discount" value="{{ old('discount') }}" class="form-control" placeholder="Enter discount">
                                 </div>
 
+                                {{-- Rider Assignment --}}
+                                <div class="form-group">
+                                    <label for="rider_id">Assign Rider (Driver)</label>
+                                    <select name="rider_id" id="rider_id" class="form-control select2">
+                                        <option value="">Select Rider</option>
+                                        @foreach($riders as $rider)
+                                            <option value="{{ $rider->id }}" {{ old('rider_id') == $rider->id ? 'selected' : '' }}>
+                                                {{ $rider->name }} ({{ $rider->mobile }})
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('rider_id')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
 
                             </div>
                         </div>

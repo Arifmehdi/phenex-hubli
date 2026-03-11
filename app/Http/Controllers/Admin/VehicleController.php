@@ -28,7 +28,8 @@ class VehicleController extends Controller
     public function create()
     {
         menuSubmenu('vehicles', 'createVehicle');
-        return view('admin.vehicles.create');
+        $riders = \App\Models\User::where('role', 'rider')->get();
+        return view('admin.vehicles.create', compact('riders'));
     }
 
     /**
@@ -44,11 +45,16 @@ class VehicleController extends Controller
             'plate_number' => 'required|string|max:255|unique:vehicles',
             'capacity' => 'required|integer|min:1',
             'status' => 'required|numeric',
+            'rider_id' => 'nullable|exists:users,id',
         ]);
 
+        $vehicle = Vehicle::create($request->all());
 
-
-        Vehicle::create($request->all());
+        if ($request->rider_id) {
+            $rider = \App\Models\User::find($request->rider_id);
+            $rider->vehicle_id = $vehicle->id;
+            $rider->save();
+        }
 
         return redirect()->route('admin.vehicles.index')->with('success', 'Vehicle created successfully.');
     }
@@ -61,7 +67,8 @@ class VehicleController extends Controller
      */
     public function edit(Vehicle $vehicle)
     {
-        return view('admin.vehicles.edit', compact('vehicle'));
+        $riders = \App\Models\User::where('role', 'rider')->get();
+        return view('admin.vehicles.edit', compact('vehicle', 'riders'));
     }
 
     /**
@@ -78,9 +85,22 @@ class VehicleController extends Controller
             'plate_number' => 'required|string|max:255|unique:vehicles,plate_number,' . $vehicle->id,
             'capacity' => 'required|integer|min:1',
             'status' => 'required|numeric',
+            'rider_id' => 'nullable|exists:users,id',
         ]);
 
         $vehicle->update($request->all());
+
+        // Update rider assignment
+        if ($request->has('rider_id')) {
+            // Remove vehicle from current rider(s) if any (optional, depends on if 1 vehicle can have many riders)
+            // \App\Models\User::where('vehicle_id', $vehicle->id)->update(['vehicle_id' => null]);
+            
+            if ($request->rider_id) {
+                $rider = \App\Models\User::find($request->rider_id);
+                $rider->vehicle_id = $vehicle->id;
+                $rider->save();
+            }
+        }
 
         return redirect()->route('admin.vehicles.index')->with('success', 'Vehicle updated successfully.');
     }

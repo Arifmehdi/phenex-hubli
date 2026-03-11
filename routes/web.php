@@ -233,10 +233,10 @@ Route::get('/support-policy', [
     'as'   => 'supportpolicy',
 ]);
 
-Route::get('/privacy-policy', [
-    'uses' => 'App\Http\Controllers\Frontend\FrontendController@privacypolicy',
-    'as'   => 'privacypolicy',
-]);
+// Route::get('/privacy-policy', [
+//     'uses' => 'App\Http\Controllers\Frontend\FrontendController@privacypolicy',
+//     'as'   => 'privacypolicy',
+// ]);
 
 Route::get('/terms', [
     'uses' => 'App\Http\Controllers\Frontend\FrontendController@terms',
@@ -266,9 +266,9 @@ Route::get('/return-policy', function () {
     return view('frontend.home.return_policy');
 })->name('return-policy');
 
-Route::get('/privacy-policy', function () {
-    return view('frontend.home.privacy_policy');
-})->name('privacy-policy');
+// Route::get('/privacy-policy', function () {
+//     return view('frontend.home.privacy_policy');
+// })->name('privacy-policy');
 
 Route::get('/about-us', function () {
     return view('frontend.home.about');
