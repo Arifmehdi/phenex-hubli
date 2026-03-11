@@ -148,7 +148,7 @@ class ProductController extends Controller
         $product = new Product();
         $product->name_en = $request->name_en;
         $product->name_bn = $request->name_bn;
-        $product->price = $request->price;
+        $product->purchase_price = $request->price;
         $product->stock = $request->stock ?? 1;
         $product->discount = $request->discount ?? 0;
         $product->discount_price = $request->discount ?? 0;
@@ -158,7 +158,6 @@ class ProductController extends Controller
         $product->description_en = $request->description_en;
         $product->seller_id = $request->seller_id ?? Auth::id();
         $product->addedby_id = Auth::id();
-        $product->active = $request->active ?? 1;
 
         $product->save();
 

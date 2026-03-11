@@ -1,205 +1,98 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Invoice #{{ $order->id }}</title>
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <title>Invoice #{{ $order->id }}</title> <link rel="stylesheet" href="{{ asset('/') }}alt/plugins/fontawesome-free/css/all.min.css"> <style> body{ font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#000; } /* A4 page setup */ @page{ size:A4; margin:15mm; } .container{ width:100%; } /* header */ .header{ border-bottom:2px solid #198754; margin-bottom:15px; padding-bottom:10px; } .company-title{ font-size:20px; font-weight:bold; } .small{ font-size:12px; } /* tables */ table{ width:100%; border-collapse:collapse; } th,td{ border:1px solid #000; padding:6px; } th{ background:#198754; color:#fff; } .text-right{ text-align:right; } .text-center{ text-align:center; } .no-border td{ border:none; } /* totals */ .total-table td{ border:1px solid #000; padding:6px; } /* print behavior */ thead{ display:table-header-group; } tr{ page-break-inside:avoid; } /* button */ .btn-print{ margin-top:20px; } @media print{ .btn-print{ display:none; }     table, th, td{
+        border:1px solid #000 !important;
+    } } </style> </head> <body> <div class="container"> <!-- HEADER --> <table class="header no-border"> <tr> <td width="70%">
+    
+    <style>
+        table{
+            width:100%;
+            border-collapse:collapse;
+        }
+        
+        table, th, td{
+            border:1px solid #000;
+        }
+        
+        th, td{
+            padding:6px;
+        }
+        
+        th{
+            background:#198754;
+            color:#fff;
+        }
+    </style>
 
-  <!-- Bootstrap CSS -->
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+@if($ws->logo())
+<img src="{{ route('imagecache',['template'=>'original','filename'=>$ws->logo_alt()]) }}" width="60">
+@endif
 
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="{{ asset('/') }}alt/plugins/fontawesome-free/css/all.min.css">
+<div class="company-title">{{ $ws->website_title }}</div> <div class="small"> {{ $ws->contact_address }} </div> </td> <td width="30%" align="right">
 
-  <style>
-      body {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        font-size: 14px;
-      }
-      .invoice-header {
-        border-bottom: 2px solid #198754;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-      }
-      .table th {
-        background: #198754;
-        color: #fff;
-        text-align: center;
-      }
-      .status-box {
-        font-size: 1.2rem;
-        font-weight: bold;
-        padding: 15px;
-        border-radius: .5rem;
-      }
-      @media print {
-        body { -webkit-print-color-adjust: exact; }
-        .btn { display: none; }
-      }
-  </style>
-</head>
-<body>
+<strong>INVOICE</strong><br>
 
-<div class="container my-4">
-  <!-- Header -->
-  <div class="row invoice-header align-items-center">
-    <div class="col-2">
-      @if($ws->logo())
-      <img width="70" height="79" src="{{ route('imagecache', ['template'=>'original','filename'=>$ws->logo()]) }}" alt="logo" class="img-fluid">
-      @endif
-    </div>
-    <div class="col-7">
-      <h3 class="mb-0 fw-bold">{{ $ws->website_title }}</h3>
-      <p class="mb-0 small">{{ $ws->contact_address }}</p>
-    </div>
-    <div class="col-3 text-end">
-      <p class="mb-0"><strong>Date:</strong> {{ date('d/m/Y') }}</p>
-    </div>
-  </div>
+Invoice #: {{ $order->id }}<br>
 
-  <!-- Invoice Info -->
-  <div class="row mb-4">
-    <div class="col-md-8">
-      <div class="p-3 border bg-light rounded">
-        <h5 class="fw-bold mb-2">Invoice #{{ $order->id }}</h5>
-        <p class="mb-1"><strong>Invoice Date:</strong> {{ \Carbon\Carbon::parse($order->created_at)->format('l, M d, Y') }}</p>
-        @if($lastPayment = $order->payments()->latest('payment_date')->first())
-        <p class="mb-0"><strong>Due Date:</strong> {{ \Carbon\Carbon::parse($lastPayment->payment_date)->format('l, M d, Y') }}</p>
-        @endif
-      </div>
-    </div>
-    <div class="col-md-4 text-center">
-      <div class="status-box 
-          @if($order->payment_status=='unpaid') bg-danger text-white
-          @elseif($order->payment_status=='paid') bg-success text-white
-          @elseif($order->payment_status=='partial') bg-warning text-dark
-          @endif">
-        {{ ucfirst($order->payment_status) }}
-      </div>
-    </div>
-  </div>
+Date: {{ $order->created_at->format('d M Y') }}
 
-  <!-- Customer Info -->
-  <div class="row mb-4">
-    <div class="col-md-8">
-      <h6 class="fw-bold">Invoiced To</h6>
-      <table class="table table-sm table-borderless">
-        <tr>
-          <th width="80">Name:</th>
-          <td class="bg-light">{{ $order->user->name ?? '' }}</td>
-        </tr>
-        <tr>
-          <th>Email:</th>
-          <td class="bg-light">{{ $order->user->email ?? '' }}</td>
-        </tr>
-        <tr>
-          <th>Mobile:</th>
-          <td class="bg-light">{{ $order->user->mobile ?? '' }}</td>
-        </tr>
-      </table>
-    </div>
-  </div>
+</td> </tr> </table> <!-- CUSTOMER INFO --> <table class="no-border" style="margin-bottom:15px"> <tr> <td width="70%">
 
-  <!-- Order Items -->
-  <div class="card shadow mb-4">
-    <div class="card-header bg-success text-white">
-      <h6 class="mb-0"><i class="fa fa-box"></i> Order Items</h6>
-    </div>
-    <div class="card-body p-0">
-      <table class="table table-bordered mb-0">
-        <thead>
-          <tr>
-            <th>#SL</th>
-            <th>Product Name</th>
-            <th>Price</th>
-            <th>Qty</th>
-            <th>Total</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach($items as $item)
-          <tr>
-            <td class="text-center">{{ $loop->iteration }}</td>
-            <td>{{ $item->product_name }}</td>
-            <td class="text-end">{{ number_format($item->product_price,2) }}</td>
-            <td class="text-center">{{ $item->quantity }}</td>
-            <td class="text-end">{{ number_format($item->total_cost,2) }}</td>
-          </tr>
-          @endforeach
+<strong>Bill To</strong><br>
 
-            @php
-                $shippingCost = $order->shipping_cost ?? $ws->shipping_charge ?? 150;
-                $totalWithShipping = $order->subtotal + $shippingCost;
-            @endphp
+{{ $order->name ?? $order->user?->name }}<br>
 
-          <tr class="fw-bold">
-            <td colspan="4" class="text-end">Sub Total</td>
-            <td class="text-end">{{ number_format($order->subtotal,2) }}</td>
-          </tr>
+{{ $order->email ?? $order->user?->email }}<br>
 
-  
+{{ $order->mobile ?? $order->user?->mobile }}
 
-          <tr class="fw-bold">
-            <td colspan="4" class="text-end">Shipping Cost</td>
-            <td class="text-end">{{ number_format($shippingCost,2) }}</td>
-          </tr>
+</td> <td width="30%" align="right">
 
-             {{-- Grand Total --}}
-            <tr class="fw-bold">
-                <td colspan="4" class="text-end">Grand Total</td>
-                <td class="text-end">{{ number_format($totalWithShipping, 2) }}</td>
-            </tr>
+<strong>Status</strong><br>
 
-          <tr class="fw-bold">
-            <td colspan="4" class="text-end">Paid</td>
-            <td class="text-end">{{ number_format($order->paid(), 2) }}</td>
-          </tr>
-          <tr class="fw-bold">
-            <td colspan="4" class="text-end">Due</td>
-            <td class="text-end">{{ number_format($totalWithShipping - $order->paid(), 2) }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-  </div>
+@if($order->payment_status=='paid')
+<span style="color:green;font-weight:bold;">PAID</span>
+@elseif($order->payment_status=='unpaid')
+<span style="color:red;font-weight:bold;">UNPAID</span>
+@else
+<span style="color:orange;font-weight:bold;">PARTIAL</span>
+@endif
 
-  <!-- Transactions -->
-  <div class="card shadow mb-4">
-    <div class="card-header bg-success text-white">
-      <h6 class="mb-0"><i class="fa fa-receipt"></i> Transactions</h6>
-    </div>
-    <div class="card-body p-0">
-      <table class="table table-bordered mb-0">
-        <thead>
-          <tr>
-            <th>#SL</th>
-            <th>Date</th>
-            <th>Paid Amount</th>
-          </tr>
-        </thead>
-        <tbody>
-          @foreach($order->payments as $payment)
-          <tr>
-            <td class="text-center">{{ $loop->iteration }}</td>
-            <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('d M, Y') }}</td>
-            <td class="text-end">{{ number_format($payment->paid_amount,2) }}</td>
-          </tr>
-          @endforeach
-        </tbody>
-      </table>
-    </div>
-  </div>
+</td> </tr> </table> <!-- ITEMS TABLE --> <table> <thead> <tr> <th width="60">SL</th> <th>Product Name</th> <th width="120">Price</th> <th width="80">Qty</th> <th width="140">Total</th> </tr> </thead> <tbody>
 
-  <!-- Footer -->
-  <div class="text-center mt-4">
-    <p class="small text-muted">
-      PDF Generated on {{ \Carbon\Carbon::now()->format('l, M d, Y') }}
-    </p>
-    <button class="btn btn-success d-print-none" onclick="window.print()">
-      <i class="fa fa-print"></i> Print Invoice
-    </button>
-  </div>
-</div>
+@foreach($items as $item)
 
-</body>
-</html>
+<tr> <td class="text-center">{{ $loop->iteration }}</td> <td>{{ $item->product_name }}</td> <td class="text-right">{{ number_format($item->product_price,2) }}</td> <td class="text-center">{{ $item->quantity }}</td> <td class="text-right">{{ number_format($item->total_cost,2) }}</td> </tr>
+
+@endforeach
+
+@php
+$shippingCost = $order->shipping_cost ?? $ws->shipping_charge ?? 150;
+$totalWithShipping = $order->subtotal + $shippingCost;
+@endphp
+
+<tr> <td colspan="4" class="text-right"><strong>Sub Total</strong></td> <td class="text-right">{{ number_format($order->subtotal,2) }}</td> </tr> <tr> <td colspan="4" class="text-right"><strong>Shipping</strong></td> <td class="text-right">{{ number_format($shippingCost,2) }}</td> </tr> <tr> <td colspan="4" class="text-right"><strong>Grand Total</strong></td> <td class="text-right"><strong>{{ number_format($totalWithShipping,2) }}</strong></td> </tr> <tr> <td colspan="4" class="text-right" style="color:green"><strong>Paid</strong></td> <td class="text-right" style="color:green">{{ number_format($order->paid(),2) }}</td> </tr> <tr> <td colspan="4" class="text-right" style="color:red"><strong>Due</strong></td> <td class="text-right" style="color:red"> {{ number_format($totalWithShipping - $order->paid(),2) }} </td> </tr> </tbody> </table> <!-- PAYMENTS -->
+
+@if($order->payments->count())
+
+<br>
+
+<strong>Transactions</strong>
+
+<table> <thead> <tr> <th width="60">SL</th> <th>Date</th> <th width="150">Paid Amount</th> </tr> </thead> <tbody>
+
+@foreach($order->payments as $payment)
+
+<tr> <td class="text-center">{{ $loop->iteration }}</td> <td>{{ \Carbon\Carbon::parse($payment->payment_date)->format('d M Y') }}</td> <td class="text-right">{{ number_format($payment->paid_amount,2) }}</td> </tr>
+
+@endforeach
+
+</tbody> </table>
+
+@endif
+
+<!-- FOOTER --> <div style="text-align:center;margin-top:30px;font-size:12px">
+
+Generated on {{ \Carbon\Carbon::now()->format('d M Y h:i A') }}
+
+<br><br>
+
+<button class="btn-print" onclick="window.print()"> <i class="fa fa-print"></i> Print Invoice </button> </div> </div> </body> </html>
