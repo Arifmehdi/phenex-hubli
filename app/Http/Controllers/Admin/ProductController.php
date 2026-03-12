@@ -295,13 +295,13 @@ class ProductController extends Controller
         $request->validate([
             'name_en'        => 'required|string',
             // 'sku'            => 'required',
-            'price'          => 'required|numeric',
+            'purchase_price'          => 'nullable|numeric',
+            'selling_price'          => 'required|numeric',
             'slug'           => 'required|string',
             'featured_image' => 'nullable|image',
             'additional_images.*' => 'nullable|image',
             'rider_id'       => 'nullable|exists:users,id',
         ]);
-
     
 
         // Initialize new product instance
@@ -314,12 +314,14 @@ class ProductController extends Controller
         // Generate slug, helper function ensures uniqueness if needed
         $product->slug = getSlug($request->slug, $product, boolval($request->slug));
 
-        $product->price = $request->price ?? 0.00;
+        // $product->price = $request->price ?? 0.00;
+        $product->selling_price = $request->selling_price ?? 0.00;
+        $product->purchase_price = $request->purchase_price ?? 0.00;
         $product->discount = $request->discount ?? 0.00;
 
         // Calculate discount price and final price
         $product->discount_price = $request->discount ?? 0.00;
-        $product->final_price = $request->price - $product->discount;
+        $product->final_price = $request->selling_price - $product->discount;
 
         $product->unit = $request->unit;
         $product->excerpt_en = $request->excerpt_en;
@@ -441,8 +443,10 @@ class ProductController extends Controller
         // Validate incoming request data
         $request->validate([
             'name_en' => 'required|string',
-            'price' => 'required|numeric',
+            // 'price' => 'required|numeric',
             // 'sku'   => 'required',
+            'purchase_price' => 'nullable|numeric',
+            'selling_price'  => 'required|numeric',
             'slug' => 'required|string',
             'featured_image' => 'nullable|image',
             'additional_images.*' => 'nullable|image',
@@ -454,7 +458,9 @@ class ProductController extends Controller
         $product->name_bn = $request->name_bn ?? null;
         $product->sku = $request->sku ?? null;
         $product->slug = getSlug($request->slug, $product, boolval($request->slug));
-        $product->price = $request->price ?? 0.00;
+        // $product->price = $request->price ?? 0.00;
+        $product->purchase_price = $request->purchase_price ?? null;
+        $product->selling_price = $request->selling_price ?? null;
         $product->discount = $request->discount ?? 0.00;
         $product->discount_price = $request->discount ?? 0.00;
         $product->final_price = $product->price - $product->discount;
@@ -608,6 +614,21 @@ class ProductController extends Controller
             'success' => true,
             'active' => $active
         ]);
+    }
+
+    public function toggleApproval(Request $request, Product $product)
+    {
+        // If selling_price is provided, update it and related fields
+        if ($request->has('selling_price')) {
+            $product->selling_price = $request->selling_price;
+            $product->price = $request->selling_price; // Maintain consistency with other parts of the app
+            $product->final_price = $request->selling_price - ($product->discount ?? 0);
+        }
+
+        $product->active = $request->has('active') ? 1 : 0;
+        $product->save();
+
+        return back()->with('success', 'Product approval status updated successfully.');
     }
 
 

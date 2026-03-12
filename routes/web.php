@@ -577,6 +577,7 @@ Route::middleware(['userRole:admin','auth'])->prefix('admin')->group(function(){
     Route::post('product/delete/{product}', [ProductController::class, 'productDelete'])->name('admin.productDelete');
     Route::get('product/image/delete/{media}', [ProductController::class, 'deleteImage'])->name('admin.product.image.delete');
     Route::get('product/status/{product}', [ProductController::class, 'productStatus'])->name('admin.productStatus');
+    Route::put('product/{product}/toggle-approval', [ProductController::class, 'toggleApproval'])->name('admin.product.toggle-approval');
     Route::get('product/tags', [ProductController::class, 'productTags'])->name('admin.productTags');
     Route::get('product/search/type/{type}', [ProductController::class, 'productSearch'])->name('admin.productSearch');
     Route::get('product/add/stock/{product}', [ProductController::class, 'productAddStock'])->name('admin.productAddStock');

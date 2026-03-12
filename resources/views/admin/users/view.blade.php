@@ -10,21 +10,25 @@
                         <td>{{$user->name}}</td>
                     </tr>
                     <tr>
-                        <th>Name</th>
+                        <th>Email</th>
                         <td>{{$user->email}}</td>
                     </tr>
                     <tr>
+                        <th>Phone</th>
+                        <td>{{$user->mobile}}</td>
+                    </tr>
+                    <tr>
                         <th>Role</th>
-
-                        @if(isset($user->roles))
+                            <td>{{ Str::ucfirst($user->role == 0 ? 'buyer' : $user->role) }}</td>
+                        {{--@if(isset($user->roles))
                             <td>
                                 @foreach($user->roles as $role)
                                     {{$role->role_name}}
                                 @endforeach
                             </td>
                         @else
-                            <td></td>
-                        @endif
+                            <td>{{ $user->role = 0 ? 'Buyer' : $user->role }}</td>
+                        @endif--}}
 
                     </tr>
                 </table>

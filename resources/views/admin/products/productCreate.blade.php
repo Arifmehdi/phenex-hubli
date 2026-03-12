@@ -76,10 +76,24 @@
                                 </div> --}}
 
                                 {{-- Product Price --}}
-                                <div class="form-group">
+                                {{--<div class="form-group">
                                     <label for="price">Product Price <span class="text-danger">*</span></label>
                                     <input type="number" name="price" value="{{ old('price') }}" class="form-control" placeholder="Enter price">
                                     @error('price')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>--}}
+                                <div class="form-group">
+                                    <label for="purchase_price">Purchase Price <span class="text-danger">*</span></label>
+                                    <input type="number" name="purchase_price" value="{{ old('purchase_price') }}" class="form-control" placeholder="Enter purchase price">
+                                    @error('purchase_price')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label for="selling_price">Selling Price <span class="text-danger">*</span></label>
+                                    <input type="number" name="selling_price" value="{{ old('selling_price') }}" class="form-control" placeholder="Enter selling price">
+                                    @error('selling_price')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>

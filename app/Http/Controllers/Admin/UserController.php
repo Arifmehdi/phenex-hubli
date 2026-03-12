@@ -55,12 +55,13 @@ class UserController extends Controller
         return view('admin.users.edit',['user'=>User::find($id)]);
     }
     public function update(Request $request, $id){
-
+// dd($request->all());
         menuSubmenu('users', 'allUsers');
 
         $this->validate($request,[
-            'name'=>'required|string',
-            'email'=>Rule::unique('users')->ignore(User::find($id)),
+            'name'   => 'required|string',
+            'email'  => Rule::unique('users','email')->ignore($id),
+            'mobile' => 'required',
         ]);
 
         User::updateUser($request, $id);

@@ -31,6 +31,14 @@
                                             <div class="alert alert-danger mt-2">{{$message}}</div>
                                             @enderror
                                         </div>
+                                        <div class="form-group">
+                                            <label for="">Phone</label>
+                                            <input type="mobile" name="mobile" class="form-control"  value="{{$user->mobile}}" required>
+
+                                            @error('email')
+                                            <div class="alert alert-danger mt-2">{{$message}}</div>
+                                            @enderror
+                                        </div>
 
                                     </div>
 

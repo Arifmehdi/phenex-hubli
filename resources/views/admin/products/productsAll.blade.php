@@ -74,25 +74,61 @@
 @push('js')
 <script>
     $(document).ready(function () {
-        // Toggle product status active/inactive via AJAX
-        $(document).on('click', ".productStatus", function(e){
-            e.preventDefault();
-            var that = $(this);
-            var url = that.attr('data-url');
-            $.ajax({
-                url: url,
-                method: "get",
-                success: function(res) {
-                    if(res.active == true) {
-                        that.removeClass('badge-danger').addClass('badge-primary');
-                        that.text('Active');
-                    } else {
-                        that.removeClass('badge-primary').addClass('badge-danger');
-                        that.text('Inactive');
+        // Toggle product approval status via form submission
+        $(document).on('change', '.custom-control-input[name="active"]', function(e) {
+            var checkbox = $(this);
+            var form = checkbox.closest('form');
+            var isChecked = checkbox.is(':checked');
+            var productRow = checkbox.closest('tr');
+            
+            // Get selling price from the table (assuming it's in the 6th column, index 5)
+            // Or we can pass it via data attribute in searchData.blade.php
+            var sellingPrice = checkbox.attr('data-price');
+
+            if (isChecked && (!sellingPrice || sellingPrice == 0 || sellingPrice == '0.00')) {
+                e.preventDefault();
+                checkbox.prop('checked', false); // Uncheck until price is set
+
+                Swal.fire({
+                    title: 'Set Selling Price',
+                    text: 'Please enter the selling price to approve this product.',
+                    input: 'number',
+                    inputAttributes: {
+                        min: 0,
+                        step: 'any'
+                    },
+                    showCancelButton: true,
+                    confirmButtonText: 'Approve',
+                    showLoaderOnConfirm: true,
+                    preConfirm: (price) => {
+                        if (!price || price <= 0) {
+                            Swal.showValidationMessage('Please enter a valid selling price');
+                            return false;
+                        }
+                        return price;
+                    },
+                    allowOutsideClick: () => !Swal.isLoading()
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Re-check the checkbox so it sends 'active' value
+                        checkbox.prop('checked', true);
+                        
+                        // Create a hidden input for selling_price and add to form
+                        $('<input>').attr({
+                            type: 'hidden',
+                            name: 'selling_price',
+                            value: result.value
+                        }).appendTo(form);
+                        
+                        form.submit();
                     }
-                }
-            });
+                });
+            } else {
+                form.submit();
+            }
         });
+
+        // Toggle product status active/inactive via AJAX (Old Status logic - keeping for compatibility if needed elsewhere)
 
         // Live search products with AJAX on keyup
         $(document).on('keyup', ".product-search", function(e){

@@ -53,7 +53,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [ApiAuthController::class, 'me']);
 
     Route::apiResource('products', ProductController::class)->except(['index', 'show']);
-
+    Route::post('products/bulk-store', [ProductController::class, 'bulkStore']);
     // Authenticated API routes for Cart and Orders
     // Route::apiResource('cart', CartController::class)->only(['index', 'store', 'destroy']);
     Route::apiResource('orders', OrderController::class)->except(['store']);

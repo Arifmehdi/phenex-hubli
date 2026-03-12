@@ -86,7 +86,7 @@
                                 </div> --}}
 
                                 {{-- Product Price --}}
-                                <div class="form-group">
+                                {{--<div class="form-group">
                                     <label for="price">Product Price
                                         <span class="text-danger">*</span>
                                     </label>
@@ -94,6 +94,20 @@
                                            value="{{ old('price', $product->price) }}" 
                                            class="form-control" placeholder="Enter price">
                                     @error('price')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>--}}
+                                <div class="form-group">
+                                    <label for="purchase_price">Purchase Price <span class="text-danger">*</span></label>
+                                    <input type="number" name="purchase_price"  class="form-control" placeholder="Enter purchase price" value="{{ $product->purchase_price ?? '' }}">
+                                    @error('purchase_price')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+                                <div class="form-group">
+                                    <label for="selling_price">Selling Price <span class="text-danger">*</span></label>
+                                    <input type="number" name="selling_price"  class="form-control" placeholder="Enter selling price" value="{{ $product->selling_price ?? '' }}">
+                                    @error('selling_price')
                                         <span class="text-danger">{{ $message }}</span>
                                     @enderror
                                 </div>

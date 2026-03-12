@@ -75,6 +75,7 @@ class User extends Authenticatable implements CanResetPassword
         self::$user=User::find($id);
         self::$user->name=$request->name;
         self::$user->email=$request->email;
+        self::$user->mobile=$request->mobile;
         self::$user->save();
     }
     public static function changePassword($request,$id){
