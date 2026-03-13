@@ -33,11 +33,22 @@ class Order extends Model
         'vehicle_id',
         'assigned_at',
         'pending_at',
+        'confirmed_at',
+        'ready_to_ship_at',
+        'shiped_at',
+        'delivered_at',
+        'canceled_at',
+        'order_status',
     ];
 
     protected $casts = [
         'assigned_at' => 'datetime',
         'pending_at' => 'datetime',
+        'confirmed_at' => 'datetime',
+        'ready_to_ship_at' => 'datetime',
+        'shiped_at' => 'datetime',
+        'delivered_at' => 'datetime',
+        'canceled_at' => 'datetime',
     ];
 
     public function orderItems()

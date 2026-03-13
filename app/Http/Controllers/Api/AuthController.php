@@ -12,9 +12,11 @@ use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Str;
 use App\Http\Controllers\Api\CartController; // Add this import
+use App\Traits\NotificationTrait;
 
 class AuthController extends Controller
 {
+    use NotificationTrait;
     public function login(Request $request, CartController $cartController) // Inject CartController
     {
         $request->validate([
@@ -62,8 +64,18 @@ class AuthController extends Controller
             'password' => bcrypt($request->password),
             'mobile' => $request->mobile,
             'role' => $request->role,
+            'ip_address' => $request->ip(),
             'is_approve' => 0
         ]);
+
+        // Notification for admin or system
+        $this->createNotification(
+            'New User Registration',
+            $user->name.' registered from IP '.$request->ip(),
+            null, // null = send to all
+            $request->ip(),
+            'register'
+        );
 
         $token = $user->createToken('flutter')->plainTextToken;
 

@@ -24,9 +24,7 @@ class OrderItemResource extends JsonResource
             'addedby_id' => $this->addedby_id,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            // Assuming you want to show some product details within the order item
-            // You might need to eager load the product: $orderItem->load('product');
-            // 'product' => new ProductOverviewResource($this->whenLoaded('product')),
+            'product' => new ProductOverviewResource($this->whenLoaded('product')),
         ];
     }
 }

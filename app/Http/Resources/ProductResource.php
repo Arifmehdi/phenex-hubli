@@ -28,7 +28,8 @@ class ProductResource extends JsonResource
             // 'description_bn' => $this->description_bn,
             'featured_image' => $this->fi(), // Using the accessor
             // 'price' => $this->price,
-            'price' => $this->selling_price,
+            'price' => $this->selling_price, 
+            'purchase_price' => $this->purchase_price, 
             'discount' => $this->discount,
             'discount_price' => $this->discount_price,
             'final_price' => $this->final_price,

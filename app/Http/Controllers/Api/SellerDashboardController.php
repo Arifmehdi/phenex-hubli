@@ -16,34 +16,71 @@ class SellerDashboardController extends Controller
         $user = $request->user();
 
         // Check if the user has the 'seller' role
-        // Assuming roles are managed via the User model's hasRole method
-        // You might need to adjust this based on your actual role management
-        if (!$user->role = 'seller') {
-             return Response::json(['message' => 'Unauthorized: User is not a seller.'], 403);
+        if ($user->role !== 'seller') {
+             return Response::json(['success' => false, 'message' => 'Unauthorized: User is not a seller.'], 403);
         }
 
         // Fetch products added by this seller
-        $products = Product::where('addedby_id', $user->id)->get();
+        $products = Product::where('seller_id', $user->id)
+            ->with(['categories', 'media'])
+            ->latest()
+            ->get();
 
         // Fetch orders related to this seller's products
-        // Get product IDs for the current seller
         $sellerProductIds = $products->pluck('id')->toArray();
 
         // Find OrderItems that belong to these seller products
-        $orderItems = OrderItem::whereIn('product_id', $sellerProductIds)->with('order')->get();
+        $orderItems = OrderItem::whereIn('product_id', $sellerProductIds)
+            ->with(['order' => function($query) {
+                $query->with(['orderItems', 'user']);
+            }])
+            ->get();
 
-        // Get unique orders from these order items
-        $orders = $orderItems->pluck('order')->unique('id')->values();
+        // Get unique orders from these order items, filtering out any null orders
+        $orders = $orderItems->map(fn($item) => $item->order)->filter()->unique('id')->values();
 
+        // Prepare Statistics
+        $stats = [
+            'total_products' => $products->count(),
+            'total_orders' => $orders->count(),
+            'pending_orders' => $orders->where('order_status', 'pending')->count(),
+            'confirmed_orders' => $orders->where('order_status', 'confirmed')->count(),
+            'delivered_orders' => $orders->where('order_status', 'delivered')->count(),
+            'total_sales' => $orderItems->sum('total_cost'),
+        ];
+
+        // Format Seller Data for API
+        $sellerData = [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'mobile' => $user->mobile,
+            'address' => $user->address,
+            'image' => $user->image ? asset('storage/product_images/' . $user->image) : asset('img/profile.jpg'),
+            'status' => $user->is_approve ? 'Active' : 'Pending Approval',
+        ];
+
+        // Transform Product Data to include full image URLs
+        $transformedProducts = $products->map(function($product) {
+            return [
+                'id' => $product->id,
+                'name' => $product->name_en,
+                'stock' => $product->stock,
+                'price' => $product->price,
+                'image' => asset('storage/product_images/' . $product->fi()),
+                'sku' => $product->sku,
+            ];
+        });
 
         return Response::json([
-            'message' => 'Seller dashboard data',
-            'seller' => $user->name,
-            'products_count' => $products->count(),
-            'products' => $products,
-            'orders_count' => $orders->count(),
-            'orders' => $orders,
-            // Add other relevant data for seller dashboard
+            'success' => true,
+            'message' => 'Seller dashboard data retrieved successfully.',
+            'data' => [
+                'seller' => $sellerData,
+                'stats' => $stats,
+                'recent_orders' => $orders->take(10), // Limit to 10 for dashboard
+                'products' => $transformedProducts,
+            ]
         ]);
     }
 }

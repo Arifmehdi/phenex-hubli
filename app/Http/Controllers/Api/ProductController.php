@@ -75,7 +75,7 @@ class ProductController extends Controller
 
         $validator = Validator::make($request->all(), [
             'name_en' => 'sometimes|required|string|max:255',
-            'price' => 'sometimes|required|numeric|min:0',
+            'purchase_price' => 'sometimes|required|numeric|min:0',
             'stock' => 'sometimes|required|integer|min:0',
             'featured_image' => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048',
             'category_id' => 'nullable',
@@ -185,6 +185,73 @@ class ProductController extends Controller
 
         return new ProductResource($product->load(['addedBy', 'categories']));
     }
+
+
+    public function bulkStore(Request $request)
+{
+    $products = $request->products;
+
+    if (!is_array($products) || empty($products)) {
+        return response()->json([
+            'message' => 'Products array is required'
+        ], 422);
+    }
+
+    $createdProducts = [];
+
+    foreach ($products as $item) {
+
+        $validator = Validator::make($item, [
+            'name_en' => 'required|string|max:255',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'categories' => 'nullable',
+            'category_id' => 'nullable',
+            'seller_id' => 'nullable|exists:users,id',
+        ]);
+
+        if ($validator->fails()) {
+            continue; // skip invalid product
+        }
+
+        $product = new Product();
+        $product->name_en = $item['name_en'];
+        $product->name_bn = $item['name_bn'] ?? null;
+        $product->purchase_price = $item['price'];
+        $product->stock = $item['stock'] ?? 1;
+        $product->discount = $item['discount'] ?? 0;
+        $product->discount_price = $item['discount'] ?? 0;
+        $product->final_price = $item['price'] - ($item['discount'] ?? 0);
+        $product->slug = getSlug($item['slug'] ?? $item['name_en'], $product);
+        $product->excerpt_en = $item['excerpt_en'] ?? null;
+        $product->description_en = $item['description_en'] ?? null;
+        $product->seller_id = $item['seller_id'] ?? Auth::id();
+        $product->addedby_id = Auth::id();
+        $product->save();
+
+        $catInput = $item['categories'] ?? $item['category_id'] ?? null;
+
+        if ($catInput) {
+            $categories = is_array($catInput) ? $catInput : explode(',', $catInput);
+
+            foreach ($categories as $catId) {
+                if (!empty($catId)) {
+                    ProductCat::create([
+                        'product_id' => $product->id,
+                        'product_category_id' => trim($catId),
+                        'addedby_id' => Auth::id(),
+                    ]);
+                }
+            }
+        }
+
+        $createdProducts[] = $product;
+    }
+
+    return ProductResource::collection(
+        Product::whereIn('id', collect($createdProducts)->pluck('id'))->with(['addedBy','categories'])->get()
+    );
+}
 
     /**
      * Display the specified resource.

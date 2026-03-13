@@ -11,6 +11,7 @@ use App\Http\Controllers\Api\UserController; // Import UserController
 use App\Http\Controllers\Api\ContactFormController; // Import ContactFormController
 use App\Http\Controllers\Api\SellerDashboardController; // Import SellerDashboardController
 use App\Http\Controllers\Api\RiderDashboardController; // Import RiderDashboardController
+use App\Http\Controllers\NotificationController; // Import RiderDashboardController
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -48,9 +49,16 @@ Route::post('orders', [OrderController::class, 'store']);
 // API route for contact form submission
 Route::post('/contact', [ContactFormController::class, 'store']);
 
+// notification route
+Route::get('/notifications', [NotificationController::class, 'index']);
+Route::get('/notifications/ip', [NotificationController::class, 'ipNotifications']);
+Route::post('/notifications/read/{id}', [NotificationController::class, 'markAsRead']);
+
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [ApiAuthController::class, 'logout']);
     Route::get('/user', [ApiAuthController::class, 'me']);
+    // 
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead']);
 
     Route::apiResource('products', ProductController::class)->except(['index', 'show']);
     Route::post('products/bulk-store', [ProductController::class, 'bulkStore']);
@@ -69,6 +77,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/seller/products/{product}', [ProductController::class, 'sellerUpdate']);
     Route::get('/rider/dashboard', [RiderDashboardController::class, 'index']);
     Route::get('/rider/assigned-products', [RiderDashboardController::class, 'assignedProducts']);
+    Route::get('/rider/active-orders', [RiderDashboardController::class, 'activeOrders']);
+    Route::get('/rider/orders/{order}', [RiderDashboardController::class, 'showOrder']);
+    Route::post('/rider/orders/{order}/update-status', [RiderDashboardController::class, 'updateOrderStatus']);
 
 
     // routes/api.php
