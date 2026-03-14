@@ -196,7 +196,7 @@ class SslCommerzPaymentController  extends Controller
             if (Auth::check()) {
                 return redirect()->route('user.dashboard')->with('success', 'Order placed successfully!');
             } else {
-                return redirect()->route('shop.shasthoseba')->with('success', 'Order placed successfully!');
+                return redirect()->route('shop')->with('success', 'Order placed successfully!');
             }
 
             // 5. Prepare SSLCommerz
@@ -319,7 +319,13 @@ class SslCommerzPaymentController  extends Controller
                 'editedby_id'     => $order->user_id,
             ]);
 
-            // Mail::to('admin@93shasthoseba.com')->send(new OrderConfirmationEmail($order));
+            // Send email to admin
+            Mail::to('noreply@hublibd.com')->send(new OrderConfirmationEmail($order));
+            
+            // Send email to customer if email is provided
+            if ($order->email) {
+                Mail::to($order->email)->send(new OrderConfirmationEmail($order));
+            }
 
             return redirect('/')->with('success', 'Order payment successful!');
         }

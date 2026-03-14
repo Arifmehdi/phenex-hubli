@@ -1231,7 +1231,7 @@ public function quickAdd(Request $request)
                         'address_title' => $request->input('billing_address'),
                         'name' => $request->input('name'),
                         'mobile' => $request->input('mobile'),
-                        // 'email' => $request->input('email'),
+                        'email' => $request->input('email'),
                         // 'district_id' => $request->input('billing_district_id'),
                         // 'upazila_id' => $request->input('billing_thana_id'),
                     ]
@@ -1249,7 +1249,13 @@ public function quickAdd(Request $request)
             $this->storeOrderItems($order, $cartItems, $user->id);
             Cart::where('user_id', $user->id)->delete();
 
-            // Mail::to('admin@93shasthoseba.com')->send(new OrderConfirmationEmail($order));
+            // Send email to admin
+            Mail::to('noreply@hublibd.com')->send(new OrderConfirmationEmail($order));
+            
+            // Send email to customer if email is provided
+            if ($order->email) {
+                Mail::to($order->email)->send(new OrderConfirmationEmail($order));
+            }
 
             return redirect()->route('user.dashboard')->with('success', 'Order placed successfully!');
         } else {
@@ -1257,7 +1263,7 @@ public function quickAdd(Request $request)
                 'name' => 'required|string|max:255',
                 'mobile' => 'required|string|max:20',
                 'billing_address' => 'required|string|max:1000',
-                // 'email' => 'required|email|max:255',
+                'email' => 'nullable|email|max:255',
                 // 'billing_district_id' => 'required',
                 // 'billing_thana_id' => 'required',
             ]);
@@ -1275,9 +1281,15 @@ public function quickAdd(Request $request)
             $this->storeOrderItems($order, $cartItems, null);
             Cart::where('session_id', session('session_id'))->delete();
 
-            // Mail::to($location->email)->send(new OrderConfirmationEmail($order));
+            // Send email to admin
+            Mail::to('noreply@hublibd.com')->send(new OrderConfirmationEmail($order));
+            
+            // Send email to customer if email is provided
+            if ($location->email) {
+                Mail::to($location->email)->send(new OrderConfirmationEmail($order));
+            }
 
-            return redirect()->route('shop.shasthoseba')->with('success', 'Order placed successfully!');
+            return redirect()->route('shop')->with('success', 'Order placed successfully!');
         }
     }
 

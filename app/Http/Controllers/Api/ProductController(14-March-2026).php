@@ -187,7 +187,7 @@ class ProductController extends Controller
     }
 
 
-public function bulkStore(Request $request)
+    public function bulkStore(Request $request)
 {
     $products = $request->products;
 
@@ -199,110 +199,43 @@ public function bulkStore(Request $request)
 
     $createdProducts = [];
 
-    foreach ($products as $index => $item) {
+    foreach ($products as $item) {
 
         $validator = Validator::make($item, [
             'name_en' => 'required|string|max:255',
-            'selling_price' => 'required|numeric',
-            'stock' => 'nullable|integer|min:0',
+            'price' => 'required|numeric|min:0',
+            'stock' => 'required|integer|min:0',
+            'categories' => 'nullable',
+            'category_id' => 'nullable',
             'seller_id' => 'nullable|exists:users,id',
         ]);
 
         if ($validator->fails()) {
-            continue;
+            continue; // skip invalid product
         }
 
         $product = new Product();
         $product->name_en = $item['name_en'];
         $product->name_bn = $item['name_bn'] ?? null;
-        $product->sku = $item['sku'] ?? null;
+        $product->purchase_price = $item['price'];
         $product->stock = $item['stock'] ?? 1;
-
-        $product->slug = getSlug($item['slug'] ?? $item['name_en'], $product);
-
-        $product->selling_price = $item['selling_price'] ?? 0;
-        $product->purchase_price = $item['purchase_price'] ?? 0;
         $product->discount = $item['discount'] ?? 0;
-
         $product->discount_price = $item['discount'] ?? 0;
-        $product->final_price = $product->selling_price - $product->discount;
-
-        $product->unit = $item['unit'] ?? null;
-
+        $product->final_price = $item['price'] - ($item['discount'] ?? 0);
+        $product->slug = getSlug($item['slug'] ?? $item['name_en'], $product);
         $product->excerpt_en = $item['excerpt_en'] ?? null;
         $product->description_en = $item['description_en'] ?? null;
-
-        $product->feature = $item['feature'] ?? 0;
-        $product->editor = $item['editor'] ?? 0;
-        $product->active = $item['active'] ?? 1;
-
-        $product->rider_id = $item['rider_id'] ?? null;
+        $product->seller_id = $item['seller_id'] ?? Auth::id();
         $product->addedby_id = Auth::id();
-
         $product->save();
 
-        /*
-        |---------------------------------------
-        | FEATURED IMAGE UPLOAD
-        |---------------------------------------
-        */
-        if ($request->hasFile("products.$index.featured_image")) {
-
-            $file = $request->file("products.$index.featured_image");
-            $ext = '.' . $file->getClientOriginalExtension();
-
-            $imageName = $product->id . '_' . time() . $ext;
-
-            Storage::disk('public')->put(
-                'product_images/' . $imageName,
-                File::get($file)
-            );
-
-            $product->featured_image = $imageName;
-            $product->save();
-        }
-
-        /*
-        |---------------------------------------
-        | ADDITIONAL IMAGES
-        |---------------------------------------
-        */
-        if ($request->hasFile("products.$index.additional_images")) {
-
-            foreach ($request->file("products.$index.additional_images") as $file) {
-
-                $ext = '.' . $file->getClientOriginalExtension();
-                $imageName = $product->id . '_' . time() . rand(1,100) . $ext;
-
-                Storage::disk('public')->put(
-                    'product_images/' . $imageName,
-                    File::get($file)
-                );
-
-                Media::create([
-                    'file_name' => $imageName,
-                    'product_id' => $product->id,
-                    'file_type' => 'image',
-                    'addedby_id' => Auth::id(),
-                ]);
-            }
-        }
-
-        /*
-        |---------------------------------------
-        | CATEGORY INSERT
-        |---------------------------------------
-        */
         $catInput = $item['categories'] ?? $item['category_id'] ?? null;
 
         if ($catInput) {
-
             $categories = is_array($catInput) ? $catInput : explode(',', $catInput);
 
             foreach ($categories as $catId) {
-
                 if (!empty($catId)) {
-
                     ProductCat::create([
                         'product_id' => $product->id,
                         'product_category_id' => trim($catId),
@@ -316,9 +249,7 @@ public function bulkStore(Request $request)
     }
 
     return ProductResource::collection(
-        Product::whereIn('id', collect($createdProducts)->pluck('id'))
-        ->with(['addedBy','categories'])
-        ->get()
+        Product::whereIn('id', collect($createdProducts)->pluck('id'))->with(['addedBy','categories'])->get()
     );
 }
 

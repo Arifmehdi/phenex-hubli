@@ -12,6 +12,7 @@ use App\Http\Controllers\Admin\ServiceController;
 use App\Http\Controllers\Admin\MediaController;
 use App\Http\Controllers\Admin\PostController;
 use App\Http\Controllers\Admin\ProductController;
+use App\Http\Controllers\Admin\UnitController;
 use App\Http\Controllers\Admin\SearchController;
 use App\Http\Controllers\Admin\ShippingMethodController;
 use App\Http\Controllers\Admin\UserController;
@@ -566,6 +567,16 @@ Route::middleware(['userRole:admin','auth'])->prefix('admin')->group(function(){
     Route::post('product/category/update/{category}', [ProductController::class, 'productCategoryUpdate'])->name('admin.productCategoryUpdate');
     Route::post('product/category/delete/{category}', [ProductController::class, 'productCategoryDelete'])->name('admin.productCategoryDelete');
     Route::get('category/status/{category}', [ProductController::class, 'categoryStatus'])->name('admin.categoryStatus');
+
+    // Unit Routes
+    Route::get('units/all', [UnitController::class, 'unitsAll'])->name('admin.unitsAll');
+    Route::get('unit/create', [UnitController::class, 'unitCreate'])->name('admin.unitCreate');
+    Route::post('unit/store', [UnitController::class, 'unitStore'])->name('admin.unitStore');
+    Route::get('unit/edit/{unit}', [UnitController::class, 'unitEdit'])->name('admin.unitEdit');
+    Route::post('unit/update/{unit}', [UnitController::class, 'unitUpdate'])->name('admin.unitUpdate');
+    Route::post('unit/delete/{unit}', [UnitController::class, 'unitDelete'])->name('admin.unitDelete');
+    Route::get('unit/status/{unit}', [UnitController::class, 'unitStatus'])->name('admin.unitStatus');
+    Route::get('unit/search/type/{type}', [UnitController::class, 'unitSearch'])->name('admin.unitSearch');
 
    
     //  Product Routes

@@ -521,6 +521,12 @@
                                 </a>
                             </li>
                             <li class="nav-item">
+                                <a href="{{ route('admin.unitsAll') }}" class="nav-link {{ session('lsbsm') == 'unitsAll' ? ' active ' : '' }}">
+                                    <i class="far fa-circle nav-icon"></i>
+                                    <p>Units All</p>
+                                </a>
+                            </li>
+                            <li class="nav-item">
                                 <a href="{{ route('admin.productsAll') }}" class="nav-link {{ session('lsbsm') == 'productsAll' ? ' active ' : '' }}">
                                     <i class="far fa-circle nav-icon"></i>
                                     <p>Products All</p>

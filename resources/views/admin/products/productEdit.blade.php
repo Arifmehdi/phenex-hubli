@@ -120,6 +120,22 @@
                                     @enderror
                                 </div>
 
+                                {{-- Unit --}}
+                                <div class="form-group">
+                                    <label for="unit">Unit</label>
+                                    <select name="unit" id="unit" class="form-control">
+                                        <option value="">Select Unit</option>
+                                        @foreach($units ?? [] as $unit)
+                                            <option value="{{ $unit->name_en }}" {{ old('unit', $product->unit) == $unit->name_en ? 'selected' : '' }}>
+                                                {{ $unit->name_en }} {{ $unit->name_bn ? '(' . $unit->name_bn . ')' : '' }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('unit')
+                                        <span class="text-danger">{{ $message }}</span>
+                                    @enderror
+                                </div>
+
                                 {{-- Discount --}}
                                 <div class="form-group">
                                     <label for="discount">Discount(flat)</label>

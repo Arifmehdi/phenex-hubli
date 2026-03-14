@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ProductCategory;
 use App\Models\Product;
 use App\Models\ProductCat;
+use App\Models\Unit;
 use App\Models\Media;
 use App\Models\Order;
 use App\Models\OrderItem;
@@ -17,11 +18,13 @@ use Illuminate\Support\Facades\{
 };
 use Maatwebsite\Excel\Facades\Excel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use App\Traits\NotificationTrait;
 
 
 
 class ProductController extends Controller
 {
+    use NotificationTrait;
     // Show All Categories
     /**
      * Display a paginated list of all product categories.
@@ -231,10 +234,6 @@ class ProductController extends Controller
         ]);
     }
 
-
-
-
-
     /**
      * Display a paginated list of all products in descending order by creation date.
      *
@@ -272,6 +271,8 @@ class ProductController extends Controller
 
         $data['riders'] = \App\Models\User::where('role', 'rider')->where('is_approve', 1)->get();
 
+        $data['units'] = Unit::where('active', true)->get();
+
         // Return the create product view with categories and medias data
         return view('admin.products.productCreate', $data);
     }
@@ -294,10 +295,11 @@ class ProductController extends Controller
         // Validate incoming request data
         $request->validate([
             'name_en'        => 'required|string',
-            // 'sku'            => 'required',
-            'purchase_price'          => 'nullable|numeric',
-            'selling_price'          => 'required|numeric',
+            // 'sku'         => 'required',
+            'purchase_price' => 'nullable|numeric',
+            'selling_price'  => 'required|numeric',
             'slug'           => 'required|string',
+            'unit'           => 'nullable|string',
             'featured_image' => 'nullable|image',
             'additional_images.*' => 'nullable|image',
             'rider_id'       => 'nullable|exists:users,id',
@@ -309,6 +311,7 @@ class ProductController extends Controller
         $product->name_en = $request->name_en;
         $product->name_bn = $request->name_bn ?? null;
         $product->sku = $request->sku ?? null;
+        $product->unit = $request->unit ?? null;
         $product->stock = $request->stock ? $request->stock : 1;
 
         // Generate slug, helper function ensures uniqueness if needed
@@ -418,6 +421,7 @@ class ProductController extends Controller
             'categories' => ProductCategory::latest()->get(),
             'medias'     => Media::latest()->paginate(20),
             'riders'     => \App\Models\User::where('role', 'rider')->where('is_approve', 1)->get(),
+            'units'      => Unit::where('active', true)->get(),
             // Explode tags string into array or null if no tags
             'ots'        => $product->tags ? explode(', ', $product->tags) : null,
         ];
@@ -447,6 +451,7 @@ class ProductController extends Controller
             // 'sku'   => 'required',
             'purchase_price' => 'nullable|numeric',
             'selling_price'  => 'required|numeric',
+            'unit' => 'nullable|string',
             'slug' => 'required|string',
             'featured_image' => 'nullable|image',
             'additional_images.*' => 'nullable|image',
@@ -457,6 +462,7 @@ class ProductController extends Controller
         $product->name_en = $request->name_en;
         $product->name_bn = $request->name_bn ?? null;
         $product->sku = $request->sku ?? null;
+        $product->unit = $request->unit ?? null;
         $product->slug = getSlug($request->slug, $product, boolval($request->slug));
         // $product->price = $request->price ?? 0.00;
         $product->purchase_price = $request->purchase_price ?? null;
@@ -503,6 +509,17 @@ class ProductController extends Controller
 
         // Save updated product data to the database
         $product->save();
+
+        // Send notification to the rider if assigned
+        if ($product->rider_id) {
+            $this->createNotification(
+                'New Product Assigned',
+                "You have been assigned a new product: {$product->name_en}. Please check your assigned products.",
+                $product->rider_id,
+                null,
+                'product_assignment'
+            );
+        }
 
         // Clear and update product cache
         Cache::forget('product');
@@ -650,13 +667,14 @@ class ProductController extends Controller
         $q = $request->q;
 
         if ($type == 'product') {
-            // Search products by name, price, code or ID
+            // Search products by name, sku, prices or ID
             $products = Product::where(function ($qq) use ($q) {
                 $qq->orWhere('name_en', 'like', "%{$q}%")
-                ->orWhere('name_bn', 'like', "%{$q}%")
-                ->orWhere('price', 'like', "%{$q}%")
-                ->orWhere('product_code', 'like', "%{$q}%")
-                ->orWhere('id', 'like', "%{$q}%");
+                    ->orWhere('name_bn', 'like', "%{$q}%")
+                    ->orWhere('sku', 'like', "%{$q}%")
+                    ->orWhere('selling_price', 'like', "%{$q}%")
+                    ->orWhere('final_price', 'like', "%{$q}%")
+                    ->orWhere('id', 'like', "%{$q}%");
             })->orderBy('name_en')
             ->paginate(100);
 
@@ -680,6 +698,23 @@ class ProductController extends Controller
             $categories->appends($request->all());
 
             $page = View('admin.productCategories.searchData', ['categories' => $categories])->render();
+
+            return response()->json([
+                'success' => true,
+                'page' => $page,
+            ]);
+        } elseif ($type == 'unit') {
+            // Search units by name or ID
+            $units = Unit::where(function ($qq) use ($q) {
+                $qq->orWhere('name_en', 'like', "%{$q}%")
+                ->orWhere('name_bn', 'like', "%{$q}%")
+                ->orWhere('id', 'like', "%{$q}%");
+            })->orderBy('name_en')
+            ->paginate(100);
+
+            $units->appends($request->all());
+
+            $page = View('admin.units.searchData', ['units' => $units])->render();
 
             return response()->json([
                 'success' => true,
@@ -797,6 +832,15 @@ class ProductController extends Controller
             'order_status' => 'confirmed', // Optionally set status to confirmed when assigned
         ]);
 
+        // Send notification to the assigned rider
+        $this->createNotification(
+            'New Order Assigned',
+            "You have been assigned a new order #{$order->id}. Please check your active orders.",
+            $request->driver_id,
+            null,
+            'order_assignment'
+        );
+
         toast('Rider and Vehicle assigned successfully.', 'success');
 
         return redirect()->back();
@@ -860,6 +904,17 @@ class ProductController extends Controller
 
         // Save the updated order
         $order->save();
+
+        // Send notification to the rider if assigned
+        if ($order->driver_id) {
+            $this->createNotification(
+                'Order Status Updated',
+                "Order #{$order->id} status has been updated to {$request->order_status}.",
+                $order->driver_id,
+                null,
+                'order_status_update'
+            );
+        }
 
         // Notify success
         toast('Order status updated successfully.', 'success');
