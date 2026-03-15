@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ProductController; // Import ProductController
 use App\Http\Controllers\Api\ProductCategoryController; // Import ProductCategoryController
 use App\Http\Controllers\Api\CartController; // Import CartController
 use App\Http\Controllers\Api\OrderController; // Import OrderController
+use App\Http\Controllers\Api\UnitController; // Import UnitController
 use App\Http\Controllers\ChatController; // Import OrderController
 use App\Http\Controllers\Api\UserController; // Import UserController
 use App\Http\Controllers\Api\ContactFormController; // Import ContactFormController
@@ -41,6 +42,7 @@ Route::get('products/{product}/no-description', [ProductController::class, 'with
 Route::get('products-no-description', [ProductController::class, 'indexWithoutDescription']);
 Route::get('products/by-slug/{slug}', [ProductController::class, 'getProductsBySlug']);
 Route::apiResource('product-categories', ProductCategoryController::class);
+Route::get('units', [UnitController::class, 'index']);
 
 // Cart routes accessible to both authenticated and guest users
 Route::apiResource('cart', CartController::class)->only(['index', 'store', 'destroy']);
