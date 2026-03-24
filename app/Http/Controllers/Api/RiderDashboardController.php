@@ -159,7 +159,8 @@ class RiderDashboardController extends Controller
         }
 
         $request->validate([
-            'status' => 'required|in:shipped,delivered,canceled'
+            'status' => 'required|in:shipped,delivered,canceled',
+            'order_note' => 'nullable|string|max:1000'
         ]);
 
         $order = Order::where('driver_id', $user->id)->find($id);
@@ -173,6 +174,10 @@ class RiderDashboardController extends Controller
 
         $status = $request->status;
         $updateData = ['order_status' => $status];
+
+        if ($request->has('order_note')) {
+            $updateData['order_note'] = $request->order_note;
+        }
 
         if ($status === 'shipped') {
             $updateData['shiped_at'] = now();

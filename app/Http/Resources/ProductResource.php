@@ -36,7 +36,7 @@ class ProductResource extends JsonResource
             // 'unit' => $this->unit,
             // 'tags' => $this->tags,
             'active' => $this->active,
-            // 'feature' => $this->feature,
+            'feature' => $this->feature,
             // 'editor' => $this->editor,
             // 'addedby_id' => $this->addedby_id,
             // 'editedby_id' => $this->editedby_id,

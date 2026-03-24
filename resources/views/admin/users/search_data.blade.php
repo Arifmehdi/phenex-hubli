@@ -45,7 +45,7 @@
                     @csrf
                     @method('PUT')
                     <div class="custom-control custom-switch">
-                        <input type="checkbox" class="custom-control-input" id="isApprovedSwitch{{ $user->id }}" name="is_approve" onchange="this.form.submit()" {{ $user->approve ? 'checked' : '' }}>
+                        <input type="checkbox" class="custom-control-input" id="isApprovedSwitch{{ $user->id }}" name="is_approve" onchange="this.form.submit()" {{ $user->is_approve ? 'checked' : '' }}>
                         <label class="custom-control-label" for="isApprovedSwitch{{ $user->id }}"></label>
                     </div>
                 </form>
