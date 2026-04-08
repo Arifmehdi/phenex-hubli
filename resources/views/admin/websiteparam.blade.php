@@ -37,7 +37,7 @@
                                     <label for="google_search_console" class="control-label">
                                         Shipping Charge
                                     </label>
-                                  <input type="text" name="shipping_cahrge" class="form-control" value="{{ old('shipping_cahrge') ?: $websiteParameter->shipping_cahrge ?? '' }}" id="shipping_cahrge" placeholder="Shipping Charge" autocomplete="off">
+                                  <input type="text" name="shipping_cahrge" class="form-control" value="{{ old('shipping_cahrge') ?: $websiteParameter->shipping_charge ?? '' }}" id="shipping_cahrge" placeholder="Shipping Charge" autocomplete="off">
                                 </div>
 
                                 <div class="form-group ">

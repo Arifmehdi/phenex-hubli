@@ -219,10 +219,10 @@ class AuthController extends Controller
             'dob'                => 'required|date',
             'blood_group'        => 'required|string|max:10',
             'image'              => 'nullable|image|mimes:jpg,jpeg,png,gif,webp|max:2048',
+            'role'              => 'required|in:rider,seller,buyer',
             // 'email'              => 'required|email|unique:users,email',
             // 'password'           => 'required|string|min:8',
         ]);
-
         // Handle Image Upload
          $photoPath = null;
         if ($request->hasFile('image')) {
@@ -305,6 +305,8 @@ class AuthController extends Controller
             'name'               => 'required|string|max:255',
             'email'              => 'required|email|unique:users,email',
             'password'           =>  'required|string|min:8|confirmed',
+            'password'           => 'required|string|min:8',
+            'role'               => 'required|in:rider,seller,buyer',
             // 'password'           => 'required|string|min:8',
         ]);
 
@@ -312,6 +314,7 @@ class AuthController extends Controller
             'name'     => $request->name,
             'email'    => $request->email,
             'password' => Hash::make($request->password),
+            'role'     => $request->role,
         ]);
 
         // Auto login

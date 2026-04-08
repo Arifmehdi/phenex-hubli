@@ -1156,7 +1156,7 @@ public function quickAdd(Request $request)
     public function new_checkout(Request $request)
     {
 
-        $sessionId = session('session_id'); 
+        $sessionId = session('session_id');
         $cartItems = Cart::with('product')
             ->when(auth()->check(), fn($q) => $q->where('user_id', auth()->id()))
             ->when(!auth()->check(), fn($q) => $q->where('session_id', $sessionId))
@@ -1168,6 +1168,7 @@ public function quickAdd(Request $request)
         }
         $shippingMethods = shippingMethod::get();
         $districts = District::all();
+
         return view('frontend.home.new_checkout', compact( 'cartItems', 'shippingMethods','districts', 'location'));
     }
 
@@ -1217,7 +1218,7 @@ public function quickAdd(Request $request)
         }
 
         $subtotal = $this->calculateSubtotal($cartItems);
-        $deliveryCost = $ws->shipping_cahrge ?? $request->shipping_price;
+        $deliveryCost = $ws->shipping_charge ?? $request->shipping_price;
         $grandTotal = $subtotal + $deliveryCost;
         $paymentMethod = $request->input('payment_method');
         $orderNote = $request->order_note ?? null;

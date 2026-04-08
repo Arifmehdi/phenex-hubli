@@ -181,7 +181,7 @@
                     <!-- âœ… Form should wrap ALL payment methods -->
                     <form id="checkoutForm" method="POST" action="">
                         @csrf
-                        <input type="hidden" name="shipping_price" id="hidden-shipping-price" value="0">
+                        <input type="hidden" name="shipping_price" id="hidden-shipping-price" value="{{ $ws->shipping_charge ?? 0 }}">
                         <div class="accordion" id="payment-accordion">
 
                             <!-- Direct Cash -->
@@ -367,47 +367,19 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // âœ… Update totals function
+    // âœ… Update totals function (shipping fixed from provider)
     function updateTotals() {
         const subtotalElement = document.querySelector('.subtotal');
         const discountElement = document.querySelector('.discount');
         const shippingPriceElement = document.getElementById('shipping-price');
         const payableElement = document.querySelector('.payable');
-        const shippingDiscountContainer = document.getElementById('shipping-discount-container');
-        const shippingDiscountElement = document.getElementById('shipping-discount');
 
         if (subtotalElement && discountElement && payableElement) {
             const subtotal = parseFloat(subtotalElement.getAttribute('data-value')) || 0;
             const discount = parseFloat(discountElement.getAttribute('data-value')) || 0;
-
-            const selectedShipping = document.querySelector('input[name="shipping-option"]:checked');
-            let shippingCost = selectedShipping ? parseFloat(selectedShipping.value) : 0;
-            let shippingDiscount = 0;
-
-            if (subtotal >= 500) {
-                shippingDiscount = shippingCost;
-                shippingCost = 0;
-                if (shippingDiscount > 0) {
-                    shippingDiscountContainer.style.display = 'flex';
-                    shippingDiscountElement.textContent = `-Tk. ${shippingDiscount.toFixed(2)}`;
-                } else {
-                    shippingDiscountContainer.style.display = 'none';
-                }
-            } else {
-                shippingDiscountContainer.style.display = 'none';
-            }
+            const shippingCost = parseFloat(shippingPriceElement?.getAttribute('data-value')) || 0;
 
             const grandTotal = subtotal - discount + shippingCost;
-
-            if (shippingPriceElement) {
-                shippingPriceElement.textContent = `Tk. ${shippingCost.toFixed(2)}`;
-                shippingPriceElement.setAttribute('data-value', shippingCost);
-            }
-
-            const hiddenShippingPriceInput = document.getElementById('hidden-shipping-price');
-            if (hiddenShippingPriceInput) {
-                hiddenShippingPriceInput.value = shippingCost;
-            }
 
             payableElement.textContent = `Tk. ${grandTotal.toFixed(2)}`;
         }

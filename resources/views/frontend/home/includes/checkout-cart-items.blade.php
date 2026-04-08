@@ -79,8 +79,10 @@
 @php
     $totalCartPrice = \App\Models\Cart::totalCartPrice();
     $totalDiscountAmount = \App\Models\Cart::totalDiscountAmount();
-    // Calculate initial total (subtotal - discount + default shipping 0)
-    $initialTotal = $totalCartPrice - $totalDiscountAmount;
+    // Get shipping charge from provider (WebsiteParameter)
+    $shippingCharge = isset($ws) && isset($ws->shipping_charge) ? $ws->shipping_charge : 0;
+    // Calculate initial total (subtotal - discount + shipping)
+    $initialTotal = $totalCartPrice - $totalDiscountAmount + $shippingCharge;
 @endphp
 
 @if(!$cartItems->isEmpty())
@@ -102,8 +104,7 @@
     <div class="d-flex justify-content-between fw-semibold text-success mb-1">
         <span>Shipping</span>
         <div>
-            <span class="shipping" id="shipping-price" data-value="0">Tk. 0.00</span><br>
-            {{--<a href="#" id="change-address-link" class="btn btn-link p-0">Shipping Charge</a>--}}
+            <span class="shipping" id="shipping-price" data-value="{{ $shippingCharge }}">Tk. {{ number_format($shippingCharge, 2) }}</span>
         </div>
     </div>
 
@@ -124,79 +125,14 @@
                 </select>
             </div>
             <div class="mb-3">
-                <label for="thana" class="form-label">Thana</label>
+                <label for="thana" class="form-label">Thana/Upazila</label>
                 <select class="form-select" id="thana">
                     <option selected disabled>Select a thana</option>
                 </select>
             </div>
-            
         </div>
-        
-        <!-- Shipping Options - Initially Hidden -->
-        <div id="shipping-options-container" style="display: none;">
-            <div class="col-12 mt-3">
-                <h6 class="fw-semibold">Select Shipping Method:</h6>
-                <div id="shipping-options">
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="shipping-option" id="free-shipping" value="0" checked>
-                        <label class="form-check-label" for="free-shipping">
-                            Free shipping
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="shipping-option" id="local-pickup-1" value="60">
-                        <label class="form-check-label" for="local-pickup-1">
-                            Local pickup (0-0.5 Kg, Inside Dhaka District): 60.00৳
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="shipping-option" id="local-pickup-2" value="70">
-                        <label class="form-check-label" for="local-pickup-2">
-                            Local pickup (0.5-1 Kg, Inside Dhaka District): 70.00৳
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="shipping-option" id="local-pickup-3" value="90">
-                        <label class="form-check-label" for="local-pickup-3">
-                            Local pickup (1-2 Kg, Inside Dhaka District): 90.00৳
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="shipping-option" id="local-pickup-4" value="110">
-                        <label class="form-check-label" for="local-pickup-4">
-                            Local pickup (0-0.5 Kg, Outside Dhaka District): 110.00৳
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="shipping-option" id="local-pickup-5" value="130">
-                        <label class="form-check-label" for="local-pickup-5">
-                            Local pickup (0.5-1 Kg, Outside Dhaka District): 130.00৳
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="shipping-option" id="local-pickup-6" value="170">
-                        <label class="form-check-label" for="local-pickup-6">
-                            Local pickup (1-2 Kg, Outside Dhaka District): 170.00৳
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="shipping-option" id="local-pickup-7" value="120">
-                        <label class="form-check-label" for="local-pickup-7">
-                            Local pickup same day (0-0.5 Kg, Inside Dhaka Metro City Only): 120.00৳
-                        </label>
-                    </div>
-                    <div class="form-check">
-                        <input class="form-check-input" type="radio" name="shipping-option" id="local-pickup-8" value="150">
-                        <label class="form-check-label" for="local-pickup-8">
-                            Local pickup same day (0.5-2 Kg, Inside Dhaka Metro City Only): 150.00৳
-                        </label>
-                    </div>
-                </div>
-            </div>
-        </div>
-        
         <div class="col-12 mt-3">
-            <p id="selected-address" class="text-muted small">Please select thana to see shipping options.</p>
+            <p id="selected-address" class="text-muted small">Please select thana to confirm delivery location.</p>
         </div>
     </div>
 
@@ -215,60 +151,36 @@
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const thanaSelect = document.getElementById('thana');
-        const shippingOptionsContainer = document.getElementById('shipping-options-container');
         const selectedAddress = document.getElementById('selected-address');
+
+        // Initialize shipping charge from data attribute (set by PHP)
         const shippingPriceElement = document.getElementById('shipping-price');
         const subtotalElement = document.querySelector('.subtotal');
         const discountElement = document.querySelector('.discount');
         const payableElement = document.querySelector('.payable');
 
-        // Function to update totals correctly
+        // Function to update totals correctly (shipping is now fixed from provider)
         function updateTotals() {
             const subtotal = parseFloat(subtotalElement.getAttribute('data-value'));
             const discount = parseFloat(discountElement.getAttribute('data-value'));
-            const selectedShipping = document.querySelector('input[name="shipping-option"]:checked');
-            const shippingCost = selectedShipping ? parseFloat(selectedShipping.value) : 0;
+            const shippingCost = parseFloat(shippingPriceElement.getAttribute('data-value'));
             const grandTotal = subtotal - discount + shippingCost;
 
-            shippingPriceElement.textContent = `Tk. ${shippingCost.toFixed(2)}`;
-            shippingPriceElement.setAttribute('data-value', shippingCost);
             payableElement.textContent = `Tk. ${grandTotal.toFixed(2)}`;
         }
 
-        // Thana select event listener
+        // Thana select event listener (only for address, not shipping cost)
         if (thanaSelect) {
             thanaSelect.addEventListener('change', function() {
                 const selectedOption = this.options[this.selectedIndex];
-                
+
                 if (selectedOption && selectedOption.value) {
-                    // Show shipping options
-                    shippingOptionsContainer.style.display = 'block';
-                    selectedAddress.textContent = `Shipping options available for ${selectedOption.text}.`;
-                    
-                    // Update totals with selected shipping
-                    updateTotals();
+                    selectedAddress.textContent = `Delivery location set to ${selectedOption.text}.`;
                 } else {
-                    // Hide shipping options if no thana is selected
-                    shippingOptionsContainer.style.display = 'none';
-                    selectedAddress.textContent = 'Please select a thana to see shipping options.';
-                    
-                    // Reset shipping to free (0) and update totals
-                    const freeShipping = document.getElementById('free-shipping');
-                    if (freeShipping) {
-                        freeShipping.checked = true;
-                    }
-                    updateTotals();
+                    selectedAddress.textContent = 'Please select a thana to confirm delivery location.';
                 }
             });
         }
-
-        // Shipping option change event
-        const shippingOptions = document.querySelectorAll('input[name="shipping-option"]');
-        shippingOptions.forEach(option => {
-            option.addEventListener('change', function() {
-                updateTotals();
-            });
-        });
 
         // Initialize totals on page load
         updateTotals();

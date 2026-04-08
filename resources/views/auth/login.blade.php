@@ -138,6 +138,7 @@
             height: 50px;
             width: 100%;
             margin-top: 20px;
+            position: relative;
         }
 
         .form-inner form .field input {
@@ -145,11 +146,27 @@
             width: 100%;
             outline: none;
             padding-left: 15px;
+            padding-right: 45px;
             border-radius: 15px;
             border: 1px solid lightgrey;
             border-bottom-width: 2px;
             font-size: 17px;
             transition: all 0.3s ease;
+        }
+
+        .form-inner form .field .password-toggle {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            color: #999;
+            font-size: 18px;
+            user-select: none;
+        }
+
+        .form-inner form .field .password-toggle:hover {
+            color: #689502;
         }
 
         .form-inner form .field input:focus {
@@ -256,6 +273,7 @@
                   </div>
                   <div class="field">
                       <input type="password" class="form-control form-control-lg" id="password" name="password" placeholder="Enter password">
+                        <span class="password-toggle" onclick="togglePassword('password', this)">👁️</span>
                         @error('password')
                             <span class="text-danger small">{{ $message }}</span>
                         @enderror
@@ -287,17 +305,42 @@
                         @enderror
                   </div>
                   <div class="field">
-                      <input type="password" name="password" placeholder="Password" required>
+                      <input type="password" name="password" placeholder="Password" required id="register_password">
+                        <span class="password-toggle" onclick="togglePassword('register_password', this)">👁️</span>
                         @error('password')
                             <span class="text-danger small">{{ $message }}</span>
                         @enderror
                   </div>
                   <div class="field">
-                      <input type="password" name="password_confirmation" placeholder="Confirm password" required>
+                      <input type="password" name="password_confirmation" placeholder="Confirm password" required id="confirm_password">
+                        <span class="password-toggle" onclick="togglePassword('confirm_password', this)">👁️</span>
                         @error('password_confirmation')
                             <span class="text-danger small">{{ $message }}</span>
                         @enderror
                   </div>
+                  <div class="field">
+                    <select name="role" required style="
+                        height: 100%;
+                        width: 100%;
+                        outline: none;
+                        padding-left: 15px;
+                        border-radius: 15px;
+                        border: 1px solid lightgrey;
+                        border-bottom-width: 2px;
+                        font-size: 17px;
+                        color: #555;
+                        background: #fff;
+                    ">
+                        <option value="">Select Role</option>
+                        <option value="rider">Rider</option>
+                        <option value="seller">Seller</option>
+                        <option value="buyer">Buyer</option>
+                    </select>
+
+                    @error('role')
+                        <span class="text-danger small">{{ $message }}</span>
+                    @enderror
+                </div>
                   <div class="field btn">
                       <div class="btn-layer"></div>
                       <input type="submit" value="Signup">
@@ -325,5 +368,18 @@
         signupBtn.click();
         return false;
     });
+
+    function togglePassword(inputId, toggleElement) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+
+        if (input.type === "password") {
+            input.type = "text";
+            toggleElement.textContent = "🙈"; // Icon for hidden
+        } else {
+            input.type = "password";
+            toggleElement.textContent = "👁️"; // Icon for visible
+        }
+    }
 </script>
 </html>
