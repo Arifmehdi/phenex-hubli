@@ -47,7 +47,7 @@
                                         Tk. {{ number_format($cart->product->price, 2) }}
                                     </div>
                                 @endif
-                                Tk. {{ number_format($cart->product->final_price, 2) }}
+                                Tk. {{ number_format($cart->product->selling_price, 2) }}
                             </td>
                             <td class="align-middle">
                                 <div class="d-flex align-items-center gap-2 cart-action-wrapper">

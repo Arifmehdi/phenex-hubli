@@ -197,7 +197,7 @@
 
         <div class="mini-cart-footer">
             <div class="mini-cart-sub-total">
-                <h5>Subtotal: <span>{{ number_format($cartItems->sum(fn($i) => $i->quantity * $i->product->final_price), 2) }} ৳</span></h5>
+                <h5>Subtotal: <span>{{ number_format($cartItems->sum(fn($i) => $i->quantity * $i->product->selling_price), 2) }} ৳</span></h5>
             </div>
             <div class="btn-wrapper">
                 <a href="{{ route('new.checkout') }}" class="theme-btn-1 btn btn-effect-1">View Cart</a>

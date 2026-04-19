@@ -15,6 +15,8 @@ use App\Http\Controllers\Api\RiderDashboardController; // Import RiderDashboardC
 use App\Http\Controllers\NotificationController; // Import RiderDashboardController
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Api\WebsiteParameterController;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -43,6 +45,8 @@ Route::get('products-no-description', [ProductController::class, 'indexWithoutDe
 Route::get('products/by-slug/{slug}', [ProductController::class, 'getProductsBySlug']);
 Route::apiResource('product-categories', ProductCategoryController::class);
 Route::get('units', [UnitController::class, 'index']);
+
+Route::get('/settings', [WebsiteParameterController::class, 'index']);
 
 // Cart routes accessible to both authenticated and guest users
 Route::apiResource('cart', CartController::class)->only(['index', 'store', 'destroy']);

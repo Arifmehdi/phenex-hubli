@@ -68,7 +68,7 @@ class Cart extends Model
             ->when(!auth()->check(), fn($q) => $q->where('session_id', session('session_id')))
             ->get()
             ->sum(function ($cart) {
-                return $cart->quantity * ($cart->product->final_price ?? 0);
+                return $cart->quantity * ($cart->product->selling_price ?? 0);
             });
     }
 

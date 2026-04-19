@@ -1308,7 +1308,7 @@ public function quickAdd(Request $request)
     private function calculateSubtotal($cartItems)
     {
         return $cartItems->sum(function ($cart) {
-            return $cart->product->final_price * $cart->quantity;
+            return $cart->product->selling_price * $cart->quantity;
         });
     }
 
@@ -1342,9 +1342,9 @@ public function quickAdd(Request $request)
                 'user_id'       => $userId,
                 'product_id'    => $cart->product_id,
                 'product_name'  => $cart->product->name_en,
-                'product_price' => $cart->product->final_price,
+                'product_price' => $cart->product->selling_price,
                 'quantity'      => $cart->quantity,
-                'total_cost'    => $cart->product->final_price * $cart->quantity,
+                'total_cost'    => $cart->product->selling_price * $cart->quantity,
                 'addedby_id'    => $userId,
             ]);
         }
