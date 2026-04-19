@@ -37,6 +37,10 @@ use Illuminate\Support\Str;
 
                 <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                     <a href="{{ route('admin.orderDeatils',$order->id)}}" class="dropdown-item"><i class="fa fa-eye"></i> Details</a>
+                    <form action="{{ route('admin.orderDelete',$order)}}" method="post" onclick="return confirm('Are you sure to delete?')">
+                        @csrf
+                        <button type="submit" class="dropdown-item"><i class="fa fa-trash"></i> Delete</button>
+                    </form>
                 </div>
         </td>
         <td>{{$order->id}}</td>

@@ -596,6 +596,7 @@ Route::middleware(['userRole:admin','auth'])->prefix('admin')->group(function(){
 
     Route::get('order/list', [ProductController::class, 'orderList'])->name('admin.orderList');
     Route::get('order/details/{order}', [ProductController::class, 'orderDeatils'])->name('admin.orderDeatils');
+    Route::post('order/delete/{order}', [ProductController::class, 'orderDelete'])->name('admin.orderDelete');
     Route::post('order/assign-driver/{order}', [ProductController::class, 'assignDriver'])->name('admin.assignDriver');
     Route::post('order/status/{order}', [ProductController::class, 'orderStatus'])->name('admin.orderStatus');
     Route::post('order/payment/{order}', [ProductController::class, 'orderPayment'])->name('admin.orderPayment');

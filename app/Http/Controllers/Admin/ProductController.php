@@ -21,7 +21,6 @@ use Barryvdh\DomPDF\Facade\Pdf;
 use App\Traits\NotificationTrait;
 
 
-
 class ProductController extends Controller
 {
     use NotificationTrait;
@@ -728,16 +727,6 @@ class ProductController extends Controller
         }
     }
 
-
-
-
-
-
- 
-   
-
-
-
     /**
      * Display a list of orders with optional filters (date range, status, mobile, user).
      *
@@ -1065,6 +1054,36 @@ class ProductController extends Controller
 
        return redirect()->back();
     }
+
+
+
+
+public function orderDelete($id)
+{
+    DB::beginTransaction();
+
+    try {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return redirect()->back()->with('error', 'Order not found.');
+        }
+
+        // Delete related order items
+        OrderItem::where('order_id', $order->id)->delete();
+
+        // Delete order
+        $order->delete();
+
+        DB::commit();
+
+        return redirect()->back()->with('success', 'Order deleted successfully!');
+    } catch (\Exception $e) {
+        DB::rollBack();
+
+        return redirect()->back()->with('error', 'Something went wrong!');
+    }
+}
 
 
    
