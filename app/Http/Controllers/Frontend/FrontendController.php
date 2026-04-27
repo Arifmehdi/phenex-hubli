@@ -1397,4 +1397,29 @@ public function quickAdd(Request $request)
         $shippingMethods = shippingMethod::where('name', $area)->get();
         return response()->json($shippingMethods);
     }
+
+    public function searchSuggestions(Request $request)
+    {
+        $query = $request->get('search');
+        if (empty($query)) {
+            return response()->json(['html' => '']);
+        }
+
+        $products = Product::where('active', true)
+            ->where(function($q) use ($query) {
+                $q->where('name_en', 'like', '%' . $query . '%')
+                  ->orWhere('name_bn', 'like', '%' . $query . '%');
+            })
+            ->limit(10)
+            ->get();
+
+        $html = view('frontend.partials.search-suggestions', compact('products', 'query'))->render();
+
+        return response()->json(['html' => $html]);
+    }
+
+    public function search(Request $request)
+    {
+        return $this->shop($request);
+    }
 }

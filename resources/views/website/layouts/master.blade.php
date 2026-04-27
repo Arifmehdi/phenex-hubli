@@ -75,7 +75,7 @@ $totalCartPrice = \App\Models\Cart::totalCartPrice();
 
 <script>
 
-<!-- ✅ Floating WhatsApp Icon -->
+{{-- ✅ Floating WhatsApp Icon --}}
 <a class="floating-message-icon" href="https://wa.me/8801334927985?text=Hello%20there!" target="_blank">
     <img src="{{ asset('frontend/assets/img/icons/whatsapp.svg') }}" alt="WhatsApp">
 </a>

@@ -1,15 +1,81 @@
 <style>
     .special-link a, .theme-btn-1{
         padding: 10px 20px;
-        background: #66A931;   /* change color */
+        background: #66A931;
         color: #fff;
-        border-radius: 8px;     /* <-- Rounded corners */
+        border-radius: 8px;
         display: inline-block;
     }
     .btn-transparent {
-        padding: 10px 20px;/* change color */
-        border-radius: 8px;     /* <-- Rounded corners */
+        padding: 10px 20px;
+        border-radius: 8px;
         display: inline-block;
+    }
+    .header-search-1-form, .ltn__utilize-menu-search-form {
+        /* position: relative !important; */
+    }
+    .header-search-1-form.search-open {
+        overflow: visible !important;
+    }
+    .search-suggestions {
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: #fff !important;
+        border: 1px solid #ddd !important;
+        z-index: 999999 !important;
+        max-height: 400px !important;
+        overflow-y: auto !important;
+        display: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+        text-align: left !important;
+    }
+    .suggestion-item {
+        display: flex !important;
+        padding: 10px !important;
+        border-bottom: 1px solid #eee !important;
+        cursor: pointer !important;
+        align-items: center !important;
+        text-decoration: none !important;
+        color: inherit !important;
+    }
+    .suggestion-item:last-child {
+        border-bottom: none;
+    }
+    .suggestion-item:hover {
+        background: #f9f9f9;
+        color: #66A931;
+    }
+    .suggestion-img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        margin-right: 15px;
+        border-radius: 4px;
+    }
+    .suggestion-info {
+        flex: 1;
+    }
+    .suggestion-name {
+        font-weight: 600;
+        display: block;
+        font-size: 14px;
+        margin-bottom: 2px;
+    }
+    .suggestion-price {
+        color: #66A931;
+        font-size: 13px;
+        font-weight: 700;
+    }
+    .search-all-btn {
+        display: block;
+        padding: 10px;
+        text-align: center;
+        background: #f8f9fa;
+        color: #66A931;
+        font-weight: 600;
+        border-top: 1px solid #eee;
     }
 </style>
     <header class="ltn__header-area ltn__header-5 ltn__header-transparent-- gradient-color-4---">
@@ -106,12 +172,13 @@
                                 </div>
                             </div>
                             <div class="header-search-1-form">
-                                <form method="get" action="{{ route('shop') }}">
-                                    <input type="text" name="search" value="" placeholder="Search here..." />
+                                <form method="get" action="{{ route('shop') }}" id="global-search-form">
+                                    <input type="text" name="search" id="global-search-input" value="" placeholder="Search here..." autocomplete="off" />
                                     <button type="submit">
                                         <span><i class="icon-search"></i></span>
                                     </button>
                                 </form>
+                                <div id="search-suggestions-container" class="search-suggestions"></div>
                             </div>
                         </div>
                         <!-- user-menu -->
@@ -219,10 +286,11 @@
                 <button class="ltn__utilize-close">×</button>
             </div>
             <div class="ltn__utilize-menu-search-form">
-                <form action="#">
-                    <input type="text" placeholder="Search...">
+                <form action="{{ route('shop') }}" method="GET">
+                    <input type="text" name="search" id="mobile-search-input" placeholder="Search..." autocomplete="off">
                     <button><i class="fas fa-search"></i></button>
                 </form>
+                <div id="mobile-search-suggestions-container" class="search-suggestions"></div>
             </div>
             <div class="ltn__utilize-menu">
                 <ul>
@@ -488,6 +556,63 @@ $(document).ready(function() {
         function refreshCartTotals() {
             location.reload();
         }
+
+        // Search Suggestions Logic
+        function handleSearchSuggestions(inputSelector, containerSelector) {
+            let timeout = null;
+            
+            // Use off().on() to prevent duplicates if script runs twice
+            $(document).off('input', inputSelector).on('input', inputSelector, function() {
+                let query = $(this).val();
+                let container = $(containerSelector);
+
+                clearTimeout(timeout);
+
+                if (query.length < 2) {
+                    container.hide().empty();
+                    return;
+                }
+
+                timeout = setTimeout(function() {
+                    $.ajax({
+                        url: "{{ route('search.suggestions') }}",
+                        method: "GET",
+                        data: { search: query },
+                        beforeSend: function() {
+                            // container.show().html('<div class="p-2 text-center">Searching...</div>');
+                        },
+                        success: function(res) {
+                            container.empty();
+                            if (res.html && res.html.trim() !== '') {
+                                container.html(res.html);
+                                container.show();
+                            } else {
+                                container.hide();
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('AJAX error:', status, error);
+                        }
+                    });
+                }, 300);
+            });
+
+            $(document).off('focus', inputSelector).on('focus', inputSelector, function() {
+                if ($(this).val().length >= 2 && $(containerSelector).children().length > 0) {
+                    $(containerSelector).show();
+                }
+            });
+        }
+
+        handleSearchSuggestions('#global-search-input', '#search-suggestions-container');
+        handleSearchSuggestions('#mobile-search-input', '#mobile-search-suggestions-container');
+
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.header-search-1-form, .ltn__utilize-menu-search-form').length) {
+                $('.search-suggestions').hide();
+            }
+        });
     });
     </script>
+
     @endpush
