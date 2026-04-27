@@ -3454,9 +3454,9 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                         </small>
                         <div class="product-price">
                             <span>{{ number_format($feature->selling_price, 2) }} ৳</span>
-                            @if($feature->discount > 0.00)
-                            <del>{{ number_format($feature->discount_price, 2) }} ৳</del>
-                            @endif
+                            {{--@if($feature->discount > 0.00)
+                            <del>{{ number_format($feature->final_price, 2) }} ৳</del>
+                            @endif--}}
                         </div>
                     </div>
                 </div>

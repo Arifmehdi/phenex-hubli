@@ -121,10 +121,10 @@
                                                     @endforeach
                                                 </small>
                                                 <div class="product-price">
-                                                    <span>{{ number_format($product->final_price, 2) }} ৳</span> 
-                                                    @if($product->discount > 0.00)
-                                                        <small style="font-size: 8px !important;"><del>{{ number_format($product->price, 2) }} ৳</del></small>
-                                                    @endif
+                                                    <span>{{ number_format($product->selling_price, 2) }} ৳</span> 
+                                                    {{--@if($product->discount > 0.00)
+                                                        <small style="font-size: 8px !important;"><del>{{ number_format($product->selling_price, 2) }} ৳</del></small>
+                                                    @endif--}}
                                                 </div>
                                             </div>
                                         </div>
@@ -171,10 +171,10 @@
                                                     </ul>
                                                 </div>
                                                 <div class="product-price">
-                                                    <span>{{ number_format($product->final_price, 2) }} ৳</span> 
-                                                    @if($product->discount > 0.00)
-                                                        <small style="font-size: 8px !important;"><del>{{ number_format($product->price, 2) }} ৳</del></small>
-                                                    @endif
+                                                    <span>{{ number_format($product->selling_price, 2) }} ৳</span> 
+                                                    {{--@if($product->discount > 0.00)
+                                                        <small style="font-size: 8px !important;"><del>{{ number_format($product->final_price, 2) }} ৳</del></small>
+                                                    @endif--}}
                                                 </div>
                                                 <div class="product-brief">
                                                     <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Recusandae asperiores sit odit nesciunt,  aliquid, deleniti non et ut dolorem!</p>

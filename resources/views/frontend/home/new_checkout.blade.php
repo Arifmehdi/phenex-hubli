@@ -385,34 +385,40 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // Function to refresh cart totals from the server
-    function refreshCartTotals() {
-        fetch('/get-cart-totals') // Assuming this route returns { totalCartPrice: ..., totalDiscountAmount: ... }
-            .then(response => response.json())
-            .then(data => {
-                const subtotalElement = document.querySelector('.subtotal');
-                const discountElement = document.querySelector('.discount');
-                const savingElement = document.querySelector('.text-center.bg-primary.text-white.rounded.py-1.fw-semibold.mb-3.small');
+    // Function to update totals based on response
+    function updateCheckoutTotals(res) {
+        const subtotalElement = document.querySelector('.subtotal');
+        const discountElement = document.querySelector('.discount');
+        const payableElement = document.querySelector('.payable');
+        const savingElement = document.querySelector('.text-center.text-white.rounded.py-1.fw-semibold.mb-3.small');
 
-                if (subtotalElement) {
-                    subtotalElement.setAttribute('data-value', data.totalCartPrice);
-                    subtotalElement.textContent = `Tk. ${parseFloat(data.totalCartPrice).toFixed(2)}`;
-                }
-                if (discountElement) {
-                    discountElement.setAttribute('data-value', data.totalDiscountAmount);
-                    discountElement.textContent = `-Tk. ${parseFloat(data.totalDiscountAmount).toFixed(2)}`;
-                }
-                if (savingElement) {
-                    savingElement.textContent = `You are saving Tk. ${parseFloat(data.totalDiscountAmount).toFixed(2)} in this order.`;
-                }
+        if (subtotalElement) {
+            subtotalElement.setAttribute('data-value', res.cartTotal);
+            subtotalElement.textContent = `Tk. ${parseFloat(res.cartTotal).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+        }
+        if (discountElement) {
+            discountElement.setAttribute('data-value', res.discount);
+            discountElement.textContent = `-Tk. ${parseFloat(res.discount).toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+        }
+        if (payableElement) {
+            let shippingCost = parseFloat(document.getElementById('shipping-price')?.getAttribute('data-value')) || 0;
+            let grandTotal = parseFloat(res.payable) + shippingCost;
+            payableElement.textContent = `Tk. ${grandTotal.toLocaleString(undefined, {minimumFractionDigits: 2})}`;
+        }
+        if (savingElement) {
+            savingElement.textContent = `You are saving Tk. ${parseFloat(res.discount).toLocaleString(undefined, {minimumFractionDigits: 2})} in this order.`;
+        }
 
-                const cartItemsCountElement = document.querySelector('.cartItemsCount');
-                if (cartItemsCountElement) {
-                    cartItemsCountElement.textContent = data.cartItemsCount;
-                }
-                updateTotals(); // Recalculate grand total with new subtotal/discount
-            })
-            .catch(error => console.error('Error fetching cart totals:', error));
+        const cartItemsCountElement = document.querySelector('.badge.bg-white.text-success.ms-2');
+        if (cartItemsCountElement) {
+            cartItemsCountElement.textContent = res.cartItemsCount;
+        }
+        
+        // Update header cart count
+        $('#cart-count').text(res.cartCount);
+        if (res.miniCartHtml) {
+            $('#ltn__utilize-cart-menu').html(res.miniCartHtml);
+        }
     }
 
     // // âœ… Shipping option change event - FIXED VARIABLE NAME
@@ -534,7 +540,79 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Listen for a custom event to update totals after cart changes
     document.addEventListener('cartUpdated', function (e) {
-        refreshCartTotals();
+        // Since we now update dynamically, this might not be needed or we can call updateTotals
+        updateTotals();
+    });
+
+    // Add/Update Cart Item AJAX
+    $(document).on('click', '.updateCartItem', function (e) {
+        e.preventDefault();
+        let $btn = $(this);
+        let cartId = $btn.data('cart');
+        let url = $btn.data('url');
+        let currentQty = parseInt($btn.closest('.cart-action-wrapper').find('.cartQtyDisplay').text());
+        let newQty = $btn.hasClass('plus') ? currentQty + 1 : currentQty - 1;
+
+        if (newQty < 1) return;
+
+        $btn.prop('disabled', true);
+
+        $.ajax({
+            url: url,
+            method: 'POST',
+            data: {
+                cart: cartId,
+                new_qty: newQty,
+                _token: '{{ csrf_token() }}'
+            },
+            success: function (res) {
+                if (res.status) {
+                    $btn.closest('.cart-action-wrapper').find('.cartQtyDisplay').text(newQty);
+                    let unitPrice = parseFloat($btn.closest('tr').find('.itemTotalPrice').data('unit-price'));
+                    $btn.closest('tr').find('.itemTotalPrice').text(`Tk. ${(newQty * unitPrice).toLocaleString(undefined, {minimumFractionDigits: 2})}`);
+                    updateCheckoutTotals(res);
+                }
+            },
+            complete: function () {
+                $btn.prop('disabled', false);
+            }
+        });
+    });
+
+    // Remove Cart Item AJAX
+    $(document).on('click', '.deleteCartItem', function (e) {
+        e.preventDefault();
+        let $btn = $(this);
+        let url = $btn.data('url');
+        let $row = $btn.closest('tr');
+
+        Swal.fire({
+            title: 'Are you sure?',
+            text: "Remove this item from your cart?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, remove it!'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    url: url,
+                    method: 'POST',
+                    data: { _token: '{{ csrf_token() }}' },
+                    success: function (res) {
+                        if (res.status) {
+                            $row.fadeOut(300, function() { 
+                                $(this).remove();
+                                if ($('tbody tr.cart-item').length === 0) {
+                                    location.reload(); // Reload if cart becomes empty
+                                }
+                            });
+                            updateCheckoutTotals(res);
+                            showToaster(res.message);
+                        }
+                    }
+                });
+            }
+        });
     });
 
     // Run once on load

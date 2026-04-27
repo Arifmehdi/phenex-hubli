@@ -4,7 +4,7 @@
             <img src="{{ route('imagecache', ['template' => 'pnism', 'filename' => $product->fi()]) }}" class="suggestion-img" alt="{{ $product->name_en }}">
             <div class="suggestion-info">
                 <span class="suggestion-name">{{ $product->name_en }}</span>
-                <span class="suggestion-price">{{ number_format($product->final_price, 2) }} ৳</span>
+                <span class="suggestion-price">{{ number_format($product->selling_price, 2) }} ৳</span>
             </div>
         </a>
     @endforeach

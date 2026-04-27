@@ -181,8 +181,8 @@ class FrontendController extends Controller
 
         return response()->json([
             'name'        => $product->name_en,
-            'price'       => number_format($product->final_price, 2),
-            'old_price'   => $product->discount > 0 ? number_format($product->price, 2) : null,
+            'price'       => number_format($product->selling_price, 2),
+            'old_price'   => $product->discount > 0 ? number_format($product->final_price, 2) : null,
             'description' => Str::limit($product->description_en, 150),
             'image'       => route('imagecache', ['template' => 'pnism', 'filename' => $product->fi()])
         ]);
@@ -944,6 +944,7 @@ public function quickAdd(Request $request)
     ]);
 
     $productId = $request->id;
+    $qty = $request->get('qty', 1);
 
     $session_id = Session::get('session_id', function () {
         $id = Session::getId();
@@ -969,7 +970,7 @@ public function quickAdd(Request $request)
         'user_id'    => $user_id,
     ]);
 
-    $cart->quantity   = $cart->exists ? $cart->quantity + 1 : 1;
+    $cart->quantity   = $cart->exists ? $cart->quantity + $qty : $qty;
     $cart->addedby_id = $user_id;
     $cart->save();
 
@@ -978,8 +979,10 @@ public function quickAdd(Request $request)
         'message' => $product->name_en . ' added to cart successfully!',
         'id'      => $product->id,
         'name'    => $product->name_en,
-        'price'   => $product->final_price,
-        'image'   => route('imagecache', ['template' => 'pnism', 'filename' => $product->fi()])
+        'price'   => $product->selling_price,
+        'image'   => route('imagecache', ['template' => 'pnism', 'filename' => $product->fi()]),
+        'cartCount' => Cart::cartCount(),
+        'miniCartHtml' => view('frontend.partials.mini-cart')->render()
     ]);
 }
 
@@ -1063,6 +1066,7 @@ public function quickAdd(Request $request)
                 'cartTotal'       => Cart::totalCartPrice(),
                 'discount'        => Cart::totalDiscountAmount(),
                 'payable'         => Cart::totalCartPrice() - Cart::totalDiscountAmount(),
+                'miniCartHtml'    => view('frontend.partials.mini-cart')->render()
             ]);
         }
 
@@ -1107,6 +1111,7 @@ public function quickAdd(Request $request)
             'cartTotal'      => Cart::totalCartPrice(),
             'discount'       => Cart::totalDiscountAmount(),
             'payable'        => Cart::totalCartPrice() - Cart::totalDiscountAmount(),
+            'miniCartHtml'   => view('frontend.partials.mini-cart')->render()
         ]);
     }
 
