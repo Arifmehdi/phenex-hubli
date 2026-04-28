@@ -32,6 +32,11 @@
             Email: 
             {{ $order->email ?? optional($order->user)->email }}<br>
             @endif
+            
+            @if($order->address_title)
+            Address: 
+            {{ $order->address_title }}<br>
+            @endif
         </address>
         </div>
     </div>

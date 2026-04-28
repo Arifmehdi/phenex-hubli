@@ -42,7 +42,9 @@ Date: {{ $order->created_at->format('d M Y') }}
 
 {{ $order->email ?? $order->user?->email }}<br>
 
-{{ $order->mobile ?? $order->user?->mobile }}
+{{ $order->mobile ?? $order->user?->mobile }} <br>
+
+{{ $order->address_title ?? $order->user?->address }}
 
 </td> <td width="30%" align="right">
 
