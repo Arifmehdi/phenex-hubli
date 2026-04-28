@@ -5,6 +5,7 @@
             <th>Product Name</th>
             <th>Product Price</th>
             <th>Quantity</th>
+            <th>Unit</th>
             <th>Total Cost</th>
         
         </tr>
@@ -59,6 +60,7 @@
                         {{ $item->quantity }}
                     @endif
                 </td>
+                <td class="text-center">{{ $item->product->unit ??  'N/L'  }}</td>
 
                 {{-- Total Cost --}}
                 <td class="text-right">{{ number_format($item->quantity * $item->product_price, 2) }}</td>
@@ -75,31 +77,31 @@
 
             {{-- Sub Total --}}
             <tr class="text-right">
-                <td colspan="4" class="text-end font-weight-bold">Sub Total</td>
+                <td colspan="5" class="text-end font-weight-bold">Sub Total</td>
                 <td class="font-weight-bold">{{ number_format($order->subtotal, 2) }}</td>
             </tr>
 
             {{-- Shipping --}}
             <tr class="text-right">
-                <td colspan="4" class="text-end font-weight-bold">Shipping Cost</td>
+                <td colspan="5" class="text-end font-weight-bold">Shipping Cost</td>
                 <td class="font-weight-bold">{{ number_format($shippingCost, 2) }}</td>
             </tr>
 
             {{-- Grand Total --}}
             <tr class="text-right">
-                <td colspan="4" class="text-end font-weight-bold">Grand Total</td>
+                <td colspan="5" class="text-end font-weight-bold">Grand Total</td>
                 <td class="font-weight-bold">{{ number_format($totalWithShipping, 2) }}</td>
             </tr>
 
             {{-- Paid --}}
             <tr class="text-right">
-                <td colspan="4" class="text-end font-weight-bold">Paid Amount</td>
+                <td colspan="5" class="text-end font-weight-bold">Paid Amount</td>
                 <td class="font-weight-bold">{{ number_format($order->paid(), 2) }}</td>
             </tr class="text-right">
 
             {{-- Due --}}
             <tr class="text-right">
-                <td colspan="4" class="text-end font-weight-bold">Due Amount</td>
+                <td colspan="5" class="text-end font-weight-bold">Due Amount</td>
                 <td class="font-weight-bold">{{ number_format($totalWithShipping - $order->paid(), 2) }}</td>
             </tr>
 

@@ -1,17 +1,112 @@
 <style>
     .special-link a, .theme-btn-1{
         padding: 10px 20px;
-        background: #66A931;   /* change color */
+        background: #66A931;
         color: #fff;
-        border-radius: 8px;     /* <-- Rounded corners */
+        border-radius: 8px;
         display: inline-block;
     }
     .btn-transparent {
-        padding: 10px 20px;/* change color */
-        border-radius: 8px;     /* <-- Rounded corners */
+        padding: 10px 20px;
+        border-radius: 8px;
         display: inline-block;
     }
+    .header-search-1-form, .ltn__utilize-menu-search-form {
+        /* position: relative !important; */
+    }
+    .header-search-1-form.search-open {
+        overflow: visible !important;
+    }
+    .search-suggestions {
+        position: absolute !important;
+        top: 100% !important;
+        left: 0 !important;
+        right: 0 !important;
+        background: #fff !important;
+        border: 1px solid #ddd !important;
+        z-index: 999999 !important;
+        max-height: 400px !important;
+        overflow-y: auto !important;
+        display: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+        text-align: left !important;
+    }
+    .suggestion-item {
+        display: flex !important;
+        padding: 10px !important;
+        border-bottom: 1px solid #eee !important;
+        cursor: pointer !important;
+        align-items: center !important;
+        text-decoration: none !important;
+        color: inherit !important;
+    }
+    .suggestion-item:last-child {
+        border-bottom: none;
+    }
+    .suggestion-item:hover {
+        background: #f9f9f9;
+        color: #66A931;
+    }
+    .suggestion-img {
+        width: 50px;
+        height: 50px;
+        object-fit: cover;
+        margin-right: 15px;
+        border-radius: 4px;
+    }
+    .suggestion-info {
+        flex: 1;
+    }
+    .suggestion-name {
+        font-weight: 600;
+        display: block;
+        font-size: 14px;
+        margin-bottom: 2px;
+    }
+    .suggestion-price {
+        color: #66A931;
+        font-size: 13px;
+        font-weight: 700;
+    }
+    .search-all-btn {
+        display: block;
+        padding: 10px;
+        text-align: center;
+        background: #f8f9fa;
+        color: #66A931;
+        font-weight: 600;
+        border-top: 1px solid #eee;
+    }
+
+    /* Toaster Styles */
+    #toaster-container {
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 9999999;
+    }
+    .toaster {
+        background: #66A931;
+        color: #fff;
+        padding: 15px 25px;
+        border-radius: 8px;
+        margin-bottom: 10px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        display: flex;
+        align-items: center;
+        animation: slideIn 0.3s ease forwards;
+        min-width: 250px;
+    }
+    .toaster.error {
+        background: #e74c3c;
+    }
+    @keyframes slideIn {
+        from { transform: translateX(100%); opacity: 0; }
+        to { transform: translateX(0); opacity: 1; }
+    }
 </style>
+
+<div id="toaster-container"></div>
     <header class="ltn__header-area ltn__header-5 ltn__header-transparent-- gradient-color-4---">
         <!-- ltn__header-top-area start -->
         {{--<div class="ltn__header-top-area">
@@ -106,12 +201,13 @@
                                 </div>
                             </div>
                             <div class="header-search-1-form">
-                                <form method="get" action="{{ route('shop') }}">
-                                    <input type="text" name="search" value="" placeholder="Search here..." />
+                                <form method="get" action="{{ route('shop') }}" id="global-search-form">
+                                    <input type="text" name="search" id="global-search-input" value="" placeholder="Search here..." autocomplete="off" />
                                     <button type="submit">
                                         <span><i class="icon-search"></i></span>
                                     </button>
                                 </form>
+                                <div id="search-suggestions-container" class="search-suggestions"></div>
                             </div>
                         </div>
                         <!-- user-menu -->
@@ -219,10 +315,11 @@
                 <button class="ltn__utilize-close">×</button>
             </div>
             <div class="ltn__utilize-menu-search-form">
-                <form action="#">
-                    <input type="text" placeholder="Search...">
+                <form action="{{ route('shop') }}" method="GET">
+                    <input type="text" name="search" id="mobile-search-input" placeholder="Search..." autocomplete="off">
                     <button><i class="fas fa-search"></i></button>
                 </form>
+                <div id="mobile-search-suggestions-container" class="search-suggestions"></div>
             </div>
             <div class="ltn__utilize-menu">
                 <ul>
@@ -277,217 +374,184 @@
     <!-- Utilize Mobile Menu End -->
 
     <div class="ltn__utilize-overlay"></div>
-
-    <div class="ltn__utilize-overlay"></div>
     @push('js')
     <script>
-$(document).ready(function() {
-    let isUpdating = false; // Flag to prevent multiple simultaneous updates
+    // Toaster function (Global)
+    function showToaster(message, type = 'success') {
+        const toaster = $(`<div class="toaster ${type}">${message}</div>`);
+        $('#toaster-container').append(toaster);
 
-    // Remove item functionality
-    $(document).on('click', '.cart-product-remove', function(e) {
-        e.preventDefault();
-        var cartId = $(this).data('id');
-
-        if (!cartId) return;
-
-        $.ajax({
-            url: '/cart/remove/item/' + cartId,
-            type: 'POST',
-            data: {
-                _token: "{{ csrf_token() }}"
-            },
-            success: function(res) {
-                if (res.status) {
-                    location.reload();
-                } else {
-                    alert(res.message);
-                }
-            },
-            error: function(err) {
-                alert(err.responseJSON?.message || 'Something went wrong!');
-            }
-        });
-    });
-
-    // Function to update cart totals
-    function updateCartTotals() {
-        let subtotal = 0;
-
-        // Calculate subtotal from all items
-        $('.cart-product-subtotal').each(function() {
-            let val = parseFloat($(this).text().replace(/,/g, '').replace(' ৳', '')) || 0;
-            subtotal += val;
-        });
-
-        // Update displayed totals
-        $('#cart-subtotal').text(subtotal.toFixed(2) + ' ৳');
-        $('#order-total strong').text(subtotal.toFixed(2) + ' ৳');
+        setTimeout(() => {
+            toaster.css('animation', 'fadeOut 0.5s ease forwards');
+            setTimeout(() => toaster.remove(), 500);
+        }, 3000);
     }
 
-    // Handle quantity changes - use only 'change' event
-    $(document).on('change', '.cart-plus-minus-box', function() {
-        if (isUpdating) return; // Prevent multiple simultaneous updates
-
-        isUpdating = true;
-
-        let $this = $(this);
-        let cartId = $this.data('id');
-        let quantity = parseInt($this.val()) || 1;
-
-        // Ensure minimum quantity
-        if (quantity < 1) {
-            quantity = 1;
-            $this.val(1);
-        }
-
-        // Get price from data attribute
-        let price = parseFloat($('#cart-item-' + cartId + ' .cart-product-price').data('price')) || 0;
-
-        // Calculate new subtotal for this item
-        let newSubtotal = (quantity * price).toFixed(2);
-        $('#subtotal-' + cartId).text(newSubtotal + ' ৳');
-
-        // Update cart totals
-        updateCartTotals();
-
-        // Send AJAX request to update quantity in backend
-        $.ajax({
-            url: '/cart/update-quantity/' + cartId,
-            type: 'POST',
-            data: {
-                _token: "{{ csrf_token() }}",
-                quantity: quantity
-            },
-            success: function(res) {
-                isUpdating = false;
-                if (!res.status) {
-                    alert(res.message);
-                }
-            },
-            error: function(err) {
-                isUpdating = false;
-                console.log('Error updating quantity');
-                alert('Error updating quantity. Please try again.');
-            }
-        });
-    });
-
-    // Alternative: If you want to use input for immediate feedback but prevent duplicates
-    // $(document).on('input', '.cart-plus-minus-box', function() {
-    //     clearTimeout(window.quantityTimeout);
-    //     window.quantityTimeout = setTimeout(() => {
-    //         $(this).trigger('change');
-    //     }, 500);
-    // });
-
-    // If you have plus/minus buttons (add these to your HTML if needed)
-    $(document).on('click', '.qtybutton', function() {
-        let $input = $(this).closest('.cart-plus-minus').find('.cart-plus-minus-box');
-        let currentVal = parseInt($input.val()) || 1;
-
-        if ($(this).hasClass('inc')) {
-            $input.val(currentVal + 1).trigger('change');
-        } else if ($(this).hasClass('dec') && currentVal > 1) {
-            $input.val(currentVal - 1).trigger('change');
-        }
-    });
-});
-    </script>
-
-    <script>
-$(document).ready(function() {
-    let lastScrollTop = 0;
-    let header = $('.ltn__header-middle-area');
-    let headerContainer = $('.ltn__header-area');
-    let headerHeight = header.outerHeight();
-
-    $(window).on('scroll', function() {
-        let st = $(this).scrollTop();
-
-        if (st > 200) {
-            headerContainer.css('height', headerHeight);
-            if (st > lastScrollTop) {
-                // Scrolling down
-                header.removeClass('sticky-active');
-            } else {
-                // Scrolling up
-                header.addClass('sticky-active');
-            }
-        } else {
-            headerContainer.css('height', 'auto');
-            header.removeClass('sticky-active');
-        }
-
-        lastScrollTop = st;
-    });
-
-    $(window).on('resize', function(){
-        headerHeight = header.outerHeight();
-    });
-});
-    </script>
-    <script>
     $(document).ready(function() {
-        $(document).on('click', '.updateCartItem', function (e) {
+
+        // Close drawer functionality for dynamically loaded content
+        $(document).on('click', '.ltn__utilize-close, .ltn__utilize-overlay', function (e) {
             e.preventDefault();
-    
+            $('body').removeClass('ltn__utilize-open');
+            $('.ltn__utilize').removeClass('ltn__utilize-open');
+            $('.ltn__utilize-overlay').fadeOut();
+            $('.mobile-menu-toggle').find('a').removeClass('close');
+        });
+
+        // Add to Cart AJAX
+        $(document).off("click", ".add-to-cart-btn").on("click", ".add-to-cart-btn", function (e) {
+            e.preventDefault();
+            let id = $(this).data("id");
             let $btn = $(this);
-            let cartId = $btn.data('cart');
-            let url = $btn.data('url');
-            let $wrapper = $btn.closest('.cart-action-wrapper');
-            let qty = parseInt($wrapper.find('.cartQtyDisplay').text()) || 0;
-    
-            // Qty update
-            if ($btn.hasClass('plus')) {
-                qty++;
-            } else if ($btn.hasClass('minus')) {
-                qty--;
-                if (qty < 1) {
-                    // If quantity is less than 1, remove the item
-                    $('.cart-item[data-cart="' + cartId + '"] .deleteCartItem').click();
-                    return;
-                }
+
+            // Look for quantity input
+            let qty = 1;
+            let $qtyInput = $('.cart-plus-minus-box');
+            if ($qtyInput.length > 0) {
+                qty = parseInt($qtyInput.val()) || 1;
             }
-    
-            $btn.prop('disabled', true); // prevent double click
-    
+
+            $btn.find('i').addClass('fa-spin fa-spinner');
+
             $.ajax({
-                url: url,
-                method: 'POST',
-                data: {
-                    cart: cartId,
-                    new_qty: qty,
-                    _token: '{{ csrf_token() }}'
+                url: "{{ route('cart.quick.add') }}",
+                type: "GET",
+                data: { 
+                    id: id,
+                    qty: qty 
                 },
                 success: function (res) {
-                    if (res.status) {
-                        refreshCartTotals();
+                    $btn.find('i').removeClass('fa-spin fa-spinner');
+                    if(res.success) {
+                        $('#cart-count').text(res.cartCount);
+                        $('#ltn__utilize-cart-menu').html(res.miniCartHtml);
+                        showToaster(res.message);
                     }
                 },
-                error: function () {
-                    alert('Something went wrong! Please try again.');
+                error: function() {
+                    $btn.find('i').removeClass('fa-spin fa-spinner');
+                    showToaster('Something went wrong!', 'error');
+                }
+            });
+        });
+        // Remove item from cart AJAX
+        $(document).off('click', '.cart-product-remove').on('click', '.cart-product-remove', function(e) {
+            e.preventDefault();
+            var cartId = $(this).data('id');
+            if (!cartId) return;
+
+            $.ajax({
+                url: '/cart/remove/item/' + cartId,
+                type: 'POST',
+                data: { _token: "{{ csrf_token() }}" },
+                success: function(res) {
+                    if (res.status) {
+                        $('#cart-count').text(res.cartCount);
+                        $('#ltn__utilize-cart-menu').html(res.miniCartHtml);
+                        showToaster(res.message);
+
+                        // If we are on the cart page, we might need a reload or a more specific update
+                        if(window.location.pathname === '/cart') {
+                            location.reload();
+                        }
+                    }
+                }
+            });
+        });
+
+        // Handle quantity changes
+        $(document).on('change', '.cart-plus-minus-box', function() {
+            let cartId = $(this).data('id');
+            let quantity = parseInt($(this).val()) || 1;
+
+            $.ajax({
+                url: '/cart/update-quantity/' + cartId,
+                type: 'POST',
+                data: {
+                    _token: "{{ csrf_token() }}",
+                    quantity: quantity
                 },
-                complete: function () {
-                    $btn.prop('disabled', false);
+                success: function(res) {
+                    if (res.status) {
+                        $('#cart-count').text(res.cartCount);
+                        // Refresh mini cart if needed
+                        $.get("{{ route('home') }}", function(data) {
+                            let newMiniCart = $(data).find('#ltn__utilize-cart-menu').html();
+                            $('#ltn__utilize-cart-menu').html(newMiniCart);
+                        });
+                        if(window.location.pathname === '/cart') {
+                            location.reload();
+                        }
+                    }
                 }
             });
         });
-    
-        $(document).on("click", ".deleteCartItem", function () {
-            let btn = $(this);
-            $.post(btn.data("url"), {_token: '{{ csrf_token() }}'}, function (res) {
-                if (res.status) {
-                    refreshCartTotals();
+
+        // Search Suggestions Logic
+        function handleSearchSuggestions(inputSelector, containerSelector) {
+            let timeout = null;
+            $(document).off('input', inputSelector).on('input', inputSelector, function() {
+                let query = $(this).val();
+                let container = $(containerSelector);
+                clearTimeout(timeout);
+                if (query.length < 2) {
+                    container.hide().empty();
+                    return;
                 }
-            }).fail(() => {
-                Swal.fire("Error", "Cart item could not be removed.", "error");
+                timeout = setTimeout(function() {
+                    $.ajax({
+                        url: "{{ route('search.suggestions') }}",
+                        method: "GET",
+                        data: { search: query },
+                        success: function(res) {
+                            container.empty();
+                            if (res.html && res.html.trim() !== '') {
+                                container.html(res.html);
+                                container.show();
+                            } else {
+                                container.hide();
+                            }
+                        }
+                    });
+                }, 300);
             });
-        });
-    
-        function refreshCartTotals() {
-            location.reload();
+            $(document).off('focus', inputSelector).on('focus', inputSelector, function() {
+                if ($(this).val().length >= 2 && $(containerSelector).children().length > 0) {
+                    $(containerSelector).show();
+                }
+            });
         }
+
+        handleSearchSuggestions('#global-search-input', '#search-suggestions-container');
+        handleSearchSuggestions('#mobile-search-input', '#mobile-search-suggestions-container');
+
+        $(document).on('click', function(e) {
+            if (!$(e.target).closest('.header-search-1-form, .ltn__utilize-menu-search-form').length) {
+                $('.search-suggestions').hide();
+            }
+        });
+
+        // Sticky Header Logic
+        let lastScrollTop = 0;
+        let header = $('.ltn__header-middle-area');
+        let headerContainer = $('.ltn__header-area');
+        let headerHeight = header.outerHeight();
+
+        $(window).on('scroll', function() {
+            let st = $(this).scrollTop();
+            if (st > 200) {
+                headerContainer.css('height', headerHeight);
+                if (st > lastScrollTop) {
+                    header.removeClass('sticky-active');
+                } else {
+                    header.addClass('sticky-active');
+                }
+            } else {
+                headerContainer.css('height', 'auto');
+                header.removeClass('sticky-active');
+            }
+            lastScrollTop = st;
+        });
     });
     </script>
     @endpush

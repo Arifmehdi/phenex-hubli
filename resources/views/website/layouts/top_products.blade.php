@@ -16,7 +16,10 @@
                 </h6>
 
                 <div class="product-price">
-                    <span>{{ number_format($item->final_price, 2) }} ৳</span>
+                    <span>{{ number_format($item->selling_price, 2) }} ৳</span>
+                    {{--@if($item->discount > 0.00)
+                        <del style="font-size: 10px; color: #888;">{{ number_format($item->final_price, 2) }} ৳</del>
+                    @endif--}}
                 </div>
             </div>
         </div>

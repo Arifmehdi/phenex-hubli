@@ -72,10 +72,10 @@
                                 </div>
                                 <h3>{{ $product->name_en }}</h3>
                                 <div class="product-price">
-                                    <span>{{ number_format($product->final_price, 2) }} ৳</span> 
-                                    @if($product->discount > 0.00)
-                                        <small style="font-size: 8px !important;"><del>{{ number_format($product->price, 2) }} ৳</del></small>
-                                    @endif
+                                    <span>{{ number_format($product->selling_price, 2) }} ৳</span> 
+                                    {{--@if($product->discount > 0.00)
+                                        <small style="font-size: 8px !important;"><del>{{ number_format($product->final_price, 2) }} ৳</del></small>
+                                    @endif--}}
                                 </div>
                                 <div class="modal-product-meta ltn__product-details-menu-1">
                                     <ul>
@@ -112,15 +112,14 @@
                                     <ul>
                                         <li>
                                             <div class="cart-plus-minus">
-                                                <input type="text" value="02" name="qtybutton"
+                                                <input type="text" value="01" name="qtybutton"
                                                     class="cart-plus-minus-box">
                                             </div>
                                         </li>
                                         <li>
-                                            <a href="#" class="theme-btn-1 btn btn-effect-1" title="Add to Cart"
-                                                data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                            <a href="#" class="theme-btn-1 btn btn-effect-1 add-to-cart-btn" title="Add to Cart"
+                                                data-id="{{ $product->id }}">
                                                 <i class="fas fa-shopping-cart"></i>
-                                                {{--@include('frontend.home.includes.productCartItem') --}}
                                                 <span>ADD TO CART</span>
                                             </a>
                                         </li>
@@ -344,13 +343,13 @@
             </div>
         </div>
         <div class="row ltn__related-product-slider-one-active slick-arrow-1">
-            @forelse($relatedProducts as $product)
+            @forelse($relatedProducts as $relate)
             <!-- ltn__product-item -->
             <div class="col-lg-12">
                 <div class="ltn__product-item ltn__product-item-3 text-center">
                     <div class="product-img">
-                        <a href="{{ route('productDetails', $product->slug) }}">
-                            <img src="{{ route('imagecache', ['template' => 'pnism', 'filename' => $product->fi()]) }}" alt="{{ $product->name_en }}"></a>
+                        <a href="{{ route('productDetails', $relate->slug) }}">
+                            <img src="{{ route('imagecache', ['template' => 'pnism', 'filename' => $relate->fi()]) }}" alt="{{ $relate->name_en }}"></a>
                         {{--<div class="product-badge">
                             <ul>
                                 <li class="sale-badge">New</li>
@@ -388,12 +387,12 @@
                                 <li><a href="#"><i class="far fa-star"></i></a></li>
                             </ul>
                         </div>
-                        <h2 class="product-title"><a href="{{ route('productDetails', $product->slug) }}">{{ $product->name_en }}</a></h2>
+                        <h2 class="product-title"><a href="{{ route('productDetails', $relate->slug) }}">{{ $relate->name_en }}</a></h2>
                         <div class="product-price">
-                            <span>{{ number_format($product->final_price, 2) }} ৳</span> 
-                            @if($product->discount > 0.00)
-                                <small style="font-size: 8px !important;"><del>{{ number_format($product->price, 2) }} ৳</del></small>
-                            @endif
+                            <span>{{ number_format($relate->selling_price, 2) }} ৳</span> 
+                            {{--@if($product->discount > 0.00)
+                                <small style="font-size: 8px !important;"><del>{{ number_format($relate->final_price, 2) }} ৳</del></small>
+                            @endif--}}
                         </div>
                     </div>
                 </div>

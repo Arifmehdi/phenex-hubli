@@ -166,6 +166,7 @@ body{
 <th>Product</th>
 <th width="120">Price</th>
 <th width="80">Qty</th>
+<th width="80">Unit</th>
 <th width="140">Total</th>
 </tr>
 
@@ -184,6 +185,7 @@ body{
 <td align="right">{{ number_format($item->product_price,2) }}</td>
 
 <td align="center">{{ $item->quantity }}</td>
+<td align="center">{{ $item->product->unit ?? 'N/L' }}</td>
 
 <td align="right">{{ number_format($item->total_cost,2) }}</td>
 

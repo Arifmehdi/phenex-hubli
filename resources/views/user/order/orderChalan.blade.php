@@ -141,6 +141,7 @@ body{
 <th>Product Name</th>
 <th width="120">Price</th>
 <th width="80">Qty</th>
+<th width="80">Unit</th>
 <th width="140">Total</th>
 </tr>
 </thead>
@@ -161,6 +162,10 @@ body{
 
 <td class="text-center">
 {{ $item->quantity }}
+</td>
+
+<td class="text-center">
+{{ $item->product->unit ?? 'N/L'}}
 </td>
 
 <td class="text-end">

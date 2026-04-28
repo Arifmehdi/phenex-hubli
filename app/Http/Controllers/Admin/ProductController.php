@@ -1096,8 +1096,7 @@ public function orderDelete($id)
      */
     public function orderPrint(Order $order)
     {
-        $items = $order->orderItems()->get();
-
+        $items = $order->orderItems()->with('product')->get();
         return view('admin.orders.orderPrint', compact('order', 'items'));
     }
 
