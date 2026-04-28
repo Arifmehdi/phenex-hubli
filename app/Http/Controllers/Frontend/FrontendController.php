@@ -1385,7 +1385,7 @@ public function quickAdd(Request $request)
 
      public function orderChalan(Order $order)
     {
-        $items = $order->orderItems()->get();
+        $items = $order->orderItems()->with('product')->get();
 
         return view('user.order.orderChalan', compact('order', 'items'));
     }

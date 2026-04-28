@@ -7,6 +7,7 @@
             <th scope="col">Product Stock</th>
             <th scope="col">Purchase Price</th>
             <th scope="col">Selling Price</th>
+            <th scope="col">Unit</th>
             <th scope="col">Image</th>
             <th scope="col">Status</th>
             <th scope="col">Approval</th>
@@ -42,6 +43,7 @@
                 <td>{{ $product->stock ? $product->stock : 'N/A' }}</td>
                 <td>{{ $product->purchase_price }}</td>
                 <td>{{ $product->selling_price }}</td>
+                <td>{{ $product->unit }}</td>
                 <td>
                     <img width="30px" height="20px"src="{{ route('imagecache', ['template' => 'sbixs', 'filename' => $product->fi()]) }}"
                     alt="">

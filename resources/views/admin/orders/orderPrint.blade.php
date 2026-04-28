@@ -56,11 +56,11 @@ Date: {{ $order->created_at->format('d M Y') }}
 <span style="color:orange;font-weight:bold;">PARTIAL</span>
 @endif
 
-</td> </tr> </table> <!-- ITEMS TABLE --> <table> <thead> <tr> <th width="60">SL</th> <th>Product Name</th> <th width="120">Price</th> <th width="80">Qty</th> <th width="140">Total</th> </tr> </thead> <tbody>
+</td> </tr> </table> <!-- ITEMS TABLE --> <table> <thead> <tr> <th width="60">SL</th> <th>Product Name</th> <th width="120">Price</th> <th width="80">Qty</th> <th width="80">Unit</th><th width="140">Total</th> </tr> </thead> <tbody>
 
 @foreach($items as $item)
 
-<tr> <td class="text-center">{{ $loop->iteration }}</td> <td>{{ $item->product_name }}</td> <td class="text-right">{{ number_format($item->product_price,2) }}</td> <td class="text-center">{{ $item->quantity }}</td> <td class="text-right">{{ number_format($item->total_cost,2) }}</td> </tr>
+<tr> <td class="text-center">{{ $loop->iteration }}</td> <td>{{ $item->product_name }}</td> <td class="text-right">{{ number_format($item->product_price,2) }}</td> <td class="text-center">{{ $item->quantity }}</td> <td class="text-center">{{ $item->product->unit  ?? 'N/L'}}</td> <td class="text-right">{{ number_format($item->total_cost,2) }}</td> </tr>
 
 @endforeach
 
@@ -69,7 +69,7 @@ $shippingCost = $order->shipping_cost ?? $ws->shipping_charge ?? 150;
 $totalWithShipping = $order->subtotal + $shippingCost;
 @endphp
 
-<tr> <td colspan="4" class="text-right"><strong>Sub Total</strong></td> <td class="text-right">{{ number_format($order->subtotal,2) }}</td> </tr> <tr> <td colspan="4" class="text-right"><strong>Shipping</strong></td> <td class="text-right">{{ number_format($shippingCost,2) }}</td> </tr> <tr> <td colspan="4" class="text-right"><strong>Grand Total</strong></td> <td class="text-right"><strong>{{ number_format($totalWithShipping,2) }}</strong></td> </tr> <tr> <td colspan="4" class="text-right" style="color:green"><strong>Paid</strong></td> <td class="text-right" style="color:green">{{ number_format($order->paid(),2) }}</td> </tr> <tr> <td colspan="4" class="text-right" style="color:red"><strong>Due</strong></td> <td class="text-right" style="color:red"> {{ number_format($totalWithShipping - $order->paid(),2) }} </td> </tr> </tbody> </table> <!-- PAYMENTS -->
+<tr> <td colspan="5" class="text-right"><strong>Sub Total</strong></td> <td class="text-right">{{ number_format($order->subtotal,2) }}</td> </tr> <tr> <td colspan="5" class="text-right"><strong>Shipping</strong></td> <td class="text-right">{{ number_format($shippingCost,2) }}</td> </tr> <tr> <td colspan="5" class="text-right"><strong>Grand Total</strong></td> <td class="text-right"><strong>{{ number_format($totalWithShipping,2) }}</strong></td> </tr> <tr> <td colspan="5" class="text-right" style="color:green"><strong>Paid</strong></td> <td class="text-right" style="color:green">{{ number_format($order->paid(),2) }}</td> </tr> <tr> <td colspan="5" class="text-right" style="color:red"><strong>Due</strong></td> <td class="text-right" style="color:red"> {{ number_format($totalWithShipping - $order->paid(),2) }} </td> </tr> </tbody> </table> <!-- PAYMENTS -->
 
 @if($order->payments->count())
 
