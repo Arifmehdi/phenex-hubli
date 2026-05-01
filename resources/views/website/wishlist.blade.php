@@ -40,22 +40,24 @@
                                             <td class="cart-product-remove txt-danger remove-wishlist" data-id="{{ $w->id }}">x</td>
 
                                             <td>
-                                                <img src="{{ route('imagecache', ['template'=>'small', 'filename'=>$w->product->fi()]) }}" width="80">
+                                                <img src="{{ route('imagecache', ['template'=>'pnism', 'filename'=>$w->product->fi()]) }}" width="80" alt="{{ $w->product->name_en }}">
                                             </td>
 
                                             <td class="cart-product-info">
                                                 <h4>
-                                                    <a href="#" title="{{$w->product->name_en}}">{{ Str::limit($w->product->name_en, 20) }}</a>
+                                                    <a href="{{ route('productDetails', $w->product->slug) }}" title="{{$w->product->name_en}}">{{ Str::limit($w->product->name_en, 20) }}</a>
                                                 </h4>
                                             </td>
 
-                                            <td>{{ $w->product->final_price }} ৳</td>
+                                            <td>{{ $w->product->selling_price }} ৳</td>
 
                                             <td class="cart-product-add-cart">
-                                                <a class="submit-button-1" href="#" title="Add to Cart"
-                                                    data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
-                                                    Add to Cart
+                                                <a href="#" class="theme-btn-1 btn btn-effect-1 add-to-cart-btn" title="Add to Cart"
+                                                    data-id="{{ $w->product->id }}">
+                                                    <i class="fas fa-shopping-cart"></i>
+                                                    <span>ADD TO CART</span>
                                                 </a>
+
                                             </td>
                                         </tr>
 

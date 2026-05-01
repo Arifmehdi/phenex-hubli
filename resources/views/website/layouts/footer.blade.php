@@ -222,7 +222,7 @@
 </div> -->
     <!-- MODAL AREA START (Quick View Modal) -->
     <div class="ltn__modal-area ltn__quick-view-modal-area">
-        <div class="modal fade" id="quickViewModal" tabindex="-1">
+        <div class="modal fade" id="quick_view_modal" tabindex="-1">
             <div class="modal-dialog modal-lg" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
@@ -354,14 +354,16 @@
     </div>
     <!-- preloader area end -->
 
-<script src="https://code.jquery.com/jquery-3.7.1.min.js" integrity="sha256-/JqT3SQfawRcv/BIHPThkBvs0OEvtFFmqPF/lYI/Cxo=" crossorigin="anonymous"></script>
+@push('js')
 <script>
-$(document).on("click", ".quick-view-btn", function (e) {
+$(document).on("click", '[data-bs-target="#quick_view_modal"]', function (e) {
     e.preventDefault();
     
     let productId = $(this).data("id");
+    if(!productId) return;
+
     $("#quickViewContent").html("<p>Loading...</p>");
-    $("#quickViewModal").modal("show");
+    $("#quick_view_modal").modal("show");
 
     $.ajax({
         url: "{{ route('quick.view') }}",
@@ -410,9 +412,7 @@ $(document).on("click", ".quick-view-btn", function (e) {
                                 <ul>
                                     <li>
                                         <div class="cart-plus-minus">
-                                            <div class="dec qtybutton">-</div>
                                             <input type="text" value="1" name="qtybutton" class="cart-plus-minus-box">
-                                            <div class="inc qtybutton">+</div>
                                         </div>
 
                                     </li>
@@ -456,21 +456,21 @@ $(document).on("click", ".quick-view-btn", function (e) {
                 </div>
             `);
 
+            // Re-init quantity buttons
+            $(".cart-plus-minus").each(function() {
+                if ($(this).find(".qtybutton").length === 0) {
+                    $(this).prepend('<div class="dec qtybutton">-</div>');
+                    $(this).append('<div class="inc qtybutton">+</div>');
+                }
+            });
+
+            // Ensure the dynamic buttons in modal work correctly
+            // (They should be handled by the delegated listener in main.js, 
+            // but we ensure classes match what main.js expects or handle it here)
+
         }
     });
 
 });
-
-$(document).on("click", ".qtybutton", function () {
-    let $button = $(this);
-    let oldValue = parseInt($button.parent().find("input").val());
-
-    if ($button.hasClass("inc")) {
-        var newVal = oldValue + 1;
-    } else {
-        var newVal = oldValue > 1 ? oldValue - 1 : 1;
-    }
-
-    $button.parent().find("input").val(newVal);
-});
 </script>
+@endpush

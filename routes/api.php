@@ -49,6 +49,10 @@ Route::get('units', [UnitController::class, 'index']);
 Route::get('/settings', [WebsiteParameterController::class, 'index']);
 
 // Cart routes accessible to both authenticated and guest users
+Route::delete('cart/clear', [CartController::class, 'clear']);
+Route::delete('cart/merge', [CartController::class, 'mergeCartAction']);
+Route::delete('cart/item/{product_id}', [CartController::class, 'removeItemByProductId']);
+Route::delete('cart/{cart}', [CartController::class, 'destroy']);
 Route::apiResource('cart', CartController::class)->only(['index', 'store', 'destroy']);
 Route::post('orders', [OrderController::class, 'store']);
 
@@ -69,7 +73,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('products', ProductController::class)->except(['index', 'show']);
     Route::post('products/bulk-store', [ProductController::class, 'bulkStore']);
     // Authenticated API routes for Cart and Orders
-    // Route::apiResource('cart', CartController::class)->only(['index', 'store', 'destroy']);
+    // Route::delete('cart/{cart}', [CartController::class, 'destroy']);
+Route::apiResource('cart', CartController::class)->only(['index', 'store', 'destroy']);
     Route::apiResource('orders', OrderController::class)->except(['store']);
     Route::get('order-list', [OrderController::class, 'simpleList']);
     Route::apiResource('users', UserController::class); // New Route for User management

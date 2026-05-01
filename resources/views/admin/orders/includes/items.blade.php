@@ -3,10 +3,10 @@
         <tr>
             <th style="width: 10px">#SL</th>
             <th>Product Name</th>
-            <th>Product Price</th>
-            <th>Quantity</th>
-            <th>Unit</th>
-            <th>Total Cost</th>
+            <th class="text-center">Price</th>
+            <th class="text-center">Pack Size</th>
+            <th class="text-center">Qty</th>
+            <th class="text-center">Total</th>
         
         </tr>
     </thead>
@@ -19,7 +19,9 @@
                 <td>{{ $item->product_name }}</td>
 
                 {{-- Product Price --}}
-                <td>{{ number_format($item->product_price, 2) }}</td>
+                <td class="text-right">{{ number_format($item->product_price, 2) }}</td>
+
+                <td class="text-center">{{ $item->product->unit ??  'N/L'  }}</td>
 
                 {{-- Quantity --}}
                 <td>
@@ -60,8 +62,6 @@
                         {{ $item->quantity }}
                     @endif
                 </td>
-                <td class="text-center">{{ $item->product->unit ??  'N/L'  }}</td>
-
                 {{-- Total Cost --}}
                 <td class="text-right">{{ number_format($item->quantity * $item->product_price, 2) }}</td>
 

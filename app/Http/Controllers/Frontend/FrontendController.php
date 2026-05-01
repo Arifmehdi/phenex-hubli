@@ -180,6 +180,7 @@ class FrontendController extends Controller
         $product = Product::with('categories')->findOrFail($request->id);
 
         return response()->json([
+            'id'          => $product->id,
             'name'        => $product->name_en,
             'price'       => number_format($product->selling_price, 2),
             'old_price'   => $product->discount > 0 ? number_format($product->final_price, 2) : null,

@@ -7,7 +7,7 @@
                 {{$ws->website_title}}<br>
                 {{$ws->contact_address}}<br>
                 Phone: {{$ws->contact_mobile}}<br>
-                Email: {{$ws->contact_email}}
+                Email: {{$ws->contact_email}} <br>
                 </address>
             </div>
         </div>
@@ -32,7 +32,7 @@
             Email: 
             {{ $order->email ?? optional($order->user)->email }}<br>
             @endif
-            
+
             @if($order->address_title)
             Address: 
             {{ $order->address_title }}<br>
