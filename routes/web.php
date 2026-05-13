@@ -173,6 +173,7 @@ Route::get('charity',[FrontendController::class,'charity'])->name('charity');
 Route::get('/nb/products', [FrontendController::class, 'shasthoseba'])->name('shop.shasthoseba');
 Route::get('product-category/{slug?}', [FrontendController::class, 'productCategory'])->name('productCategory');
 
+Route::post('reviews/store',[FrontendController::class, 'reviewsStore'])->name('reviewsStore');
 Route::get('product/details/{slug}',[FrontendController::class, 'productDetails'])->name('productDetails');
 
 
@@ -304,7 +305,7 @@ Route::group(['middleware' => ['web', 'auth'], 'prefix' => 'mypanel'], function 
     // Route::post('cod/order/store',[FrontendController::class, 'codOrderStore'])->name('codOrderStore');
     Route::post('delivery/location/save',[FrontendController::class, 'storeDeliveryLocation'])->name('storeDeliveryLocation');
 
-    Route::post('reviews/store',[FrontendController::class, 'reviewsStore'])->name('reviewsStore');
+    // post('reviews/store',[FrontendController::class, 'reviewsStore'])->name('reviewsStore');
     Route::get('invoice/print/{order}', [FrontendController::class, 'orderPrint'])->name('user.orderPrint');
 
     Route::get('chalan/print/{order}', [FrontendController::class, 'orderChalan'])->name('user.orderChalan');
@@ -593,6 +594,8 @@ Route::middleware(['userRole:admin','auth'])->prefix('admin')->group(function(){
     Route::get('product/tags', [ProductController::class, 'productTags'])->name('admin.productTags');
     Route::get('product/search/type/{type}', [ProductController::class, 'productSearch'])->name('admin.productSearch');
     Route::get('product/add/stock/{product}', [ProductController::class, 'productAddStock'])->name('admin.productAddStock');
+    Route::get('product/{product}/reviews', [ProductController::class, 'productReviews'])->name('admin.product.reviews');
+    Route::delete('review/{review}/delete', [ProductController::class, 'reviewDelete'])->name('admin.review.delete');
 
 
     Route::get('order/list', [ProductController::class, 'orderList'])->name('admin.orderList');

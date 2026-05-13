@@ -1100,6 +1100,22 @@ public function orderDelete($id)
         return view('admin.orders.orderPrint', compact('order', 'items'));
     }
 
-   
+    public function productAddStock(Product $product)
+    {
+        return view('admin.products.addStock', compact('product'));
+    }
+
+    public function productReviews(Product $product)
+    {
+        menuSubmenu('product', 'productsAll');
+        $reviews = $product->reviews()->with('user')->latest()->get();
+        return view('admin.products.reviews', compact('product', 'reviews'));
+    }
+
+    public function reviewDelete(\App\Models\ProductReview $review)
+    {
+        $review->delete();
+        return back()->with('success', 'Review deleted successfully');
+    }
 
 }

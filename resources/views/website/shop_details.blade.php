@@ -4,10 +4,10 @@
 
 @section('meta')
 <meta name="description"
-    content="Contact North Bengal for inquiries, product details, or business queries. Get in touch via phone, email, or visit our office.">
-<meta name="keywords" content="contact north bengal, contact us, north bengal inquiries, phone, email, office location">
-<meta property="og:title" content="Contact Us - North Bengal">
-<meta property="og:description" content="Reach North Bengal for product inquiries or business partnerships.">
+    content="Contact Hubli for inquiries, product details, or business queries. Get in touch via phone, email, or visit our office.">
+<meta name="keywords" content="contact Hubli, contact us, Hubli inquiries, phone, email, office location">
+<meta property="og:title" content="Contact Us - Hubli">
+<meta property="og:description" content="Reach Hubli for product inquiries or business partnerships.">
 <meta property="og:image" content="{{ asset('frontend/assets/img/northbengal/contact_banner.png') }}">
 <meta property="og:type" content="website">
 @endsection
@@ -62,12 +62,17 @@
                             <div class="modal-product-info shop-details-info pl-0">
                                 <div class="product-ratting">
                                     <ul>
-                                        <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                        <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                        <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                        <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                        <li><a href="#"><i class="far fa-star"></i></a></li>
-                                        <li class="review-total"> <a href="#"> ( 0 Reviews )</a></li>
+                                        @php $avg = $product->averageRating(); @endphp
+                                        @for($i=1; $i<=5; $i++)
+                                            @if($i <= floor($avg))
+                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                            @elseif($i == ceil($avg) && $avg > floor($avg))
+                                                <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
+                                            @else
+                                                <li><a href="#"><i class="far fa-star"></i></a></li>
+                                            @endif
+                                        @endfor
+                                        <li class="review-total"> <a href="#"> ( {{ $product->reviews->count() }} Reviews )</a></li>
                                     </ul>
                                 </div>
                                 <h3>{{ $product->name_en }}</h3>
@@ -168,7 +173,7 @@
                     <div class="ltn__shop-details-tab-menu">
                         <div class="nav">
                             <a class="active show" data-bs-toggle="tab" href="#liton_tab_details_1_1">Description</a>
-                            <a data-bs-toggle="tab" href="#liton_tab_details_1_2" class="">Reviews (0)</a>
+                            <a data-bs-toggle="tab" href="#liton_tab_details_1_2" class="">Reviews ({{ $product->reviews->count() }})</a>
                         </div>
                     </div>
                     <div class="tab-content">
@@ -183,12 +188,17 @@
                                 <h4 class="title-2">Customer Reviews</h4>
                                 <div class="product-ratting">
                                     <ul>
-                                        <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                        <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                        <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                        <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                        <li><a href="#"><i class="far fa-star"></i></a></li>
-                                        <li class="review-total"> <a href="#"> ( 0 Reviews )</a></li>
+                                        @php $avg = $product->averageRating(); @endphp
+                                        @for($i=1; $i<=5; $i++)
+                                            @if($i <= floor($avg))
+                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                            @elseif($i == ceil($avg) && $avg > floor($avg))
+                                                <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
+                                            @else
+                                                <li><a href="#"><i class="far fa-star"></i></a></li>
+                                            @endif
+                                        @endfor
+                                        <li class="review-total"> <a href="#"> ( {{ $product->reviews->count() }} Reviews )</a></li>
                                     </ul>
                                 </div>
                                 <hr>
@@ -196,110 +206,62 @@
                                 <div class="ltn__comment-area mb-30">
                                     <div class="ltn__comment-inner">
                                         <ul>
+                                            @foreach($product->reviews as $review)
                                             <li>
                                                 <div class="ltn__comment-item clearfix">
                                                     <div class="ltn__commenter-img">
-                                                        <img src="{{ asset('frontend/img/testimonial/1.jpg') }}" alt="Image">
+                                                        <img src="{{ $review->user && $review->user->image ? asset('storage/user_images/'.$review->user->image) : asset('img/profile.jpg') }}" alt="Image">
                                                     </div>
                                                     <div class="ltn__commenter-comment">
-                                                        <h6><a href="#">Adam Smit</a></h6>
+                                                        <h6><a href="#">{{ $review->user ? $review->user->name : $review->name }}</a></h6>
                                                         <div class="product-ratting">
                                                             <ul>
-                                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                <li><a href="#"><i class="fas fa-star-half-alt"></i></a>
-                                                                </li>
-                                                                <li><a href="#"><i class="far fa-star"></i></a></li>
+                                                                @for($i=1; $i<=5; $i++)
+                                                                    <li><a href="#"><i class="{{ $i <= $review->rating ? 'fas' : 'far' }} fa-star"></i></a></li>
+                                                                @endfor
                                                             </ul>
                                                         </div>
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                                            Doloribus, omnis fugit corporis iste magnam ratione.</p>
-                                                        <span class="ltn__comment-reply-btn">September 3, 2020</span>
+                                                        <p>{{ $review->comment }}</p>
+                                                        <span class="ltn__comment-reply-btn">{{ $review->created_at->format('M d, Y') }}</span>
                                                     </div>
                                                 </div>
                                             </li>
-                                            <li>
-                                                <div class="ltn__comment-item clearfix">
-                                                    <div class="ltn__commenter-img">
-                                                        <img src="{{ asset('frontend/img/testimonial/3.jpg') }}" alt="Image">
-                                                    </div>
-                                                    <div class="ltn__commenter-comment">
-                                                        <h6><a href="#">Adam Smit</a></h6>
-                                                        <div class="product-ratting">
-                                                            <ul>
-                                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                <li><a href="#"><i class="fas fa-star-half-alt"></i></a>
-                                                                </li>
-                                                                <li><a href="#"><i class="far fa-star"></i></a></li>
-                                                            </ul>
-                                                        </div>
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                                            Doloribus, omnis fugit corporis iste magnam ratione.</p>
-                                                        <span class="ltn__comment-reply-btn">September 2, 2020</span>
-                                                    </div>
-                                                </div>
-                                            </li>
-                                            <li>
-                                                <div class="ltn__comment-item clearfix">
-                                                    <div class="ltn__commenter-img">
-                                                        <img src="{{ asset('frontend/img/testimonial/2.jpg') }}" alt="Image">
-                                                    </div>
-                                                    <div class="ltn__commenter-comment">
-                                                        <h6><a href="#">Adam Smit</a></h6>
-                                                        <div class="product-ratting">
-                                                            <ul>
-                                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                                <li><a href="#"><i class="fas fa-star-half-alt"></i></a>
-                                                                </li>
-                                                                <li><a href="#"><i class="far fa-star"></i></a></li>
-                                                            </ul>
-                                                        </div>
-                                                        <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-                                                            Doloribus, omnis fugit corporis iste magnam ratione.</p>
-                                                        <span class="ltn__comment-reply-btn">September 2, 2020</span>
-                                                    </div>
-                                                </div>
-                                            </li>
+                                            @endforeach
                                         </ul>
                                     </div>
                                 </div>
                                 <!-- comment-reply -->
                                 <div class="ltn__comment-reply-area ltn__form-box mb-30">
-                                    <form action="#">
+                                    <form action="{{ route('reviewsStore') }}" method="POST">
+                                        @csrf
+                                        <input type="hidden" name="product_id" value="{{ $product->id }}">
                                         <h4 class="title-2">Add a Review</h4>
                                         <div class="mb-30">
                                             <div class="add-a-review">
                                                 <h6>Your Ratings:</h6>
                                                 <div class="product-ratting">
-                                                    <ul>
-                                                        <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                        <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                        <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                                        <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                                        <li><a href="#"><i class="far fa-star"></i></a></li>
+                                                    <ul id="star-rating">
+                                                        <li data-value="1"><a href="javascript:void(0)"><i class="far fa-star"></i></a></li>
+                                                        <li data-value="2"><a href="javascript:void(0)"><i class="far fa-star"></i></a></li>
+                                                        <li data-value="3"><a href="javascript:void(0)"><i class="far fa-star"></i></a></li>
+                                                        <li data-value="4"><a href="javascript:void(0)"><i class="far fa-star"></i></a></li>
+                                                        <li data-value="5"><a href="javascript:void(0)"><i class="far fa-star"></i></a></li>
                                                     </ul>
+                                                    <input type="hidden" name="rating" id="rating-input" value="" required>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="input-item input-item-textarea ltn__custom-icon">
-                                            <textarea placeholder="Type your comments...."></textarea>
+                                            <textarea name="comment" placeholder="Type your comments...." required></textarea>
                                         </div>
+                                        @guest
                                         <div class="input-item input-item-name ltn__custom-icon">
-                                            <input type="text" placeholder="Type your name....">
+                                            <input type="text" name="name" placeholder="Type your name...." required>
                                         </div>
                                         <div class="input-item input-item-email ltn__custom-icon">
-                                            <input type="email" placeholder="Type your email....">
+                                            <input type="email" name="email" placeholder="Type your email...." required>
                                         </div>
-                                        <div class="input-item input-item-website ltn__custom-icon">
-                                            <input type="text" name="website" placeholder="Type your website....">
-                                        </div>
-                                        <label class="mb-0"><input type="checkbox" name="agree"> Save my name, email,
-                                            and website in this browser for the next time I comment.</label>
+                                        @endguest
                                         <div class="btn-wrapper">
                                             <button class="btn theme-btn-1 btn-effect-1 text-uppercase"
                                                 type="submit">Submit</button>
@@ -380,11 +342,16 @@
                     <div class="product-info">
                         <div class="product-ratting">
                             <ul>
-                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                <li><a href="#"><i class="fas fa-star"></i></a></li>
-                                <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
-                                <li><a href="#"><i class="far fa-star"></i></a></li>
+                                @php $relAvg = $relate->averageRating(); @endphp
+                                @for($i=1; $i<=5; $i++)
+                                    @if($i <= floor($relAvg))
+                                        <li><a href="#"><i class="fas fa-star"></i></a></li>
+                                    @elseif($i == ceil($relAvg) && $relAvg > floor($relAvg))
+                                        <li><a href="#"><i class="fas fa-star-half-alt"></i></a></li>
+                                    @else
+                                        <li><a href="#"><i class="far fa-star"></i></a></li>
+                                    @endif
+                                @endfor
                             </ul>
                         </div>
                         <h2 class="product-title"><a href="{{ route('productDetails', $relate->slug) }}">{{ $relate->name_en }}</a></h2>
@@ -409,4 +376,25 @@
 <!-- FEATURE AREA START ( Feature - 3) -->
 <x-footer-feature />
 <!-- FEATURE AREA END -->
+
+@push('js')
+<script>
+    $(document).ready(function() {
+        $('#star-rating li').on('click', function() {
+            var val = $(this).data('value');
+            $('#rating-input').val(val);
+            $('#star-rating li i').removeClass('fas').addClass('far');
+            $('#star-rating li').each(function() {
+                if ($(this).data('value') <= val) {
+                    $(this).find('i').removeClass('far').addClass('fas');
+                }
+            });
+        });
+
+        // Set default rating to 5
+        $('#star-rating li[data-value="5"]').trigger('click');
+    });
+</script>
+@endpush
+
 @endsection
