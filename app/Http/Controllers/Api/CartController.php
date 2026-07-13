@@ -102,30 +102,138 @@ class CartController extends Controller
     /**
      * Remove the specified resource from storage (a cart item).
      *
-     * @param  \App\Models\Cart  $cart
+     * @param  int  $id
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
-    public function destroy(Cart $cart, Request $request)
+    public function destroy($id, Request $request)
     {
-        $user = Auth::guard('sanctum')->user();
+        $cart = Cart::find($id);
 
-        if ($user) {
-            // Authenticated user: ensure the cart item belongs to them
-            if ($cart->user_id !== $user->id) {
-                return response()->json(['message' => 'Unauthorized'], 403);
-            }
-        } else {
-            // Guest user: ensure the cart item belongs to their session
-            $sessionId = $this->getGuestSessionId($request);
-            if ($cart->session_id !== $sessionId) {
-                return response()->json(['message' => 'Unauthorized'], 403);
-            }
+        if (!$cart) {
+            return response()->json(['message' => 'Cart item not found'], 404);
+        }
+
+        $user = Auth::guard('sanctum')->user();
+        $sessionId = $this->getGuestSessionId($request);
+
+        $isOwner = false;
+
+        // Check if it belongs to the authenticated user
+        if ($user && $cart->user_id != null && $cart->user_id == $user->id) {
+            $isOwner = true;
+        }
+
+        // Or check if it belongs to the current guest session
+        if (!$isOwner && $sessionId != null && $cart->session_id == $sessionId) {
+            $isOwner = true;
+        }
+
+        if (!$isOwner) {
+            return response()->json([
+                'message' => 'Unauthorized',
+                'debug' => [
+                    'cart_user_id' => $cart->user_id,
+                    'cart_session_id' => $cart->session_id,
+                    'auth_user_id' => $user ? $user->id : null,
+                    'request_session_id' => $sessionId,
+                ]
+            ], 403);
         }
 
         $cart->delete();
 
-        return response()->json(['message' => 'Item removed from cart successfully'], 204);
+        return response()->json(['message' => 'Item removed from cart successfully'], 200);
+    }
+
+    /**
+     * Clear all items from the cart.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function clear(Request $request)
+    {
+        $user = Auth::guard('sanctum')->user();
+        $sessionId = $this->getGuestSessionId($request);
+
+        if (!$user && !$sessionId) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $query = Cart::query();
+
+        $query->where(function($q) use ($user, $sessionId) {
+            if ($user) {
+                $q->where('user_id', $user->id);
+                if ($sessionId) {
+                    $q->orWhere('session_id', $sessionId);
+                }
+            } else {
+                $q->where('session_id', $sessionId);
+            }
+        });
+
+        $query->delete();
+
+        return response()->json(['message' => 'Cart cleared successfully'], 200);
+    }
+
+    /**
+     * Remove an item from the cart by product ID.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @param  int  $productId
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function removeItemByProductId(Request $request, $productId)
+    {
+        $user = Auth::guard('sanctum')->user();
+        $sessionId = $this->getGuestSessionId($request);
+
+        if (!$user && !$sessionId) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
+        $query = Cart::where('product_id', $productId);
+
+        $query->where(function($q) use ($user, $sessionId) {
+            if ($user) {
+                $q->where('user_id', $user->id);
+                if ($sessionId) {
+                    $q->orWhere('session_id', $sessionId);
+                }
+            } else {
+                $q->where('session_id', $sessionId);
+            }
+        });
+
+        $query->delete();
+
+        return response()->json(['message' => 'Item removed from cart successfully'], 200);
+    }
+
+    /**
+     * Merge guest cart items with the authenticated user's cart (API action).
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function mergeCartAction(Request $request)
+    {
+        $user = Auth::guard('sanctum')->user();
+        if (!$user) {
+            return response()->json(['message' => 'Unauthenticated'], 401);
+        }
+
+        $sessionId = $request->input('session_id');
+        if (!$sessionId) {
+            return response()->json(['message' => 'session_id is required'], 400);
+        }
+
+        $this->mergeGuestCart($user->id, $sessionId);
+
+        return response()->json(['message' => 'Cart merged successfully']);
     }
 
     /**
@@ -140,7 +248,7 @@ class CartController extends Controller
         if ($request->has('session_id')) {
             return $request->session_id;
         }
-        
+
         if ($request->header('X-Session-ID')) {
             return $request->header('X-Session-ID');
         }

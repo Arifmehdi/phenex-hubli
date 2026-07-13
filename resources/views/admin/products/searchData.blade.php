@@ -29,6 +29,7 @@
 
                         <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                             <a href="{{  route('admin.productEdit',$product)}}" class="dropdown-item"><i class="fa fa-edit"></i> Edit</a>
+                            <a href="{{  route('admin.product.reviews',$product)}}" class="dropdown-item"><i class="fa fa-star"></i> Reviews</a>
 
                             <form action="{{ route('admin.productDelete',$product)}}" method="post" onclick="return confirm('Are you sure to delete?')">
                                 @csrf

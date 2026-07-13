@@ -39,9 +39,95 @@
     /* Zoom level */
 }
 </style>
+<style>
+/* Ad Popup Styles */
+.ad-popup-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.8);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 999999;
+}
+
+.ad-popup-content {
+    position: relative;
+    max-width: 600px;
+    width: 90%;
+    background: transparent;
+    border-radius: 12px;
+    box-shadow: 0 15px 50px rgba(0,0,0,0.6);
+    transform: scale(0.7);
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.ad-popup-overlay.show .ad-popup-content {
+    transform: scale(1);
+}
+
+.ad-popup-content img {
+    width: 100%;
+    height: auto;
+    border-radius: 12px;
+    display: block;
+    border: 3px solid #fff;
+}
+
+.ad-popup-close {
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    width: 40px;
+    height: 40px;
+    background: #fff;
+    border: none;
+    border-radius: 50%;
+    font-size: 28px;
+    line-height: 40px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #ff0000;
+    z-index: 1000000;
+    transition: all 0.2s ease;
+}
+
+.ad-popup-close:hover {
+    background: #ff0000;
+    color: #fff;
+    transform: rotate(90deg);
+}
+
+@media (max-width: 767px) {
+    .ad-popup-content {
+        width: 85%;
+    }
+    .ad-popup-close {
+        top: -10px;
+        right: -10px;
+        width: 30px;
+        height: 30px;
+        font-size: 20px;
+    }
+}
+</style>
 @endpush
 
 @section('content')
+<!-- Ad Popup -->
+<div id="ad-popup-overlay" class="ad-popup-overlay">
+    <div class="ad-popup-content">
+        <button id="close-ad-popup" class="ad-popup-close">&times;</button>
+        <img src="{{ asset('frontend/img/ads/ad_01.jpg') }}" alt="Special Offer">
+    </div>
+</div>
+
 <!-- SLIDER AREA START (slider-3) -->
 <div class="ltn__slider-area ltn__slider-3  ">
     <div class="ltn__slide-one-active slick-slide-arrow-1 slick-slide-dots-1">
@@ -560,7 +646,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -605,7 +691,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -652,7 +738,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -697,7 +783,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -744,7 +830,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -788,7 +874,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -836,7 +922,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -880,7 +966,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -927,7 +1013,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -971,7 +1057,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1019,7 +1105,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1063,7 +1149,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1118,7 +1204,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1163,7 +1249,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1210,7 +1296,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1255,7 +1341,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1302,7 +1388,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1346,7 +1432,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1394,7 +1480,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1438,7 +1524,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1485,7 +1571,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1529,7 +1615,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1577,7 +1663,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1621,7 +1707,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1676,7 +1762,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1721,7 +1807,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1768,7 +1854,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1813,7 +1899,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1860,7 +1946,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1904,7 +1990,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1952,7 +2038,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -1996,7 +2082,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2043,7 +2129,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2087,7 +2173,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2135,7 +2221,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2179,7 +2265,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2234,7 +2320,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2279,7 +2365,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2326,7 +2412,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2371,7 +2457,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2418,7 +2504,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2462,7 +2548,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2510,7 +2596,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2554,7 +2640,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2601,7 +2687,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2645,7 +2731,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2693,7 +2779,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2737,7 +2823,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2792,7 +2878,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2837,7 +2923,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2884,7 +2970,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2929,7 +3015,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -2976,7 +3062,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -3020,7 +3106,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -3068,7 +3154,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -3112,7 +3198,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -3159,7 +3245,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -3203,7 +3289,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -3251,7 +3337,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -3295,7 +3381,7 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
                                                 <div class="product-hover-action">
                                                     <ul>
                                                         <li>
-                                                            <a href="#" title="Quick View" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
+                                                            <a href="#" title="Quick View" class="quick-view-btn" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#quick_view_modal">
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
@@ -3703,5 +3789,36 @@ $nextThreeDays = \Carbon\Carbon::now()->addDays(3)->format('Y/m/d');
 
 
 @push('js')
+<script>
+$(window).on('load', function() {
+    // Show popup after 1 second delay
+    setTimeout(function() {
+        $('#ad-popup-overlay').fadeIn(500).css('display', 'flex').addClass('show');
+        
+        // Auto hide after 5 seconds of being shown
+        setTimeout(function() {
+            closeAdPopup();
+        }, 5000);
+    }, 1000);
 
+    // Function to close popup
+    function closeAdPopup() {
+        $('#ad-popup-overlay').fadeOut(500, function() {
+            $(this).removeClass('show');
+        });
+    }
+
+    // Close on button click
+    $('#close-ad-popup').on('click', function() {
+        closeAdPopup();
+    });
+
+    // Close on overlay click (background)
+    $('#ad-popup-overlay').on('click', function(e) {
+        if (e.target === this) {
+            closeAdPopup();
+        }
+    });
+});
+</script>
 @endpush

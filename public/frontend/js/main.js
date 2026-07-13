@@ -1259,23 +1259,36 @@
         /* --------------------------------------------------------
             33. Quantity plus minus
         -------------------------------------------------------- */
-        $(".cart-plus-minus").prepend('<div class="dec qtybutton">-</div>');
-        $(".cart-plus-minus").append('<div class="inc qtybutton">+</div>');
-        $(".qtybutton").on("click", function() {
+        function initQtyButtons() {
+            $(".cart-plus-minus").each(function() {
+                if ($(this).find(".qtybutton").length === 0) {
+                    $(this).prepend('<div class="dec qtybutton">-</div>');
+                    $(this).append('<div class="inc qtybutton">+</div>');
+                }
+            });
+        }
+        
+        initQtyButtons();
+
+        $(document).off("click", ".qtybutton").on("click", ".qtybutton", function() {
             var $button = $(this);
-            var oldValue = $button.parent().find("input").val();
-            if ($button.text() == "+") {
-                var newVal = parseFloat(oldValue) + 1;
+            var $input = $button.parent().find("input");
+            var oldValue = parseFloat($input.val()) || 0;
+            var newVal = 0;
+
+            if ($button.hasClass("inc") || $button.text() == "+") {
+                newVal = oldValue + 1;
             } 
             else {
-                if (oldValue > 0) {
-                    var newVal = parseFloat(oldValue) - 1;
+                if (oldValue > 1) {
+                    newVal = oldValue - 1;
                 } 
                 else {
-                    newVal = 0;
+                    newVal = 1;
                 }
             }
-            $button.parent().find("input").val(newVal);
+            $input.val(newVal);
+            $input.trigger('change');
         });
 
 

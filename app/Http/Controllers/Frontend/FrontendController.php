@@ -180,6 +180,7 @@ class FrontendController extends Controller
         $product = Product::with('categories')->findOrFail($request->id);
 
         return response()->json([
+            'id'          => $product->id,
             'name'        => $product->name_en,
             'price'       => number_format($product->selling_price, 2),
             'old_price'   => $product->discount > 0 ? number_format($product->final_price, 2) : null,
@@ -761,6 +762,28 @@ class FrontendController extends Controller
 
     //     return view('website.shop_details', compact('product','relatedProducts'));
     // }
+
+    public function reviewsStore(Request $request)
+    {
+        $request->validate([
+            'product_id' => 'required|exists:products,id',
+            'rating'     => 'required|integer|min:1|max:5',
+            'comment'    => 'required|string|max:1000',
+            'name'       => 'nullable|string|max:255',
+            'email'      => 'nullable|email|max:255',
+        ]);
+
+        ProductReview::create([
+            'user_id'    => Auth::id(),
+            'product_id' => $request->product_id,
+            'rating'     => $request->rating,
+            'comment'    => $request->comment,
+            'name'       => $request->name,
+            'email'      => $request->email,
+        ]);
+
+        return back()->with('success', 'Review submitted successfully!');
+    }
 
     public function cart()
     {
@@ -1356,24 +1379,7 @@ public function quickAdd(Request $request)
     }
 
 
-    public function reviewsStore(Request $request)
-    {
-        $request->validate([
-            'product_id' => 'required|exists:products,id',
-            'rating'     => 'required|integer|min:1|max:5',
-            'comment'    => 'required|string|max:1000',
-        ]);
-
-        ProductReview::create([
-            'user_id'    => Auth::id(),
-            'product_id' => $request->product_id,
-            'rating'     => $request->rating,
-            'comment'    => $request->comment,
-        ]);
-
-        return back()->with('success', 'Review submitted successfully!');
-    }
-
+    
 
     public function orderPrint(Order $order)
     {
@@ -1422,6 +1428,7 @@ public function quickAdd(Request $request)
 
         return response()->json(['html' => $html]);
     }
+
 
     public function search(Request $request)
     {

@@ -1,12 +1,26 @@
-<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <title>Invoice #{{ $order->id }}</title> <link rel="stylesheet" href="{{ asset('/') }}alt/plugins/fontawesome-free/css/all.min.css"> <style> body{ font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#000; } /* A4 page setup */ @page{ size:A4; margin:15mm; } .container{ width:100%; } /* header */ .header{ border-bottom:2px solid #198754; margin-bottom:15px; padding-bottom:10px; } .company-title{ font-size:20px; font-weight:bold; } .small{ font-size:12px; } /* tables */ table{ width:100%; border-collapse:collapse; } th,td{ border:1px solid #000; padding:6px; } th{ background:#198754; color:#fff; } .text-right{ text-align:right; } .text-center{ text-align:center; } .no-border td{ border:none; } /* totals */ .total-table td{ border:1px solid #000; padding:6px; } /* print behavior */ thead{ display:table-header-group; } tr{ page-break-inside:avoid; } /* button */ .btn-print{ margin-top:20px; } @media print{ .btn-print{ display:none; }     table, th, td{
+<!DOCTYPE html> <html lang="en"> <head> <meta charset="utf-8"> <title>Invoice #{{ $order->id }}</title> <link rel="stylesheet" href="{{ asset('/') }}alt/plugins/fontawesome-free/css/all.min.css"> <style> body{ font-family: Arial, Helvetica, sans-serif; font-size:13px; color:#000; } /* A4 page setup */ @page{ size:A4; margin:15mm; } .container{ width:100%; } /* header */ .header{ border-bottom:2px solid #198754; margin-bottom:15px; padding-bottom:10px; } .company-title{ font-size:20px; font-weight:bold; } .small{ font-size:12px; } /* tables */ table{ width:100%; border-collapse:collapse; } th,td{ border:1px solid #000; padding:6px; } th{ background:#198754; color:#fff; } .text-right{ text-align:right; } .text-center{ text-align:center; } .no-border td{ border:none; } /* totals */ .total-table td{ border:1px solid #000; padding:6px; } /* print behavior */ thead{ display:table-header-group; } tr{ page-break-inside:avoid; } /* button */ .btn-print{ margin-top:20px; } 
+@media print {
+    .btn-print{ display:none; }
+
+    table, th, td{
         border:1px solid #000 !important;
-    } } </style> </head> <body> <div class="container"> <!-- HEADER --> <table class="header no-border"> <tr> <td width="70%">
+    }
+
+    th{
+        background:#198754 !important;
+        color:#fff !important;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+</style> </head> <body> <div class="container"> <!-- HEADER --> <table class="header no-border"> <tr> <td width="70%">
     
     <style>
         table{
             width:100%;
             border-collapse:collapse;
         }
+
         
         table, th, td{
             border:1px solid #000;
@@ -17,8 +31,8 @@
         }
         
         th{
-            background:#198754;
-            color:#fff;
+            background:#198754 !important;
+            color:#fff !important;
         }
     </style>
 
@@ -42,7 +56,9 @@ Date: {{ $order->created_at->format('d M Y') }}
 
 {{ $order->email ?? $order->user?->email }}<br>
 
-{{ $order->mobile ?? $order->user?->mobile }}
+{{ $order->mobile ?? $order->user?->mobile }} <br>
+
+{{ $order->address_title ?? $order->user?->address }}
 
 </td> <td width="30%" align="right">
 
@@ -56,11 +72,11 @@ Date: {{ $order->created_at->format('d M Y') }}
 <span style="color:orange;font-weight:bold;">PARTIAL</span>
 @endif
 
-</td> </tr> </table> <!-- ITEMS TABLE --> <table> <thead> <tr> <th width="60">SL</th> <th>Product Name</th> <th width="120">Price</th> <th width="80">Qty</th> <th width="80">Unit</th><th width="140">Total</th> </tr> </thead> <tbody>
+</td> </tr> </table> <!-- ITEMS TABLE --> <table> <thead> <tr> <th width="60">SL</th> <th>Product Name</th> <th width="120">Price</th> <th width="80">Pack Size</th><th width="80">Qty</th> <th width="140">Total</th> </tr> </thead> <tbody>
 
 @foreach($items as $item)
 
-<tr> <td class="text-center">{{ $loop->iteration }}</td> <td>{{ $item->product_name }}</td> <td class="text-right">{{ number_format($item->product_price,2) }}</td> <td class="text-center">{{ $item->quantity }}</td> <td class="text-center">{{ $item->product->unit  ?? 'N/L'}}</td> <td class="text-right">{{ number_format($item->total_cost,2) }}</td> </tr>
+<tr> <td class="text-center">{{ $loop->iteration }}</td> <td>{{ $item->product_name }}</td> <td class="text-right">{{ number_format($item->product_price,2) }}</td>  <td class="text-center">{{ $item->product->unit  ?? 'N/L'}}</td> <td class="text-center">{{ $item->quantity }}</td><td class="text-right">{{ number_format($item->total_cost,2) }}</td> </tr>
 
 @endforeach
 

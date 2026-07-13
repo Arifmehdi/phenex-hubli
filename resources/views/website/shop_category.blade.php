@@ -89,11 +89,17 @@
                                                                 <i class="far fa-eye"></i>
                                                             </a>
                                                         </li>
+
                                                         <li>
-                                                            <a href="#" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                                            <a href="#" title="Add to Cart" class="add-to-cart-btn"  data-id="{{ $product->id }}">
                                                                 <i class="fas fa-shopping-cart"></i>
                                                             </a>
                                                         </li>
+                                                        {{--<li>
+                                                            <a href="#" title="Add to Cart" data-bs-toggle="modal" data-bs-target="#add_to_cart_modal">
+                                                                <i class="fas fa-shopping-cart"></i>
+                                                            </a>
+                                                        </li>--}}
                                                         <li>
                                                             <a href="#" title="Wishlist" class="add-to-wishlist" data-id="{{ $product->id }}" data-bs-toggle="modal" data-bs-target="#liton_wishlist_modal">
                                                                 <i class="far fa-heart"></i>

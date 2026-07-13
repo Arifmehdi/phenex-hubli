@@ -71,14 +71,12 @@ $totalCartPrice = \App\Models\Cart::totalCartPrice();
     <!-- Main JS -->
     <script src="{{ asset('frontend/js/main.js') }}"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
-@stack('js')
 
-<script>
+    {{-- ✅ Floating WhatsApp Icon --}}
+    <a class="floating-message-icon" href="https://wa.me/8801334927985?text=Hello%20there!" target="_blank">
+        <img src="{{ asset('frontend/assets/img/icons/whatsapp.svg') }}" alt="WhatsApp">
+    </a>
 
-{{-- ✅ Floating WhatsApp Icon --}}
-<a class="floating-message-icon" href="https://wa.me/8801334927985?text=Hello%20there!" target="_blank">
-    <img src="{{ asset('frontend/assets/img/icons/whatsapp.svg') }}" alt="WhatsApp">
-</a>
     @stack('js')
 
     <script>
@@ -102,33 +100,60 @@ $(document).on('click', '.add-to-wishlist', function() {
 </script>
 <script>
     $(document).on("click", ".add-to-cart-btn", function (e) {
-    e.preventDefault();
+        e.preventDefault();
 
-    let id = $(this).data("id");
-
-    // Set ID in hidden input
-    $("#cart_product_id").val(id);
-
-    // Loading UI
-    $("#cart_modal_name").html("Loading...");
-    $("#cart_modal_img").attr("src", "");
-    $("#cart_modal_message").html("Adding product...");
-
-    // Ajax Request
-    $.ajax({
-        url: "{{ route('cart.quick.add') }}", // You must create this route
-        type: "GET",
-        data: { id: id },
-        success: function (res) {
-
-            $("#cart_modal_img").attr("src", res.image);
-            $("#cart_modal_name").html(res.name);
-            $("#cart_modal_message").html("Successfully added to your Cart");
-            $("#add_to_cart_modal").modal('show');
+        let id = $(this).data("id");
+        let $btn = $(this);
+        
+        // Find quantity input
+        let qty = 1;
+        let $qtyInput = $btn.closest('.ltn__product-details-menu-2').find('.cart-plus-minus-box');
+        if ($qtyInput.length === 0) {
+            $qtyInput = $('.cart-plus-minus-box'); // fallback to any on page
         }
-    });
-});
+        if ($qtyInput.length > 0) {
+            qty = parseInt($qtyInput.val()) || 1;
+        }
 
+        // Set ID in hidden input (for modal if needed)
+        $("#cart_product_id").val(id);
+
+        // UI Feedback
+        $btn.find('i').addClass('fa-spin fa-spinner');
+
+        // Ajax Request
+        $.ajax({
+            url: "{{ route('cart.quick.add') }}",
+            type: "GET",
+            data: { 
+                id: id,
+                qty: qty
+            },
+            success: function (res) {
+                $btn.find('i').removeClass('fa-spin fa-spinner');
+                if(res.success) {
+                    // Update cart count if element exists
+                    if ($('#cart-count').length > 0) {
+                        $('#cart-count').text(res.cartCount);
+                    }
+                    // Update mini cart if element exists
+                    if ($('#ltn__utilize-cart-menu').length > 0) {
+                        $('#ltn__utilize-cart-menu').html(res.miniCartHtml);
+                    }
+
+                    // Show Modal
+                    $("#cart_modal_img").attr("src", res.image);
+                    $("#cart_modal_name").html(res.name);
+                    $("#cart_modal_message").html(res.message);
+                    $("#add_to_cart_modal").modal('show');
+                }
+            },
+            error: function() {
+                $btn.find('i').removeClass('fa-spin fa-spinner');
+                alert('Something went wrong!');
+            }
+        });
+    });
 </script>
 </body>
 </html>
