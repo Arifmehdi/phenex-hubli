@@ -13,7 +13,10 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Validator;
-use PDF; 
+use Illuminate\Support\Facades\Password;
+use Illuminate\Auth\Events\PasswordReset;
+use Illuminate\Support\Str;
+use PDF;
 
 use Session;
 class AuthController extends Controller
@@ -79,6 +82,85 @@ class AuthController extends Controller
     }
 
 
+
+    /**
+     * Show the forgot password form.
+     */
+    public function showForgotPasswordForm()
+    {
+        if (Auth::check()) {
+            return redirect()->route('user.dashboard');
+        }
+        return view('auth.forgot-password');
+    }
+
+    /**
+     * Send the password reset link email.
+     */
+    public function sendResetLink(Request $request)
+    {
+        $request->validate([
+            'email' => 'required|email',
+        ], [
+            'email.required' => 'Email is required',
+            'email.email'    => 'Please enter a valid email address',
+        ]);
+
+        $status = Password::sendResetLink($request->only('email'));
+
+        if ($status == Password::RESET_LINK_SENT) {
+            return back()->with('success', 'We have emailed your password reset link! Please check your inbox.');
+        }
+
+        return back()->withInput($request->only('email'))
+                    ->with('error', trans($status));
+    }
+
+    /**
+     * Show the reset password form (link from email).
+     */
+    public function showResetPasswordForm(Request $request, $token)
+    {
+        return view('auth.reset-password', [
+            'token' => $token,
+            'email' => $request->query('email'),
+        ]);
+    }
+
+    /**
+     * Reset the user's password.
+     */
+    public function resetPassword(Request $request)
+    {
+        $request->validate([
+            'token'    => 'required',
+            'email'    => 'required|email',
+            'password' => 'required|string|min:8|confirmed',
+        ], [
+            'password.confirmed' => 'Password confirmation does not match',
+            'password.min'       => 'Password must be at least 8 characters',
+        ]);
+
+        $status = Password::reset(
+            $request->only('email', 'password', 'password_confirmation', 'token'),
+            function ($user, $password) {
+                $user->forceFill([
+                    'password'       => Hash::make($password),
+                    'remember_token' => Str::random(60),
+                ])->save();
+
+                event(new PasswordReset($user));
+            }
+        );
+
+        if ($status == Password::PASSWORD_RESET) {
+            return redirect()->route('login')
+                            ->with('success', 'Your password has been reset successfully! Please login with your new password.');
+        }
+
+        return back()->withInput($request->only('email'))
+                    ->with('error', trans($status));
+    }
 
     public function registerPage(){
         if(Auth::check()){
