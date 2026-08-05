@@ -33,8 +33,8 @@ Route::post('/login', [ApiAuthController::class, 'login']);
 Route::post('/register', [ApiAuthController::class, 'register']);
 
 // Password Reset Routes
-Route::post('/forgot-password', [ApiAuthController::class, 'forgotPassword'])->name('password.email');
-Route::post('/reset-password', [ApiAuthController::class, 'resetPassword'])->name('password.reset');
+Route::post('/forgot-password', [ApiAuthController::class, 'forgotPassword'])->name('api.password.email');
+Route::post('/reset-password', [ApiAuthController::class, 'resetPassword'])->name('api.password.reset');
 
 // Public API routes for products
 Route::get('products', [ProductController::class, 'index']);

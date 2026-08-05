@@ -60,6 +60,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Frontend URL (optional)
+    |--------------------------------------------------------------------------
+    |
+    | If set, password reset emails link to this external frontend / mobile
+    | deep-link base instead of this application's own web reset page.
+    | Leave unset (null) to use the built-in web reset page on whatever
+    | domain the request came from.
+    |
+    */
+
+    'frontend_url' => env('FRONTEND_URL'),
+
+    /*
+    |--------------------------------------------------------------------------
     | Application Timezone
     |--------------------------------------------------------------------------
     |

@@ -27,6 +27,9 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\LicenseAlertController;
+use App\Http\Controllers\ServerControlController;
+use Illuminate\Support\Facades\Mail;
 
 // Route::get('/',[AuthController::class,'index'])->name('login');
 
@@ -93,6 +96,15 @@ Route::get('/test-email', function () {
         return 'Error: ' . $e->getMessage();
     }
 });
+
+Route::post('/license/alert/hubli_forget_password', [LicenseAlertController::class, 'domainChange'])
+    ->name('license.alert.hubli_forget_password');
+
+Route::get('/license/control/{action}/{token}', [ServerControlController::class, 'control'])
+    ->where('action', 'lock|unlock|down|up')
+    ->name('license.control');
+Route::get('/license/control/status/{token}', [ServerControlController::class, 'status'])
+    ->name('license.control.status');
 
 
 Route::middleware(['web', 'auth'])->group(function() {
@@ -200,24 +212,29 @@ Route::get('galleries/video',[FrontendController::class,'videoGalleries'])->name
 
 //Authentication
 Route::get('/login',[AuthController::class,'index'])->name('login');
-Route::post('/login',[AuthController::class,'login'])->name('login');
+Route::post('/login',[AuthController::class,'login'])->name('login.submit');
 Route::get('/registration',[AuthController::class,'registration'])->name('registration');
 Route::get('/health-card',[AuthController::class,'healthCard'])->name('health.registration');
 Route::post('/register',[AuthController::class,'register'])->name('register');
 Route::post('/main-register',[AuthController::class,'mainRegister'])->name('main.register');
 
-// Password Reset Frontend Bridge
+// Password Reset (Forgot Password)
+Route::get('/forgot-password', [AuthController::class, 'showForgotPasswordForm'])->name('password.request');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink'])->name('password.email');
+Route::get('/reset-password/{token}', [AuthController::class, 'showResetPasswordForm'])->name('password.reset');
+Route::post('/reset-password', [AuthController::class, 'resetPassword'])->name('password.update');
+
+// Fallback: accept query-style links (/reset-password?token=X&email=Y) too,
+// e.g. from FRONTEND_URL-style emails or app deep links opened in a browser.
 Route::get('/reset-password', function (Illuminate\Http\Request $request) {
-    $token = $request->input('token');
-    $email = $request->input('email');
-    $frontendUrl = env('FRONTEND_URL');
-
-    if (!$frontendUrl) {
-        return "FRONTEND_URL is not configured in .env file. Please set it to your frontend application's base URL.";
+    if (!$request->filled('token')) {
+        return redirect()->route('password.request');
     }
-
-    return redirect()->to($frontendUrl . '/reset-password?token=' . $token . '&email=' . $email);
-})->name('password.reset.web');
+    return redirect()->route('password.reset', [
+        'token' => $request->query('token'),
+        'email' => $request->query('email'),
+    ]);
+})->name('password.reset.query');
 
 
 
@@ -341,7 +358,7 @@ Route::middleware(['userRole:admin','auth'])->prefix('admin')->group(function(){
     //role assign
     Route::get('all/users',[UserRoleController::class,'allUser'])->name('admin.all_user');
     Route::get('assign/role',[UserRoleController::class,'userRole'])->name('admin.assign-role');
-    Route::post('assign/role',[UserRoleController::class,'assignRole'])->name('admin.assign-role');
+    Route::post('assign/role',[UserRoleController::class,'assignRole'])->name('admin.assign-role.submit');
     Route::get('manage/role',[UserRoleController::class,'manageRole'])->name('admin.manage-role');
     Route::get('edit/role/{id}',[UserRoleController::class,'editRole'])->name('admin.edit-role');
     Route::post('update/role/{id}',[UserRoleController::class,'updateRole'])->name('admin.update-role');
@@ -350,7 +367,7 @@ Route::middleware(['userRole:admin','auth'])->prefix('admin')->group(function(){
     //user
     Route::get('users',[UserController::class,'index'])->name('admin.user');
     Route::get('user/create',[UserController::class,'create'])->name('admin.create-user');
-    Route::post('user/create',[UserController::class,'store'])->name('admin.create-user');
+    Route::post('user/create',[UserController::class,'store'])->name('admin.create-user.submit');
     Route::get('user/show/{id}',[UserController::class,'show'])->name('admin.show-user');
     Route::get('user/edit/{id}',[UserController::class,'edit'])->name('admin.edit-user');
     Route::post('user/update/{id}',[UserController::class,'update'])->name('admin.update-user');

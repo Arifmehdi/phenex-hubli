@@ -265,6 +265,11 @@
                             {{ session('error') }}
                         </div>
                     @endif
+                    @if (session('success'))
+                        <div style="color:green; margin-top:10px; text-align:center;">
+                            {{ session('success') }}
+                        </div>
+                    @endif
                   <div class="field">
                         <input type="email" class="form-control form-control-lg"  name="email" placeholder="Enter Email" value="{{ old('email') }}">
                         @error('email')
@@ -278,7 +283,7 @@
                             <span class="text-danger small">{{ $message }}</span>
                         @enderror
                   </div>
-                  <div class="pass-link"><a href="#">Forgot passsword?</a></div>
+                  <div class="pass-link"><a href="{{ route('password.request') }}">Forgot password?</a></div>
                   <div class="field btn">
                       <div class="btn-layer"></div>
                       <input type="submit" value="Login">
