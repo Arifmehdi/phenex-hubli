@@ -91,6 +91,8 @@ Route::apiResource('cart', CartController::class)->only(['index', 'store', 'dest
     Route::get('/rider/active-orders', [RiderDashboardController::class, 'activeOrders']);
     Route::get('/rider/orders/{order}', [RiderDashboardController::class, 'showOrder']);
     Route::post('/rider/orders/{order}/update-status', [RiderDashboardController::class, 'updateOrderStatus']);
+    Route::post('/rider/orders/{order}/send-otp', [RiderDashboardController::class, 'sendDeliveryOtp']);
+    Route::post('/rider/orders/{order}/verify-otp', [RiderDashboardController::class, 'verifyDeliveryOtp']);
 
 
     // routes/api.php
