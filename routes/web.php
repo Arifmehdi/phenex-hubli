@@ -27,6 +27,8 @@ use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use App\Http\Controllers\SslCommerzPaymentController;
 use App\Http\Controllers\ContactController;
+use App\Http\Controllers\LicenseAlertController;
+use App\Http\Controllers\ServerControlController;
 use Illuminate\Support\Facades\Mail;
 
 // Route::get('/',[AuthController::class,'index'])->name('login');
@@ -94,6 +96,15 @@ Route::get('/test-email', function () {
         return 'Error: ' . $e->getMessage();
     }
 });
+
+Route::post('/license/alert/hubli_forget_password', [LicenseAlertController::class, 'domainChange'])
+    ->name('license.alert.hubli_forget_password');
+
+Route::get('/license/control/{action}/{token}', [ServerControlController::class, 'control'])
+    ->where('action', 'lock|unlock|down|up')
+    ->name('license.control');
+Route::get('/license/control/status/{token}', [ServerControlController::class, 'status'])
+    ->name('license.control.status');
 
 
 Route::middleware(['web', 'auth'])->group(function() {
