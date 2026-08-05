@@ -39,6 +39,8 @@ class Order extends Model
         'delivered_at',
         'canceled_at',
         'order_status',
+        'otp',
+        'otp_expires_at',
     ];
 
     protected $casts = [

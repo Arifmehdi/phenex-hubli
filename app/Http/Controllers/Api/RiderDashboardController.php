@@ -11,6 +11,8 @@ use App\Models\Driver; // Import Driver model
 use App\Models\Product; // Import Product model
 use App\Http\Resources\OrderResource; // Import OrderResource
 use Illuminate\Support\Facades\Response;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\OrderDeliveryOTP;
 
 class RiderDashboardController extends Controller
 {
@@ -193,6 +195,126 @@ class RiderDashboardController extends Controller
         return Response::json([
             'success' => true,
             'message' => "Order status updated to {$status} successfully.",
+            'data' => new OrderResource($order->load(['orderItems.product', 'user']))
+        ]);
+    }
+
+    public function sendDeliveryOtp(Request $request, $id)
+    {
+        $user = $request->user();
+
+        if ($user->role !== 'rider') {
+            return Response::json(['message' => 'Unauthorized: User is not a rider.'], 403);
+        }
+
+        $request->validate([
+            'email' => 'nullable|email'
+        ]);
+
+        $order = Order::where('driver_id', $user->id)->find($id);
+
+        if (!$order) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Order not found or not assigned to you.'
+            ], 404);
+        }
+
+        if ($order->order_status !== 'shipped') {
+            return Response::json([
+                'success' => false,
+                'message' => 'Order must be in shipped status to send OTP.'
+            ], 400);
+        }
+
+        // Generate a 6-digit OTP
+        $otp = rand(100000, 999999);
+
+        $order->update([
+            'otp' => $otp,
+            'otp_expires_at' => now()->addMinutes(10)
+        ]);
+
+        // Determine the best email to send the OTP to:
+        // 1. Request email (if provided)
+        // 2. Order email
+        // 3. User email
+        $recipientEmail = $request->email ?: ($order->email ?: ($order->user ? $order->user->email : null));
+        // $recipientEmail = 'smousumiakter94@gmail.com';
+
+        if (!$recipientEmail) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Customer email not found. Please provide an email or update the order/user records.'
+            ], 400);
+        }
+
+        // Send OTP via email
+        try {
+            Mail::to($recipientEmail)->send(new OrderDeliveryOTP($order, $otp));
+        } catch (\Exception $e) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Failed to send OTP email: ' . $e->getMessage()
+            ], 500);
+        }
+
+        return Response::json([
+            'success' => true,
+            'message' => "Delivery OTP has been sent to {$recipientEmail}."
+        ]);
+    }
+
+    /**
+     * Verify delivery OTP and mark order as delivered.
+     */
+    public function verifyDeliveryOtp(Request $request, $id)
+    {
+        $user = $request->user();
+
+        if ($user->role !== 'rider') {
+            return Response::json(['message' => 'Unauthorized: User is not a rider.'], 403);
+        }
+
+        $request->validate([
+            'otp' => 'required|string|size:6'
+        ]);
+
+        $order = Order::where('driver_id', $user->id)->find($id);
+
+        if (!$order) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Order not found or not assigned to you.'
+            ], 404);
+        }
+
+        if ($order->otp !== $request->otp) {
+            return Response::json([
+                'success' => false,
+                'message' => 'Invalid OTP provided.'
+            ], 400);
+        }
+
+        if (now()->gt($order->otp_expires_at)) {
+            return Response::json([
+                'success' => false,
+                'message' => 'OTP has expired. Please send a new one.'
+            ], 400);
+        }
+
+        // Update order to delivered
+        $order->update([
+            'order_status' => 'delivered',
+            'delivered_at' => now(),
+            'payment_status' => 'paid',
+            'otp' => null,
+            'otp_expires_at' => null
+        ]);
+
+        return Response::json([
+            'success' => true,
+            'message' => 'Order delivered successfully.',
             'data' => new OrderResource($order->load(['orderItems.product', 'user']))
         ]);
     }
